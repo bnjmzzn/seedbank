@@ -1,4 +1,8 @@
--- paste to supabase sql editor
+-- setup supabase sql
+-- paste to supabase sql editor and execute
+
+DROP TABLE IF EXISTS users CASCADE;
+DROP TABLE IF EXISTS history CASCADE;
 
 CREATE TABLE IF NOT EXISTS users (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
