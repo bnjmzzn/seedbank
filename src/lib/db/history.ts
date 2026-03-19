@@ -1,4 +1,5 @@
 import { supabase } from "./client";
+import { HistoryReason } from "@/types/database";
 
 export async function createHistoryLog(userId: string, change: number, reason: string) {
     const { error } = await supabase
@@ -29,7 +30,7 @@ export async function fetchLastDailyClaim(userId: string) {
         .from("history")
         .select("created_at")
         .eq("user_id", userId)
-        .eq("reason", "DAILY")
+        .eq("reason", HistoryReason.DAILY)
         .order("created_at", { ascending: false })
         .limit(1)
         .single();
