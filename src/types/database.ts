@@ -13,3 +13,9 @@ export interface HistoryRow {
     action: string;
     created_at: string | null;
 }
+
+export enum HistoryReason {
+    DAILY = "DAILY",
+    TRANSFER_IN = "TRANSFER_IN",
+    TRANSFER_OUT = "TRANSFER_OUT",
+}
