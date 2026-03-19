@@ -5,6 +5,7 @@ const ERROR_MAP: Record<string, { status: number; message: string }> = {
     INVALID_BODY:    { status: 400, message: 'invalid request body' },
     USERNAME_TAKEN:  { status: 409, message: 'username is already taken' },
     USER_NOT_FOUND:  { status: 404, message: 'user not found' },
+    INVALID_CREDENTIALS: { status: 401, message: "invalid username or password" },
 };
 
 export function handleApiError(error: unknown): NextResponse {
