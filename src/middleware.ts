@@ -5,6 +5,7 @@ import { errorResponse } from "@/lib/api/response";
 
 const PROTECTED_ROUTES: string[] = [
     "/api/users/me",
+    "/api/daily"
 ];
 
 export async function middleware(request: NextRequest) {
