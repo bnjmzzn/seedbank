@@ -2,10 +2,7 @@ import { createUser } from "@/lib/db/user";
 import { successResponse } from "@/lib/api/response";
 import { handleApiError } from "@/lib/api/errors";
 import bcrypt from "bcryptjs";
-
-const USERNAME_MAX = 20;
-const PASSWORD_MAX = 100;
-const HASH_ROUNDS = 10;
+import { USERNAME_MAX, PASSWORD_MAX, HASH_ROUNDS } from "@/lib/config";
 
 export async function POST(request: Request) {
     try {

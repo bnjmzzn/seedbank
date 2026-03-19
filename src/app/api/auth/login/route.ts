@@ -3,9 +3,7 @@ import { successResponse } from "@/lib/api/response";
 import { handleApiError } from "@/lib/api/errors";
 import { SignJWT } from "jose";
 import bcrypt from "bcryptjs";
-
-const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET!);
-const JWT_EXPIRES = "7d";
+import { JWT_EXPIRES, JWT_SECRET } from "@/lib/config";
 
 export async function POST(request: Request) {
     try {
