@@ -3,7 +3,9 @@ import { jwtVerify } from "jose";
 import { JWT_SECRET } from "@/lib/config";
 import { errorResponse } from "@/lib/api/response";
 
-const PROTECTED_ROUTES: string[] = [];
+const PROTECTED_ROUTES: string[] = [
+    "/api/users/me",
+];
 
 export async function middleware(request: NextRequest) {
     const { pathname } = request.nextUrl;
