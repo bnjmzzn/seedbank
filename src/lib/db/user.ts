@@ -16,13 +16,16 @@ export async function createUser(username: string, password: string) {
 }
 
 export async function removeUserById(userId: string) {
-    const { count, error } = await supabase
+    const { error } = await supabase
         .from("users")
-        .delete({ count: "exact" })
-        .eq("id", userId);
+        .delete()
+        .eq("id", userId)
+        .single();
 
-    if (error) throw error;
-    if (count === 0) throw new Error("USER_NOT_FOUND");
+    if (error) {
+        if (error.code === "PGRST116") throw new Error("USER_NOT_FOUND");
+        throw error;
+    }
 }
 
 export async function fetchUser(field: "id" | "username", value: string) {
