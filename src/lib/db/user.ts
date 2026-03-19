@@ -25,11 +25,11 @@ export async function removeUserById(userId: string) {
     if (count === 0) throw new Error("USER_NOT_FOUND");
 }
 
-export async function fetchUserById(userId: string) {
+export async function fetchUser(field: "id" | "username", value: string) {
     const { data, error } = await supabase
         .from("users")
-        .select("id, username, balance")
-        .eq("id", userId)
+        .select("*")
+        .eq(field, value)
         .single();
 
     if (error) {
@@ -40,7 +40,7 @@ export async function fetchUserById(userId: string) {
 }
 
 export async function updateBalance(userId: string, amount: number, reason: string) {
-    const userData = await fetchUserById(userId); // throws USER_NOT_FOUND if missing
+    const userData = await fetchUser("id", userId); // throws USER_NOT_FOUND if missing
     const newBalance = userData.balance + amount;
 
     const { error } = await supabase
