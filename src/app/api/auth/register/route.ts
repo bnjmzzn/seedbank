@@ -15,6 +15,7 @@ export async function POST(request: Request) {
             body = await request.json();
             body.username = body.username?.trim();
 
+            // frontend validates before sending request to api
             if (!body.username || !body.password) throw new Error();
             if (body.username.length > USERNAME_MAX) throw new Error();
             if (body.password.length > PASSWORD_MAX) throw new Error();

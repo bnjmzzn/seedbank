@@ -24,6 +24,7 @@ export async function POST(request: Request) {
         try {
             user = await fetchUser("username", body.username);
         } catch (error) {
+            // catch only if error is user not found
             if (error instanceof Error && error.message === "USER_NOT_FOUND") {
                 throw new Error("INVALID_CREDENTIALS");
             }
