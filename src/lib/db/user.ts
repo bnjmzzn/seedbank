@@ -15,15 +15,16 @@ export async function createUser(username: string, password: string) {
     return data;
 }
 
-export async function removeUserById(userId: string) {
+export async function removeUser(field: "id" | "username", value: string) {
     const { error } = await supabase
         .from("users")
         .delete()
-        .eq("id", userId)
+        .eq(field, value)
         .single();
 
     if (error) {
-        if (error.code === "PGRST116") throw new Error("USER_NOT_FOUND");
+        if (error.code === "PGRST116" || error.code === "22P02")
+            throw new Error("USER_NOT_FOUND");
         throw error;
     }
 }
@@ -36,7 +37,8 @@ export async function fetchUser(field: "id" | "username", value: string) {
         .single();
 
     if (error) {
-        if (error.code === "PGRST116") throw new Error("USER_NOT_FOUND");
+        if (error.code === "PGRST116" || error.code === "22P02")
+            throw new Error("USER_NOT_FOUND");
         throw error;
     }
     return data;
