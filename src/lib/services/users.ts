@@ -1,5 +1,5 @@
 import bcrypt from "bcryptjs";
-import { SignJWT, jwtVerify } from "jose";
+import { SignJWT } from "jose";
 import { dbGetUser, dbCreateUser, dbGetUserRank } from "@/lib/db/users";
 import { AppError, Errors } from "@/lib/error";
 import { JWT_SECRET, JWT_EXPIRES, HASH_ROUNDS, USERNAME_MAX, PASSWORD_MAX } from "@/lib/config";
@@ -44,12 +44,6 @@ export async function loginUser(
 
     const { password: _, ...safeUser } = user;
     return { token, user: safeUser };
-}
-
-export async function getMe(userId: string): Promise<Omit<UserRow, "password">> {
-    const user = await dbGetUser("id", userId);
-    const { password: _, ...safeUser } = user;
-    return safeUser;
 }
 
 export async function getUserProfile(username: string): Promise<UserProfile> {

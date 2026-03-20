@@ -8,7 +8,6 @@ export async function GET(
 ) {
     try {
         const { username } = await params;
-        console.log("username:", username);
         const result = await getUserProfile(username);
         return successResponse(result);
     } catch (error) {

@@ -5,7 +5,6 @@ import { errorResponse } from "@/lib/api/response";
 import { Errors } from "@/lib/error";
 
 const PROTECTED_ROUTES: string[] = [
-    "/api/users/me",
     "/api/daily",
     "/api/play",
     "/api/transfer",

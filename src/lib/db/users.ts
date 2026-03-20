@@ -39,6 +39,7 @@ export async function dbCreateUser(
     return data;
 }
 
+// * for account deletion
 export async function dbDeleteUser(
     field: "id" | "username",
     value: string
