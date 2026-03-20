@@ -7,7 +7,6 @@ export const JWT_EXPIRES = "7d";
 
 export const DAILY_AMOUNT = 100;
 
-export const GAMES = ["COINFLIP", "DICE", "COLOR", "BOMB", "RACE"] as const;
 export const BET_MIN = 10;
 export const GUARANTEED_LOSS_BET = 1_000_000;
 export const WIN_RATE_PERCENT = 55;
