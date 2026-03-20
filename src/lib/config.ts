@@ -10,3 +10,6 @@ export const DAILY_AMOUNT = 100;
 export const BET_MIN = 10;
 export const GUARANTEED_LOSS_BET = 1_000_000;
 export const WIN_RATE_PERCENT = 55;
+
+export const TRANSFER_MIN = 0;
+export const TRANSFER_MAX = 100_000_000;

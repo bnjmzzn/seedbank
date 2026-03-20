@@ -8,6 +8,8 @@ export const Errors = {
     INVALID_BODY: { code: "INVALID_BODY", status: 400 },
     COOLDOWN_ACTIVE: { code: "COOLDOWN_ACTIVE", status: 429 },
     UNAUTHORIZED: { code: "UNAUTHORIZED", status: 401 },
+    SELF_TRANSFER: { code: "SELF_TRANSFER", status: 400 },
+    TRANSFER_LIMIT: { code: "TRANSFER_LIMIT", status: 400 },
 } as const;
 
 type ErrorDefinition = typeof Errors[keyof typeof Errors];
