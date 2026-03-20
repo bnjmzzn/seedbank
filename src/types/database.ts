@@ -14,6 +14,10 @@ export interface HistoryRow {
     created_at?: string;
 }
 
+export interface UserProfile extends Pick<UserRow, "username" | "balance" | "created_at"> {
+    rank: number;
+}
+
 export interface StealRow {
     id: string;
     stealer_id: string;
@@ -27,13 +31,6 @@ export interface LeaderboardEntry {
     rank: number;
     username: string;
     balance: number;
-}
-
-export interface UserProfile {
-    username: string;
-    balance: number;
-    rank: number;
-    created_at: string;
 }
 
 export enum HistoryReason {

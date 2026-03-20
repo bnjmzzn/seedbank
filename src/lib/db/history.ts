@@ -36,7 +36,7 @@ export async function dbGetUserHistory(
     userId: string,
     limit: number,
     offset: number
-): Promise<HistoryRow[]> {
+): Promise<Omit<HistoryRow, "id" | "user_id">[]> {
 
     const { data, error } = await supabase
         .from("history")
