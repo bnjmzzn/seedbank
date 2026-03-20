@@ -1,35 +1,12 @@
 import { supabase } from "./client";
-import { createHistoryLog } from "./history";
+import type { UserRow } from "@/types/database";
+import { AppError, Errors } from "@/lib/error";
 
-export async function createUser(username: string, password: string) {
-    const { data, error } = await supabase
-        .from("users")
-        .insert({ username, password })
-        .select("id, username, balance")
-        .single();
+export async function dbGetUser(
+    field: "id" | "username",
+    value: string
+): Promise<UserRow> {
 
-    if (error) {
-        if (error.code === "23505") throw new Error("USERNAME_TAKEN");
-        throw error;
-    }
-    return data;
-}
-
-export async function removeUser(field: "id" | "username", value: string) {
-    const { error } = await supabase
-        .from("users")
-        .delete()
-        .eq(field, value)
-        .single();
-
-    if (error) {
-        if (error.code === "PGRST116" || error.code === "22P02")
-            throw new Error("USER_NOT_FOUND");
-        throw error;
-    }
-}
-
-export async function fetchUser(field: "id" | "username", value: string) {
     const { data, error } = await supabase
         .from("users")
         .select("*")
@@ -38,23 +15,57 @@ export async function fetchUser(field: "id" | "username", value: string) {
 
     if (error) {
         if (error.code === "PGRST116" || error.code === "22P02")
-            throw new Error("USER_NOT_FOUND");
+            throw new AppError(Errors.USER_NOT_FOUND);
         throw error;
     }
     return data;
 }
 
-export async function updateBalance(userId: string, amount: number, reason: string) {
-    const userData = await fetchUser("id", userId); // throws USER_NOT_FOUND if missing
-    const newBalance = userData.balance + amount;
+export async function dbCreateUser(
+    username: string,
+    password: string
+): Promise<UserRow> {
 
+    const { data, error } = await supabase
+        .from("users")
+        .insert({ username, password })
+        .select("*")
+        .single();
+
+    if (error) {
+        if (error.code === "23505") throw new AppError(Errors.USERNAME_TAKEN);
+        throw error;
+    }
+    return data;
+}
+
+export async function dbDeleteUser(
+    field: "id" | "username",
+    value: string
+): Promise<void> {
+
+    const { error } = await supabase
+        .from("users")
+        .delete()
+        .eq(field, value)
+        .single();
+
+    if (error) {
+        if (error.code === "PGRST116" || error.code === "22P02")
+            throw new AppError(Errors.USER_NOT_FOUND);
+        throw error;
+    }
+}
+
+export async function dbUpdateUserBalance(
+    userId: string,
+    newBalance: number
+): Promise<void> {
+    
     const { error } = await supabase
         .from("users")
         .update({ balance: newBalance })
         .eq("id", userId);
 
     if (error) throw error;
-
-    await createHistoryLog(userId, amount, reason);
-    return { ...userData, balance: newBalance };
 }
