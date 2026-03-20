@@ -1,45 +1,21 @@
-import { fetchUser } from "@/lib/db/user";
+import { loginUser } from "@/lib/services/user";
 import { successResponse } from "@/lib/api/response";
-import { handleApiError } from "@/lib/api/errors";
-import { SignJWT } from "jose";
-import bcrypt from "bcryptjs";
-import { JWT_EXPIRES, JWT_SECRET } from "@/lib/config";
+import { handleApiError } from "@/lib/error";
+import { AppError, Errors } from "@/lib/error";
 
 export async function POST(request: Request) {
     try {
         let body;
-
         try {
             body = await request.json();
             body.username = body.username?.trim();
             if (!body.username || !body.password) throw new Error();
         } catch {
-            throw new Error("INVALID_BODY");
+            throw new AppError(Errors.INVALID_BODY);
         }
 
-        let user;
-
-        try {
-            user = await fetchUser("username", body.username);
-        } catch (error) {
-            // catch only if error is user not found
-            if (error instanceof Error && error.message === "USER_NOT_FOUND") {
-                throw new Error("INVALID_CREDENTIALS");
-            }
-            throw error;
-        }
-
-        const valid = await bcrypt.compare(body.password, user.password);
-        if (!valid) throw new Error("INVALID_CREDENTIALS");
-
-        const token = await new SignJWT({ id: user.id, username: user.username })
-            .setProtectedHeader({ alg: "HS256" })
-            .setExpirationTime(JWT_EXPIRES)
-            .sign(JWT_SECRET);
-
-        const { password, ...safeUser } = user;
-
-        return successResponse({ token, user: safeUser });
+        const result = await loginUser(body.username, body.password);
+        return successResponse(result);
     } catch (error) {
         return handleApiError(error);
     }
