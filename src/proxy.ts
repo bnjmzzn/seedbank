@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { jwtVerify } from "jose";
 import { JWT_SECRET } from "@/lib/config";
 import { errorResponse } from "@/lib/api/response";
+import { Errors } from "@/lib/error";
 
 const PROTECTED_ROUTES: string[] = [
     "/api/users/me",
@@ -19,7 +20,7 @@ export async function proxy(request: NextRequest) {
     const token = authHeader?.startsWith("Bearer ") ? authHeader.slice(7) : null;
 
     if (!token) {
-        return errorResponse("missing token", 401);
+        return errorResponse(Errors.UNAUTHORIZED.code, Errors.UNAUTHORIZED.status);
     }
 
     try {
@@ -31,7 +32,7 @@ export async function proxy(request: NextRequest) {
 
         return NextResponse.next({ request: { headers: requestHeaders } });
     } catch {
-        return errorResponse("invalid or expired token", 401);
+        return errorResponse(Errors.UNAUTHORIZED.code, Errors.UNAUTHORIZED.status);
     }
 }
 
