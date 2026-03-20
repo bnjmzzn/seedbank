@@ -16,8 +16,6 @@ export interface HistoryRow {
 
 export enum HistoryReason {
     DAILY = "DAILY",
-    TRANSFER_IN = "TRANSFER_IN",
-    TRANSFER_OUT = "TRANSFER_OUT",
 }
 
 export namespace HistoryReason {
@@ -27,5 +25,9 @@ export namespace HistoryReason {
         COLOR = "GAME:COLOR",
         BOMB = "GAME:BOMB",
         RACE = "GAME:RACE",
+    }
+    export enum Transfer {
+        SEND = "TRANSFER:SEND",
+        RECEIVE = "TRANSFER:RECEIVE"
     }
 }

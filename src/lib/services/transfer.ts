@@ -28,8 +28,8 @@ export async function transferSeeds(
 
     await dbUpdateUserBalance(senderId, senderBalance);
     await dbUpdateUserBalance(receiver.id, receiverBalance);
-    await dbCreateHistoryEntry(senderId, -amount, HistoryReason.TRANSFER_OUT);
-    await dbCreateHistoryEntry(receiver.id, amount, HistoryReason.TRANSFER_IN);
+    await dbCreateHistoryEntry(senderId, -amount, HistoryReason.Transfer.SEND);
+    await dbCreateHistoryEntry(receiver.id, amount, HistoryReason.Transfer.RECEIVE);
 
     return { transferred: amount, balance: senderBalance };
 }
