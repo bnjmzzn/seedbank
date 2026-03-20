@@ -9,7 +9,7 @@ export const spec = {
     },
     servers: [
         { url: "http://localhost:3000", description: "Local" },
-        { url: "https://seedbank.vercel.app", description: "Production" },
+        { url: "https://seedbank-xi.vercel.app", description: "Production" },
     ],
     components: {
         securitySchemes: {
