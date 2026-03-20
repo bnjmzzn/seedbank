@@ -15,7 +15,9 @@ export async function POST(request: Request) {
             throw new AppError(Errors.INVALID_BODY);
         }
 
-        const userId = request.headers.get("x-user-id")!;
+        const userId = request.headers.get("x-user-id");
+        if (!userId) throw new AppError(Errors.UNAUTHORIZED);
+
         const result = await playGame(userId, body.game as HistoryReason.Game, body.bet);
         return successResponse(result);
     } catch (error) {

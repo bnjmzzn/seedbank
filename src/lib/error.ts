@@ -7,6 +7,7 @@ export const Errors = {
     INSUFFICIENT_BALANCE: { code: "INSUFFICIENT_BALANCE", status: 400 },
     INVALID_BODY: { code: "INVALID_BODY", status: 400 },
     COOLDOWN_ACTIVE: { code: "COOLDOWN_ACTIVE", status: 429 },
+    UNAUTHORIZED: { code: "UNAUTHORIZED", status: 401 },
 } as const;
 
 type ErrorDefinition = typeof Errors[keyof typeof Errors];
