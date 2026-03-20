@@ -23,6 +23,12 @@ export interface StealRow {
     created_at?: string;
 }
 
+export interface LeaderboardEntry {
+    rank: number;
+    username: string;
+    balance: number;
+}
+
 export enum HistoryReason {
     DAILY = "DAILY",
 }
