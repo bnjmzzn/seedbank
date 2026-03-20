@@ -69,3 +69,13 @@ export async function dbUpdateUserBalance(
 
     if (error) throw error;
 }
+
+export async function dbGetUserRank(balance: number): Promise<number> {
+    const { count, error } = await supabase
+        .from("users")
+        .select("*", { count: "exact", head: true })
+        .gt("balance", balance);
+
+    if (error) throw error;
+    return (count ?? 0) + 1;
+}

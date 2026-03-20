@@ -1,0 +1,17 @@
+import { getUserProfile } from "@/lib/services/users";
+import { successResponse } from "@/lib/api/response";
+import { handleApiError } from "@/lib/error";
+
+export async function GET(
+    _request: Request,
+    { params }: { params: Promise<{ username: string }> }
+) {
+    try {
+        const { username } = await params;
+        console.log("username:", username);
+        const result = await getUserProfile(username);
+        return successResponse(result);
+    } catch (error) {
+        return handleApiError(error);
+    }
+}

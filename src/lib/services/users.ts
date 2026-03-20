@@ -1,9 +1,9 @@
 import bcrypt from "bcryptjs";
 import { SignJWT, jwtVerify } from "jose";
-import { dbGetUser, dbCreateUser } from "@/lib/db/users";
+import { dbGetUser, dbCreateUser, dbGetUserRank } from "@/lib/db/users";
 import { AppError, Errors } from "@/lib/error";
 import { JWT_SECRET, JWT_EXPIRES, HASH_ROUNDS, USERNAME_MAX, PASSWORD_MAX } from "@/lib/config";
-import type { UserRow } from "@/types/database";
+import type { UserRow, UserProfile } from "@/types/database";
 
 export async function registerUser(
     username: string,
@@ -50,4 +50,16 @@ export async function getMe(userId: string): Promise<Omit<UserRow, "password">> 
     const user = await dbGetUser("id", userId);
     const { password: _, ...safeUser } = user;
     return safeUser;
+}
+
+export async function getUserProfile(username: string): Promise<UserProfile> {
+    const user = await dbGetUser("username", username);
+    const rank = await dbGetUserRank(user.balance ?? 0);
+
+    return {
+        username: user.username,
+        balance: user.balance ?? 0,
+        rank,
+        created_at: user.created_at!,
+    };
 }

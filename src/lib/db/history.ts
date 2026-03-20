@@ -31,3 +31,20 @@ export async function dbGetLastDailyClaim(
     if (error && error.code !== "PGRST116") throw error;
     return data ?? null;
 }
+
+export async function dbGetUserHistory(
+    userId: string,
+    limit: number,
+    offset: number
+): Promise<HistoryRow[]> {
+
+    const { data, error } = await supabase
+        .from("history")
+        .select("change, reason, created_at")
+        .eq("user_id", userId)
+        .order("created_at", { ascending: false })
+        .range(offset, offset + limit - 1);
+
+    if (error) throw error;
+    return data ?? [];
+}

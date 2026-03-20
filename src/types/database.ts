@@ -7,8 +7,8 @@ export interface UserRow {
 }
 
 export interface HistoryRow {
-    id: string;
-    user_id: string;
+    id?: string;
+    user_id?: string;
     change: number;
     reason: string;
     created_at?: string;
@@ -27,6 +27,13 @@ export interface LeaderboardEntry {
     rank: number;
     username: string;
     balance: number;
+}
+
+export interface UserProfile {
+    username: string;
+    balance: number;
+    rank: number;
+    created_at: string;
 }
 
 export enum HistoryReason {
