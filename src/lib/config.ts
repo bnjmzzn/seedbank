@@ -7,15 +7,15 @@ export const JWT_EXPIRES = "7d";
 
 export const DAILY_AMOUNT = 100;
 
-export const BET_MIN = 10;
+export const BET_MIN = 5;
 export const GUARANTEED_LOSS_BET = 1_000_000;
 export const WIN_RATE_PERCENT = 55;
 
-export const TRANSFER_MIN = 0;
+export const TRANSFER_MIN = 1;
 export const TRANSFER_MAX = 100_000_000;
 
 export const STEAL_SUCCESS_PERCENT = 50;
-export const STEAL_MIN = 0;
+export const STEAL_MIN = 1;
 export const STEAL_MAX = 100_000_000;
 
 export const LEADERBOARD_LIMIT = 20;
