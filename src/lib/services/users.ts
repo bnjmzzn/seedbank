@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
 import { SignJWT, jwtVerify } from "jose";
-import { dbGetUser, dbCreateUser } from "@/lib/db/user";
+import { dbGetUser, dbCreateUser } from "@/lib/db/users";
 import { AppError, Errors } from "@/lib/error";
 import { JWT_SECRET, JWT_EXPIRES, HASH_ROUNDS, USERNAME_MAX, PASSWORD_MAX } from "@/lib/config";
 import type { UserRow } from "@/types/database";

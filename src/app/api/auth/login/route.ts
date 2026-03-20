@@ -1,4 +1,4 @@
-import { loginUser } from "@/lib/services/user";
+import { loginUser } from "@/lib/services/users";
 import { successResponse } from "@/lib/api/response";
 import { handleApiError } from "@/lib/error";
 import { AppError, Errors } from "@/lib/error";

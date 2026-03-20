@@ -1,4 +1,4 @@
-import { dbGetUser, dbUpdateUserBalance } from "@/lib/db/user";
+import { dbGetUser, dbUpdateUserBalance } from "@/lib/db/users";
 import { dbGetLastDailyClaim, dbCreateHistoryEntry } from "@/lib/db/history";
 import { AppError, Errors } from "@/lib/error";
 import { DAILY_AMOUNT } from "@/lib/config";

@@ -1,4 +1,4 @@
-import { dbGetUser, dbUpdateUserBalance } from "@/lib/db/user";
+import { dbGetUser, dbUpdateUserBalance } from "@/lib/db/users";
 import { dbCreateHistoryEntry } from "@/lib/db/history";
 import { AppError, Errors } from "@/lib/error";
 import { GUARANTEED_LOSS_BET, WIN_RATE_PERCENT, BET_MIN } from "@/lib/config";
