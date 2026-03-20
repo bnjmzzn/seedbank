@@ -10,6 +10,7 @@
     "format": "biome format --write"
   },
   "dependencies": {
+    "@scalar/nextjs-api-reference": "^0.10.4",
     "@supabase/supabase-js": "^2.99.2",
     "bcryptjs": "^3.0.3",
     "jose": "^6.2.2",
