@@ -14,6 +14,15 @@ export interface HistoryRow {
     created_at?: string;
 }
 
+export interface StealRow {
+    id: string;
+    stealer_id: string;
+    target_id: string;
+    amount: number;
+    success: boolean;
+    created_at?: string;
+}
+
 export enum HistoryReason {
     DAILY = "DAILY",
 }
@@ -29,5 +38,9 @@ export namespace HistoryReason {
     export enum Transfer {
         SEND = "TRANSFER:SEND",
         RECEIVE = "TRANSFER:RECEIVE"
+    }
+    export enum Steal {
+        CREDIT = "STEAL:CREDIT",
+        DEBIT = "STEAL:DEBIT",
     }
 }

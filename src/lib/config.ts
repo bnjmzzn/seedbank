@@ -13,3 +13,7 @@ export const WIN_RATE_PERCENT = 55;
 
 export const TRANSFER_MIN = 0;
 export const TRANSFER_MAX = 100_000_000;
+
+export const STEAL_SUCCESS_PERCENT = 50;
+export const STEAL_MIN = 0;
+export const STEAL_MAX = 100_000_000;

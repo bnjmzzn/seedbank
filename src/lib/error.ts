@@ -10,6 +10,8 @@ export const Errors = {
     UNAUTHORIZED: { code: "UNAUTHORIZED", status: 401 },
     SELF_TRANSFER: { code: "SELF_TRANSFER", status: 400 },
     TRANSFER_LIMIT: { code: "TRANSFER_LIMIT", status: 400 },
+    STEAL_LIMIT: { code: "STEAL_LIMIT", status: 400 },
+    SELF_STEAL: { code: "SELF_STEAL", status: 400 },
 } as const;
 
 type ErrorDefinition = typeof Errors[keyof typeof Errors];
