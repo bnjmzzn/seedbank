@@ -26,3 +26,8 @@ export async function steal(fromUsername: string, amount: number) {
     const res = await api.post("/api/steal", { fromUsername, amount });
     return res.data;
 }
+
+export async function fetchProfile(username: string) {
+    const res = await api.get(`/api/users/${username}/profile`);
+    return res.data;
+}
