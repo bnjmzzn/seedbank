@@ -125,7 +125,7 @@ export default function FormCard() {
     }
 
     return (
-        <div className="w-full max-w-sm flex flex-col gap-6">
+        <div className="w-full max-w-sm mx-4 sm:mx-auto flex flex-col gap-6">
             <div>
                 <h1 className="text-2xl font-bold">Seedbank</h1>
                 <p className="text-muted-foreground text-sm mt-1">Enter your credentials to continue.</p>
