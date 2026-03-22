@@ -1,6 +1,6 @@
-import { getBalanceLeaderboard } from "@/lib/services/leaderboard";
-import { successResponse } from "@/lib/api/response";
-import { handleApiError } from "@/lib/error";
+import { getBalanceLeaderboard } from "@/lib/server/services/leaderboard";
+import { successResponse } from "@/lib/server/api/response";
+import { handleApiError } from "@/lib/server/error";
 
 export async function GET() {
     try {

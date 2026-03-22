@@ -1,6 +1,6 @@
-import { getUserProfile } from "@/lib/services/users";
-import { successResponse } from "@/lib/api/response";
-import { handleApiError } from "@/lib/error";
+import { getUserProfile } from "@/lib/server/services/users";
+import { successResponse } from "@/lib/server/api/response";
+import { handleApiError } from "@/lib/server/error";
 
 export async function GET(
     _request: Request,

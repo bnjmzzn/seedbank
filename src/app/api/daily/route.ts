@@ -1,6 +1,6 @@
-import { claimDaily } from "@/lib/services/daily";
-import { successResponse } from "@/lib/api/response";
-import { AppError, Errors, handleApiError } from "@/lib/error";
+import { claimDaily } from "@/lib/server/services/daily";
+import { successResponse } from "@/lib/server/api/response";
+import { AppError, Errors, handleApiError } from "@/lib/server/error";
 
 export async function POST(request: Request) {
     try {

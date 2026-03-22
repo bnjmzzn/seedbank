@@ -1,6 +1,6 @@
-import { dbGetUser, dbUpdateUserBalance } from "@/lib/db/users";
-import { dbGetLastDailyClaim, dbCreateHistoryEntry } from "@/lib/db/history";
-import { AppError, Errors } from "@/lib/error";
+import { dbGetUser, dbUpdateUserBalance } from "@/lib/server/db/users";
+import { dbGetLastDailyClaim, dbCreateHistoryEntry } from "@/lib/server/db/history";
+import { AppError, Errors } from "@/lib/server/error";
 import { DAILY_AMOUNT } from "@/lib/config";
 import { HistoryReason } from "@/types/database";
 

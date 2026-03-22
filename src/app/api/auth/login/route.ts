@@ -1,7 +1,7 @@
-import { loginUser } from "@/lib/services/users";
-import { successResponse } from "@/lib/api/response";
-import { handleApiError } from "@/lib/error";
-import { AppError, Errors } from "@/lib/error";
+import { loginUser } from "@/lib/server/services/users";
+import { successResponse } from "@/lib/server/api/response";
+import { handleApiError } from "@/lib/server/error";
+import { AppError, Errors } from "@/lib/server/error";
 
 export async function POST(request: Request) {
     try {
