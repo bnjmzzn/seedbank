@@ -5,7 +5,7 @@ import { useUser } from "@/context/UserContext";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Bean, User, ArrowLeftRight, Trophy, LogOut } from "lucide-react";
+import { Bean, User, ArrowLeftRight, Trophy, LogOut, LayoutDashboard, Swords } from "lucide-react";
 import Logo from "@/components/shared/Logo";
 
 function dicebearUrl(username: string) {
@@ -46,6 +46,11 @@ function UserDropdown({ username, logout }: { username: string; logout: () => vo
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
+                    <DropdownMenuItem asChild>
+                        <Link href="/dashboard">
+                            <LayoutDashboard size={14} /> Dashboard
+                        </Link>
+                    </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                         <Link href={`/profile/${username}`}>
                             <User size={14} /> Profile
