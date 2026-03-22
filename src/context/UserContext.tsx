@@ -1,8 +1,9 @@
 "use client";
 
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { clearAllAppData, decodeToken, getToken } from "@/lib/client/auth";
+import api from "@/lib/client/axios";
 
 interface UserContextValue {
     username: string;
@@ -20,6 +21,13 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     const decoded = token ? decodeToken(token) : null;
 
     const [balance, setBalance] = useState(0);
+
+    useEffect(() => {
+        if (!decoded) return;
+        api.get(`/api/users/${decoded.username}/profile`)
+            .then((res) => setBalance(res.data.data.balance))
+            .catch(() => {});
+    }, [decoded?.username]);
 
     function logout() {
         clearAllAppData();
