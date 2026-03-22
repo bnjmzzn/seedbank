@@ -12,8 +12,9 @@ import { Button } from "@/components/ui/button";
 import { loginSchema, type LoginSchema } from "@/lib/client/validators";
 import { login, register } from "@/lib/client/api";
 import { setToken } from "@/lib/client/auth";
+import Logo from "@/components/shared/Logo";
 
-export default function FormCard() {
+export default function LoginForm() {
     const router = useRouter();
     const [showPassword, setShowPassword] = useState(false);
     const [submitting, setSubmitting] = useState<"login" | "register" | null>(null);
@@ -127,7 +128,7 @@ export default function FormCard() {
     return (
         <div className="w-full max-w-sm mx-4 sm:mx-auto flex flex-col gap-6">
             <div>
-                <h1 className="text-2xl font-bold">Seedbank</h1>
+                <Logo />
                 <p className="text-muted-foreground text-sm mt-1">Enter your credentials to continue.</p>
             </div>
             <form>

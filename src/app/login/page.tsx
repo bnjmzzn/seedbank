@@ -1,4 +1,4 @@
-import FormCard from "./_components/FormCard";
+import LoginForm from "./_components/LoginForm";
 import InfoCarousel from "./_components/InfoCarousel";
 
 export default function LoginPage() {
@@ -8,7 +8,7 @@ export default function LoginPage() {
                 <InfoCarousel />
             </div>
             <div className="flex flex-1 items-center justify-center">
-                <FormCard />
+                <LoginForm />
             </div>
         </div>
     );
