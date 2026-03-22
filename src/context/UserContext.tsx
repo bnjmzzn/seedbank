@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState } from "react";
 import { useRouter } from "next/navigation";
-import { clearToken, decodeToken, getToken } from "@/lib/client/auth";
+import { clearAllAppData, decodeToken, getToken } from "@/lib/client/auth";
 
 interface UserContextValue {
     username: string;
@@ -22,7 +22,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     const [balance, setBalance] = useState(0);
 
     function logout() {
-        clearToken();
+        clearAllAppData();
         router.replace("/login");
     }
 

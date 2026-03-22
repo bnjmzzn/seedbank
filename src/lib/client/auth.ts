@@ -40,3 +40,8 @@ export function isTokenValid(): boolean {
 
     return decoded.exp * 1000 > Date.now();
 }
+
+export function clearAllAppData(): void {
+    if (typeof window === "undefined") return;
+    localStorage.clear();
+}
