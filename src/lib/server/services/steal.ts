@@ -1,7 +1,7 @@
-import { dbGetUser, dbUpdateUserBalance } from "@/lib/db/users";
-import { dbCreateHistoryEntry } from "@/lib/db/history";
-import { dbCreateStealEntry } from "@/lib/db/steal";
-import { AppError, Errors } from "@/lib/error";
+import { dbGetUser, dbUpdateUserBalance } from "@/lib/server/db/users";
+import { dbCreateHistoryEntry } from "@/lib/server/db/history";
+import { dbCreateStealEntry } from "@/lib/server/db/steal";
+import { AppError, Errors } from "@/lib/server/error";
 import { STEAL_SUCCESS_PERCENT, STEAL_MIN, STEAL_MAX } from "@/lib/config";
 import { HistoryReason } from "@/types/database";
 

@@ -1,6 +1,6 @@
-import { stealSeeds } from "@/lib/services/steal";
-import { successResponse } from "@/lib/api/response";
-import { AppError, Errors, handleApiError } from "@/lib/error";
+import { stealSeeds } from "@/lib/server/services/steal";
+import { successResponse } from "@/lib/server/api/response";
+import { AppError, Errors, handleApiError } from "@/lib/server/error";
 
 export async function POST(request: Request) {
     try {

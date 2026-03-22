@@ -1,4 +1,4 @@
-import { dbGetTopBalances } from "@/lib/db/leaderboard";
+import { dbGetTopBalances } from "@/lib/server/db/leaderboard";
 import type { LeaderboardEntry } from "@/types/database";
 
 export async function getBalanceLeaderboard(): Promise<LeaderboardEntry[]> {

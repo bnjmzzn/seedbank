@@ -1,6 +1,6 @@
-import { dbGetUser, dbUpdateUserBalance } from "@/lib/db/users";
-import { dbCreateHistoryEntry } from "@/lib/db/history";
-import { AppError, Errors } from "@/lib/error";
+import { dbGetUser, dbUpdateUserBalance } from "@/lib/server/db/users";
+import { dbCreateHistoryEntry } from "@/lib/server/db/history";
+import { AppError, Errors } from "@/lib/server/error";
 import { GUARANTEED_LOSS_BET, WIN_RATE_PERCENT, BET_MIN } from "@/lib/config";
 import { HistoryReason } from "@/types/database";
 

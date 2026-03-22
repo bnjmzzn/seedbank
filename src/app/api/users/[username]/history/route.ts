@@ -1,6 +1,6 @@
-import { getUserHistory } from "@/lib/services/history";
-import { successResponse } from "@/lib/api/response";
-import { handleApiError } from "@/lib/error";
+import { getUserHistory } from "@/lib/server/services/history";
+import { successResponse } from "@/lib/server/api/response";
+import { handleApiError } from "@/lib/server/error";
 import { HISTORY_DEFAULT_LIMIT } from "@/lib/config";
 
 export async function GET(

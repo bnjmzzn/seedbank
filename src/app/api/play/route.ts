@@ -1,6 +1,6 @@
-import { playGame } from "@/lib/services/game";
-import { successResponse } from "@/lib/api/response";
-import { AppError, Errors, handleApiError } from "@/lib/error";
+import { playGame } from "@/lib/server/services/game";
+import { successResponse } from "@/lib/server/api/response";
+import { AppError, Errors, handleApiError } from "@/lib/server/error";
 import { HistoryReason } from "@/types/database";
 
 export async function POST(request: Request) {

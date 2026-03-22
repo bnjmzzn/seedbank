@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { jwtVerify } from "jose";
 import { JWT_SECRET } from "@/lib/config";
-import { errorResponse } from "@/lib/api/response";
-import { Errors } from "@/lib/error";
+import { errorResponse } from "@/lib/server/api/response";
+import { Errors } from "@/lib/server/error";
 
 const PROTECTED_ROUTES: string[] = [
     "/api/daily",
