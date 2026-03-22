@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import ActionCard from "@/app/(site)/dashboard/_components/ActionCard";
 import { useUser } from "@/context/UserContext";
 import api from "@/lib/client/axios";
+import TosModal from "./_components/TosModal";
 
 const DAILY_COOLDOWN_MS = 24 * 60 * 60 * 1000;
 
@@ -40,6 +41,16 @@ function formatRemaining(ms: number): string {
 }
 
 export default function DashboardPage() {
+    const [showTos, setShowTos] = useState(false);
+    const [tosText, setTosText] = useState("");
+
+    useEffect(() => {
+        if (localStorage.getItem("tos_pending")) {
+            fetch("/tos.txt").then(r => r.text()).then(setTosText);
+            setShowTos(true);
+        }
+    }, []);
+
     const router = useRouter();
     const { username, setBalance } = useUser();
 
@@ -95,6 +106,15 @@ export default function DashboardPage() {
 
     return (
         <div className="mx-auto w-full max-w-4xl px-6 py-8 space-y-10">
+                {showTos && (
+                    <TosModal
+                        text={tosText}
+                        onAccept={() => {
+                            localStorage.removeItem("tos_pending");
+                            setShowTos(false);
+                        }}
+                    />
+                )}
             <section className="space-y-4">
                 <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
                     Actions
