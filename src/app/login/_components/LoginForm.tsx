@@ -44,6 +44,7 @@ export default function LoginForm() {
             await register(values.username, values.password);
             toast.success("Account created! You can now log in.");
             form.reset();
+            localStorage.setItem("tos_pending", "1");
         } catch (err: any) {
             const code = err.response?.data?.code;
             toast.error(code === "USERNAME_TAKEN" ? "Username is already taken." : "Something went wrong.");

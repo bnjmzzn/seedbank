@@ -21,3 +21,18 @@ export async function fetchHistory(username: string, limit = 20, offset = 0) {
     });
     return res.data;
 }
+
+export async function steal(fromUsername: string, amount: number) {
+    const res = await api.post("/api/steal", { fromUsername, amount });
+    return res.data;
+}
+
+export async function fetchProfile(username: string) {
+    const res = await api.get(`/api/users/${username}/profile`);
+    return res.data;
+}
+
+export async function playGame(game: string, bet: number) {
+    const res = await api.post("/api/play", { game, bet });
+    return res.data;
+}
