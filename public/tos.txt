@@ -1,1 +1,158 @@
-blablablabla
+Here's the full Terms of Service text:
+
+---
+
+**SEEDBANK TERMS OF SERVICE, USER AGREEMENT, PRIVACY POLICY, AND GENERAL DISCLAIMER**
+*Last Updated: March 22, 2026*
+
+---
+
+**PREAMBLE AND INTRODUCTION**
+
+Please read the following Terms of Service ("Terms," "Agreement," "this document," "the thing you are about to scroll past") carefully before accessing or using Seedbank ("the Platform," "the Application," "the App," "Seedbank," "we," "us," "our"). By registering an account, clicking "I Accept," logging in, or otherwise accessing any part of Seedbank, you ("the User," "you," "your," "the person definitely not reading this") agree to be bound by the entirety of these Terms. If you do not agree with any part of these Terms, you must immediately cease use of the Platform.
+
+---
+
+**SECTION 1: NATURE OF THE PLATFORM AND NON-PROMOTION OF GAMBLING**
+
+1.1 **General Description.** Seedbank is a web-based application that allows registered users to accumulate, wager, transfer, and otherwise interact with a virtual in-application currency called "Seeds." Seeds are a fictional, non-monetary unit of value that exist exclusively within the digital environment of the Seedbank application. They are not real money. They are not a cryptocurrency. They are not a financial instrument of any kind.
+
+1.2 **Non-Promotion of Gambling.** Seedbank does not promote, endorse, facilitate, or encourage real-money gambling. The Platform does not involve any real currency, legal tender, or asset of monetary value. No Seeds may be exchanged for money, goods, services, or any other item of real-world value. Any attempt to assign real-world monetary value to Seeds, sell Seeds to another person for money, trade Seeds in exchange for goods or services outside the application, or otherwise treat Seeds as a financial asset is a violation of these Terms and, depending on your jurisdiction, may also be something you should talk to a lawyer about, not us.
+
+1.3 **Compliance with Local Law.** You are solely responsible for ensuring that your use of Seedbank complies with all applicable laws, regulations, and ordinances in your jurisdiction. This includes but is not limited to laws relating to simulated gambling, online gaming, virtual currency, age restrictions on gaming applications, and any other relevant legal frameworks that may apply in your country, state, province, territory, municipality, or homeowner's association. If you are located in a jurisdiction where participating in simulated gambling platforms is restricted or prohibited, you should not use this application. We are not your lawyer. This is not legal advice. Do not cite this document in court.
+
+1.4 **Age Restrictions.** By using Seedbank, you represent and warrant that you are of sufficient legal age in your jurisdiction to access online gaming or simulated gambling applications. If your jurisdiction requires you to be 18 years of age or older to use applications of this nature, you confirm that you are 18 years of age or older. If the minimum age in your jurisdiction is 21, you confirm you are 21. If your jurisdiction has no such restriction, we still recommend being at least a teenager before betting virtual seeds.
+
+---
+
+**SECTION 2: SEEDS — VIRTUAL CURRENCY TERMS AND CONDITIONS**
+
+2.1 **Definition of Seeds.** "Seeds" refers to the virtual currency unit used exclusively within the Seedbank application. Seeds are represented as integer values stored in the Platform's database associated with your account. Seeds are awarded, transferred, wagered, and lost entirely within the application environment. Seeds have no monetary value. We cannot stress this enough. They are Seeds. Like from a plant. They are not Bitcoin. They are not stocks. They are not gold. They are digital numbers in a database column, and we are telling you this upfront in writing.
+
+2.2 **Permitted Uses of Seeds.** Seeds may only be used in the following ways:
+
+- Wagering Seeds on the games available within the Seedbank application, subject to the game rules and the rigged outcomes described at length later in this document, which you are currently still reading and which we appreciate.
+- Transferring Seeds to other registered users of the Seedbank application via the in-application transfer feature.
+- Accumulating Seeds through daily claim rewards, game winnings, and received transfers.
+- Losing Seeds through game losses, failed steal attempts, and outgoing transfers.
+- Staring at your Seeds balance and feeling emotions about it.
+
+2.3 **Prohibited Uses of Seeds.** The following uses of Seeds are strictly prohibited and constitute a violation of these Terms:
+
+- Selling or offering to sell Seeds to any person or entity for real-world currency or value of any kind. For example: posting "selling 10,000 Seeds for $5" anywhere, including but not limited to Discord, Reddit, WhatsApp group chats, or a handwritten note.
+- Purchasing or offering to purchase Seeds from any person or entity in exchange for real-world currency or value. The inverse of the above example. Also prohibited.
+- Using Seeds or the existence of Seeds as collateral for any real-world financial arrangement, loan, bet, or agreement.
+- Attempting to convert Seeds into any other virtual currency, reward point system, or digital asset.
+- Claiming that Seeds have any monetary value in any context, including arguments, bragging, financial disclosures, or tax filings.
+
+2.4 **Ownership of Seeds.** You do not own your Seeds. You have a non-exclusive, non-transferable, revocable license to use the Seeds associated with your account within the application during the period your account remains active and in good standing. Seeds exist on our servers. If our servers go away, the Seeds go away. If your account is deleted, the Seeds go away. We reserve the right to adjust, reset, or eliminate any user's Seed balance at any time for any reason, including but not limited to: suspected exploitation of the application, violations of these Terms, database maintenance, a catastrophic error on our part, a catastrophic error on Supabase's part, or the heat death of the universe.
+
+---
+
+**SECTION 3: RULES OF CONDUCT AND ACCEPTABLE USE**
+
+3.1 **General Conduct.** By accessing Seedbank, you agree to behave like a reasonable person who is using a small web application built by someone learning Next.js. This means not doing anything that would break the application, harm other users, compromise the integrity of the platform, or make us regret making this publicly accessible.
+
+3.2 **Prohibited Activities.** You agree that you will not engage in any of the following:
+
+(a) **Cheating.** Attempting to manipulate game outcomes through any technical means, including but not limited to intercepting or modifying HTTP requests sent to the `/api/play` endpoint, replaying requests, injecting false values, modifying your browser's local storage to misrepresent your balance, or exploiting any bug, race condition, or unintended behavior in the application to gain Seeds you would not have received under normal operation.
+
+(b) **Exploiting.** If you discover a bug that results in Seeds being generated out of nothing, being duplicated, or being awarded in amounts significantly larger than intended, you are expected to either (i) stop doing it, or (ii) keep doing it while accepting that we may delete your account or, in sufficiently extreme cases, the entire database. We are serious about option (ii). If someone figures out how to give themselves infinite Seeds and the leaderboard becomes meaningless, the correct response is to reset everything. We will reset everything. We have no attachment to the data. The database is not precious to us. It is a learning project.
+
+(c) **Automated Access.** Using bots, scripts, automated clients, or any non-human means to interact with the application at a rate or in a manner that exceeds normal human usage. For example: writing a script that claims the daily reward every 24 hours on behalf of multiple accounts, or that plays games automatically in order to statistically accumulate Seeds through volume. This is both cheating and also somewhat impressive, but it is still prohibited.
+
+(d) **Account Manipulation.** Creating multiple accounts for the purpose of transferring Seeds to a primary account, thereby circumventing the daily claim limit or otherwise gaming the system through account multiplication. One person, one account. If you want more Seeds, play the games. They are rigged but you might get lucky.
+
+(e) **Harassment.** Using the steal mechanic or the transfer mechanic to repeatedly target another specific user in a way that constitutes harassment. Stealing from someone once or twice is within the spirit of the application. Dedicating your day to draining one person's balance because you dislike them is not.
+
+(f) **Impersonation.** Registering a username that impersonates another user, a real person, a company, or the operators of Seedbank. For example: registering as "Admin" and attempting to use social credibility to extract Seeds from other users.
+
+3.3 **Enforcement and Consequences.** We reserve the right to take any of the following actions in response to a violation of these Terms:
+
+- Warning the offending account (probably not, honestly)
+- Temporarily suspending the offending account
+- Permanently deleting the offending account and all associated data
+- Resetting the offending account's balance to zero
+- Resetting the entire database, including all user accounts and balances, if the integrity of the platform has been sufficiently compromised
+
+We acknowledge that "deleting the entire database" is a disproportionate response to most violations. We include it because it is an option we are genuinely willing to exercise if the alternative is a compromised leaderboard. The leaderboard is the point. A leaderboard full of cheated balances is worse than no leaderboard at all.
+
+---
+
+**SECTION 4: THE GAMES**
+
+4.1 **The Games**
+
+We need you to understand something. Every single game on Seedbank: the Coinflip, the Dice, the Color Pick, the Bomb, the Race — all of them run through the same backend function. The frontend animations, the coin spinning, the dice rolling, the cube rotating, the little horses racing across the track — that is all theater. It is a very pretty illusion. We are proud of how it looks. But the outcome of every game is decided by a single server-side function that uses a weighted random before your chosen game even renders the result.
+
+4.2 **Win Probability.**
+
+The win rate is not 50%. It is approximately 55% at the minimum bet and scales downward as the wager increases, reaching 0% at a configured ceiling. This means that if you bet large amounts repeatedly, you will lose. Not sometimes. Always, eventually. The house wins. We are the house. There is no house edge to beat because the house edge is baked directly into the probability function and it gets worse the more you bet.
+
+The games are rigged, we told you they were rigged, and your consent to play them while knowing they are rigged was obtained at registration via the button you clicked.
+
+If you tell your friends about this and they say "wait, the games are rigged?" you can tell them it says so in the Terms of Service. They agreed to it. It is right here. Section 4.
+
+4.4 **Individual Game Descriptions for Legal Completeness.**
+
+- **Coinflip:** You pick heads or tails. The server decides if you win before you see the coin flip. The animation shows you whichever outcome the server already determined. The coin looks great though.
+- **Dice:** You pick a number from 1 to 6. The server decides if you win. The dice rolling animation is purely decorative.
+- **Color Pick:** You pick a color from a rotating cube. The server decides if you win. The cube physics are actually pretty nice.
+- **Bomb:** You pick a card from three face-down cards. The server decides if you win. The cards flip with a satisfying 3D animation.
+- **Race:** You pick a racer. The server decides if you win. The race animation runs to completion regardless, which we think is a nice touch. The little animals move at semi-random speeds. One of them was always going to win. It might even be yours.
+
+---
+
+**SECTION 5: PRIVACY POLICY**
+
+5.1 **Overview.** This section describes how Seedbank handles your personal information. We will be direct: we do not want your personal information. We do not collect it, sell it, analyze it, share it with third parties for advertising purposes, or do anything with it beyond what is strictly necessary to operate the application.
+
+5.2 **Information We Collect Directly.** When you register an account on Seedbank, we collect and store the following information:
+
+- **Username.** The username you choose at registration. This is stored in our database and is publicly visible on the leaderboard and profile pages.
+- **Password.** Your password is hashed using bcrypt before being stored. We do not store your plaintext password. We cannot retrieve your password. If you forget it, it is gone, and it's your fault.
+- **Balance and History.** Your current Seed balance and all associated transaction history, including game outcomes, daily claims, transfers, and steal results. This information is associated with your account and is visible on your public profile page.
+
+We do not collect your email address. We do not collect your real name. We do not collect your phone number. We do not collect your location. We do not require any identifying information beyond a username and a password.
+
+5.3 **Third-Party Services.** Seedbank is built on and hosted using third-party infrastructure providers. These providers may collect information about you independently, pursuant to their own privacy policies. We are disclosing this so you are aware. The services we use include:
+
+- **Vercel** — Seedbank is hosted and deployed on Vercel's infrastructure. Vercel may collect server access logs, IP addresses, request metadata, and other telemetry data as part of normal platform operation. Vercel's privacy policy is available at [https://vercel.com/legal/privacy-policy](https://vercel.com/legal/privacy-policy). We do not control what Vercel collects. We do not have direct access to Vercel's telemetry logs beyond what their dashboard exposes.
+
+- **Supabase** — Seedbank's database is hosted on Supabase, which provides managed PostgreSQL on top of AWS infrastructure. Supabase may collect metadata related to database connections, query patterns, and infrastructure usage. Your account data — username, hashed password, balance, and history — is stored in a Supabase-hosted PostgreSQL database. Supabase's privacy policy is available at [https://supabase.com/privacy](https://supabase.com/privacy). We do not sell or share your data with Supabase for any purpose beyond hosting.
+
+5.4 **Cookies and Local Storage.** Seedbank uses browser local storage to persist your login session (via a JWT token) and to track whether you have accepted these Terms of Service and when you last claimed your daily Seeds. We do not use tracking cookies. We do not use advertising cookies. We do not use analytics cookies. The only thing stored in your browser is what is required for the application to function.
+
+5.5 **Data Retention.** Your account data is retained for as long as your account exists. If your account is deleted — either by you or by us pursuant to a Terms violation — your data will be removed from the database. We do not maintain backups indefinitely. We are not archiving your Seed history for any purpose.
+
+5.6 **Data Sharing.** We do not sell your data. We do not share your data with advertisers. We do not share your data with data brokers. We do not share your data with anyone. Your username and balance are publicly visible within the application by design. Beyond that, your data goes nowhere.
+
+---
+
+**SECTION 6: DISCLAIMERS AND LIMITATIONS OF LIABILITY**
+
+6.1 **No Warranties.** Seedbank is provided "as is" and "as available," without warranty of any kind, express or implied. We do not warrant that the application will be available at all times, error-free, or free from bugs that could result in your balance being incorrectly modified. If a bug causes your balance to go to zero or to a very large number, we reserve the right to correct it. We will almost certainly correct it.
+
+6.2 **No Liability for Losses.** Because Seeds have no monetary value, we cannot be liable for any loss of Seeds under any circumstances, including application downtime, database errors, account deletion, or any other event. You cannot sue us for your Seeds. They are not worth anything. They are Seeds.
+
+6.3 **Service Availability.** We do not guarantee that Seedbank will be available at any particular time or for any particular duration. The application may go offline for maintenance, updates, or because we forgot to renew something. We will try to keep it running but we are making no promises.
+
+---
+
+**SECTION 7: MODIFICATIONS TO THESE TERMS**
+
+We reserve the right to update these Terms at any time. Because the application does not collect email addresses, we have no mechanism to notify you of changes. If we update the Terms, a new version will be presented to you at login. Your continued use of the application after the new Terms are presented constitutes your acceptance of them.
+
+---
+
+**SECTION 8: CONCLUSION AND FINAL REMARKS**
+
+8.1 **Summary.** These Terms constitute the entire agreement between you and Seedbank with respect to your use of the Platform. They supersede all prior communications, representations, and agreements. They are governed by the general principle that this is a small web application about fake seeds and everyone involved should behave accordingly.
+
+8.2 **Severability.** If any provision of these Terms is found to be unenforceable, the remaining provisions shall continue in full force and effect. The unenforceable provision shall be modified to the minimum extent necessary to make it enforceable, or severed entirely if modification is not possible.
+
+8.3 **Acknowledgment.** By clicking "I Accept," you acknowledge that you have read these Terms in their entirety, that you understand them, and that you agree to be bound by them. You also acknowledge, specifically, that the games are rigged, that this was disclosed to you in writing prior to your first game, and that this disclosure was made in a Terms of Service document in the traditional format specifically because that is the format people are least likely to read.
+
+---
+
+*Seedbank — © 2026. All Seeds Reserved.*
