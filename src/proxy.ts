@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { jwtVerify } from "jose";
-import { JWT_SECRET } from "@/lib/config";
+import { JWT_SECRET } from "@/lib/server/config";
 import { errorResponse } from "@/lib/server/api/response";
 import { Errors } from "@/lib/server/error";
 

@@ -2,7 +2,8 @@ import bcrypt from "bcryptjs";
 import { SignJWT } from "jose";
 import { dbGetUser, dbCreateUser, dbGetUserRank } from "@/lib/server/db/users";
 import { AppError, Errors } from "@/lib/server/error";
-import { JWT_SECRET, JWT_EXPIRES, HASH_ROUNDS, USERNAME_MAX, PASSWORD_MAX } from "@/lib/config";
+import { JWT_SECRET, JWT_EXPIRES, HASH_ROUNDS } from "@/lib/server/config";
+import { USERNAME_MAX, PASSWORD_MAX } from "@/lib/config";
 import type { UserRow, UserProfile } from "@/types/database";
 
 export async function registerUser(
