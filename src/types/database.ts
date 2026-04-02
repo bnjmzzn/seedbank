@@ -38,8 +38,8 @@ export namespace HistoryReason {
         RACE = "GAME:RACE",
     }
     export enum Transfer {
-        SEND = "TRANSFER:SEND",
-        RECEIVE = "TRANSFER:RECEIVE"
+        SENT = "TRANSFER:SENT",
+        RECEIVED = "TRANSFER:RECEIVED",
     }
     export enum Steal {
         ROBBER = "STEAL:ROBBER",

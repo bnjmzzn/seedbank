@@ -23,8 +23,18 @@ export async function transferBalance(
 
     await dbUpdateUserBalance(senderId, senderBalance);
     await dbUpdateUserBalance(receiver.id, receiverBalance);
-    await dbInsertHistory(senderId, -amount, HistoryReason.Transfer.SEND, { counterparty_id: receiver.id });
-    await dbInsertHistory(receiver.id, amount, HistoryReason.Transfer.RECEIVE, { counterparty_id: sender.id });
+    await dbInsertHistory(
+        senderId,
+        -amount,
+        HistoryReason.Transfer.SENT,
+        { player: receiver.username }
+    );
+    await dbInsertHistory(
+        receiver.id,
+        amount,
+        HistoryReason.Transfer.RECEIVED,
+        { player: sender.username }
+    );
 
     return { transferred: amount, balance: senderBalance };
 }
