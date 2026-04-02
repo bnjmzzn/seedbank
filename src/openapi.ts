@@ -34,6 +34,21 @@ export const spec = {
                     code: { type: "string" },
                 },
             },
+            HistoryEntry: {
+                type: "object",
+                properties: {
+                    id: { type: "string" },
+                    user_id: { type: "string" },
+                    change: { type: "integer" },
+                    reason: { type: "string" },
+                    meta: {
+                        type: "object",
+                        nullable: true,
+                        example: { player: "user2" },
+                    },
+                    created_at: { type: "string" },
+                },
+            },
         },
     },
     paths: {
@@ -49,8 +64,8 @@ export const spec = {
                                 type: "object",
                                 required: ["username", "password"],
                                 properties: {
-                                    username: { type: "string", maxLength: 20, example: "alice" },
-                                    password: { type: "string", maxLength: 100, example: "hunter2" },
+                                    username: { type: "string", maxLength: 20, example: "user1" },
+                                    password: { type: "string", maxLength: 100, example: "password1" },
                                 },
                             },
                         },
@@ -75,8 +90,8 @@ export const spec = {
                                 type: "object",
                                 required: ["username", "password"],
                                 properties: {
-                                    username: { type: "string", example: "alice" },
-                                    password: { type: "string", example: "hunter2" },
+                                    username: { type: "string", example: "user1" },
+                                    password: { type: "string", example: "password1" },
                                 },
                             },
                         },
@@ -111,6 +126,7 @@ export const spec = {
                             },
                         },
                     },
+                    400: { description: "INVALID_BODY", content: { "application/json": { schema: { "$ref": "#/components/schemas/Error" } } } },
                     401: { description: "INVALID_CREDENTIALS", content: { "application/json": { schema: { "$ref": "#/components/schemas/Error" } } } },
                 },
             },
@@ -120,7 +136,7 @@ export const spec = {
                 tags: ["Users"],
                 summary: "Get a user profile",
                 parameters: [
-                    { name: "username", in: "path", required: true, schema: { type: "string" } },
+                    { name: "username", in: "path", required: true, schema: { type: "string" }, example: "user1" },
                 ],
                 responses: {
                     200: {
@@ -154,9 +170,8 @@ export const spec = {
                 tags: ["Users"],
                 summary: "Get a user's transaction history",
                 parameters: [
-                    { name: "username", in: "path", required: true, schema: { type: "string" } },
+                    { name: "username", in: "path", required: true, schema: { type: "string" }, example: "user1" },
                     { name: "limit", in: "query", schema: { type: "integer", default: 20, maximum: 100 } },
-                    { name: "offset", in: "query", schema: { type: "integer", default: 0 } },
                 ],
                 responses: {
                     200: {
@@ -169,14 +184,7 @@ export const spec = {
                                         success: { type: "boolean", example: true },
                                         data: {
                                             type: "array",
-                                            items: {
-                                                type: "object",
-                                                properties: {
-                                                    change: { type: "integer" },
-                                                    reason: { type: "string" },
-                                                    created_at: { type: "string" },
-                                                },
-                                            },
+                                            items: { "$ref": "#/components/schemas/HistoryEntry" },
                                         },
                                     },
                                 },
@@ -246,7 +254,7 @@ export const spec = {
                         },
                     },
                     401: { description: "UNAUTHORIZED", content: { "application/json": { schema: { "$ref": "#/components/schemas/Error" } } } },
-                    429: { description: "COOLDOWN_ACTIVE — includes remaining ms", content: { "application/json": { schema: { "$ref": "#/components/schemas/Error" } } } },
+                    429: { description: "COOLDOWN_ACTIVE — data includes remaining ms", content: { "application/json": { schema: { "$ref": "#/components/schemas/Error" } } } },
                 },
             },
         },
@@ -314,7 +322,7 @@ export const spec = {
                                 type: "object",
                                 required: ["toUsername", "amount"],
                                 properties: {
-                                    toUsername: { type: "string", example: "bob" },
+                                    toUsername: { type: "string", example: "user2" },
                                     amount: { type: "integer", minimum: 1, maximum: 100000000, example: 500 },
                                 },
                             },
@@ -361,7 +369,7 @@ export const spec = {
                                 type: "object",
                                 required: ["fromUsername", "amount"],
                                 properties: {
-                                    fromUsername: { type: "string", example: "bob" },
+                                    fromUsername: { type: "string", example: "user2" },
                                     amount: { type: "integer", minimum: 1, maximum: 100000000, example: 200 },
                                 },
                             },
