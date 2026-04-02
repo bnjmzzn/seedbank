@@ -11,9 +11,8 @@ export async function GET(
         const { username } = await params;
         const { searchParams } = new URL(request.url);
         const limit = parseInt(searchParams.get("limit") ?? HISTORY_DEFAULT_LIMIT.toString());
-        const offset = parseInt(searchParams.get("offset") ?? "0");
 
-        const result = await getUserHistory(username, limit, offset);
+        const result = await getUserHistory(username, limit);
         return successResponse(result);
     } catch (error) {
         return handleApiError(error);
