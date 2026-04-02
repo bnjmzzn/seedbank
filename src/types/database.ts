@@ -42,7 +42,7 @@ export namespace HistoryReason {
         RECEIVE = "TRANSFER:RECEIVE"
     }
     export enum Steal {
-        CREDIT = "STEAL:CREDIT",
-        DEBIT = "STEAL:DEBIT",
+        ROBBER = "STEAL:ROBBER",
+        VICTIM = "STEAL:VICTIM",
     }
 }

@@ -26,8 +26,18 @@ export async function stealSeeds(
 
     await dbUpdateUserBalance(stealerId, stealer.balance! + stealerDelta);
     await dbUpdateUserBalance(target.id, target.balance! + targetDelta);
-    await dbInsertHistory(stealerId, stealerDelta, stealerDelta > 0 ? HistoryReason.Steal.CREDIT : HistoryReason.Steal.DEBIT, { player_id: target.id, success });
-    await dbInsertHistory(target.id, targetDelta, targetDelta > 0 ? HistoryReason.Steal.CREDIT : HistoryReason.Steal.DEBIT, { player_id: stealer.id, success });
+    await dbInsertHistory(
+        stealerId,
+        stealerDelta,
+        HistoryReason.Steal.ROBBER,
+        { player: target.username }
+    );
+    await dbInsertHistory(
+        target.id,
+        targetDelta,
+        HistoryReason.Steal.VICTIM,
+        { player: stealer.username }
+    );
 
     return { success, delta: stealerDelta, balance: stealer.balance! + stealerDelta };
 }
