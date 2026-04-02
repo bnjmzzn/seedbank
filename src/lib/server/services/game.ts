@@ -1,5 +1,5 @@
 import { dbGetUser, dbUpdateUserBalance } from "@/lib/server/db/users";
-import { dbCreateHistoryEntry } from "@/lib/server/db/history";
+import { dbInsertHistory } from "@/lib/server/db/history";
 import { AppError, Errors } from "@/lib/server/error";
 import { GUARANTEED_LOSS_BET, WIN_RATE_PERCENT, BET_MIN } from "@/lib/config";
 import { HistoryReason } from "@/types/database";
@@ -13,11 +13,10 @@ export async function playGame(
     game: HistoryReason.Game,
     bet: number
 ): Promise<{ won: boolean; delta: number; balance: number }> {
-
+    
     if (bet < BET_MIN) throw new AppError(Errors.INVALID_BODY);
 
     const user = await dbGetUser("id", userId);
-
     if (user.balance! < bet) throw new AppError(Errors.INSUFFICIENT_BALANCE);
 
     const won = Math.random() < getWinRate(bet);
@@ -25,7 +24,7 @@ export async function playGame(
     const newBalance = user.balance! + delta;
 
     await dbUpdateUserBalance(userId, newBalance);
-    await dbCreateHistoryEntry(userId, delta, game);
+    await dbInsertHistory(userId, delta, game);
 
     return { won, delta, balance: newBalance };
 }

@@ -1,6 +1,5 @@
 import { dbGetUser, dbUpdateUserBalance } from "@/lib/server/db/users";
-import { dbCreateHistoryEntry } from "@/lib/server/db/history";
-import { dbCreateStealEntry } from "@/lib/server/db/steal";
+import { dbInsertHistory } from "@/lib/server/db/history";
 import { AppError, Errors } from "@/lib/server/error";
 import { STEAL_SUCCESS_PERCENT, STEAL_MIN, STEAL_MAX } from "@/lib/config";
 import { HistoryReason } from "@/types/database";
@@ -15,31 +14,20 @@ export async function stealSeeds(
         throw new AppError(Errors.STEAL_LIMIT);
 
     const stealer = await dbGetUser("id", stealerId);
-
-    if (stealer.username === fromUsername)
-        throw new AppError(Errors.SELF_STEAL);
-
-    if (stealer.balance! < amount)
-        throw new AppError(Errors.INSUFFICIENT_BALANCE);
+    if (stealer.username === fromUsername) throw new AppError(Errors.SELF_STEAL);
+    if (stealer.balance! < amount) throw new AppError(Errors.INSUFFICIENT_BALANCE);
 
     const target = await dbGetUser("username", fromUsername);
-
-    if (target.balance! < amount)
-        throw new AppError(Errors.INSUFFICIENT_BALANCE);
+    if (target.balance! < amount) throw new AppError(Errors.INSUFFICIENT_BALANCE);
 
     const success = Math.random() < STEAL_SUCCESS_PERCENT / 100;
-
     const stealerDelta = success ? amount : -amount;
     const targetDelta = success ? -amount : amount;
 
-    const stealerBalance = stealer.balance! + stealerDelta;
-    const targetBalance = target.balance! + targetDelta;
+    await dbUpdateUserBalance(stealerId, stealer.balance! + stealerDelta);
+    await dbUpdateUserBalance(target.id, target.balance! + targetDelta);
+    await dbInsertHistory(stealerId, stealerDelta, stealerDelta > 0 ? HistoryReason.Steal.CREDIT : HistoryReason.Steal.DEBIT, { player_id: target.id, success });
+    await dbInsertHistory(target.id, targetDelta, targetDelta > 0 ? HistoryReason.Steal.CREDIT : HistoryReason.Steal.DEBIT, { player_id: stealer.id, success });
 
-    await dbUpdateUserBalance(stealerId, stealerBalance);
-    await dbUpdateUserBalance(target.id, targetBalance);
-    await dbCreateHistoryEntry(stealerId, stealerDelta, stealerDelta > 0 ? HistoryReason.Steal.CREDIT : HistoryReason.Steal.DEBIT);
-    await dbCreateHistoryEntry(target.id, targetDelta, targetDelta > 0 ? HistoryReason.Steal.CREDIT : HistoryReason.Steal.DEBIT);
-    await dbCreateStealEntry(stealerId, target.id, amount, success);
-
-    return { success, delta: stealerDelta, balance: stealerBalance };
+    return { success, delta: stealerDelta, balance: stealer.balance! + stealerDelta };
 }

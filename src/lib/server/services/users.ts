@@ -1,35 +1,29 @@
 import bcrypt from "bcryptjs";
 import { SignJWT } from "jose";
-import { dbGetUser, dbCreateUser, dbGetUserRank } from "@/lib/server/db/users";
+import { dbGetUser, dbInsertUser, dbGetUserRank } from "@/lib/server/db/users";
 import { AppError, Errors } from "@/lib/server/error";
-import { JWT_SECRET, JWT_EXPIRES, HASH_ROUNDS } from "@/lib/server/config";
+import { HASH_ROUNDS, JWT_SECRET, JWT_EXPIRES } from "@/lib/server/config";
 import { USERNAME_MAX, PASSWORD_MAX } from "@/lib/config";
 import type { UserRow, UserProfile } from "@/types/database";
 
-export async function registerUser(
-    username: string,
-    password: string
-): Promise<void> {
-
+export async function registerUser(username: string, password: string): Promise<void> {
     if (username.length > USERNAME_MAX) throw new AppError(Errors.INVALID_BODY);
     if (password.length > PASSWORD_MAX) throw new AppError(Errors.INVALID_BODY);
 
     const hashedPassword = await bcrypt.hash(password, HASH_ROUNDS);
-    await dbCreateUser(username, hashedPassword);
+    await dbInsertUser(username, hashedPassword);
 }
 
 export async function loginUser(
     username: string,
     password: string
 ): Promise<{ token: string; user: Omit<UserRow, "password"> }> {
-
+    
     let user: UserRow;
 
     try {
         user = await dbGetUser("username", username);
     } catch (error) {
-        // if user not found only, say invalid credentials
-        // instead of throwing the not found error
         if (error instanceof AppError && error.code === Errors.USER_NOT_FOUND.code)
             throw new AppError(Errors.INVALID_CREDENTIALS);
         throw error;

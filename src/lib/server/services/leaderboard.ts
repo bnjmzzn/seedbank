@@ -1,12 +1,13 @@
-import { dbGetTopBalances } from "@/lib/server/db/leaderboard";
+import { dbGetTopUsers } from "@/lib/server/db/users";
+import { LEADERBOARD_LIMIT } from "@/lib/config";
 import type { LeaderboardEntry } from "@/types/database";
 
 export async function getBalanceLeaderboard(): Promise<LeaderboardEntry[]> {
-    const rows = await dbGetTopBalances();
+    const users = await dbGetTopUsers(LEADERBOARD_LIMIT);
 
-    return rows.map((row, index) => ({
+    return users.map((user, index) => ({
         rank: index + 1,
-        username: row.username,
-        balance: row.balance ?? 0,
+        username: user.username,
+        balance: user.balance ?? 0,
     }));
 }
