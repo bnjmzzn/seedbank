@@ -1,4 +1,4 @@
-import { transferSeeds } from "@/lib/server/services/transfer";
+import { transferBalance } from "@/lib/server/services/transfer";
 import { successResponse } from "@/lib/server/api/response";
 import { AppError, Errors, handleApiError } from "@/lib/server/error";
 
@@ -16,7 +16,7 @@ export async function POST(request: Request) {
         const userId = request.headers.get("x-user-id");
         if (!userId) throw new AppError(Errors.UNAUTHORIZED);
 
-        const result = await transferSeeds(userId, body.toUsername, body.amount);
+        const result = await transferBalance(userId, body.toUsername, body.amount);
         return successResponse(result);
     } catch (error) {
         return handleApiError(error);
