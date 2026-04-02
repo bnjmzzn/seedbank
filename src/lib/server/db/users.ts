@@ -2,15 +2,11 @@ import { supabase } from "./client";
 import type { UserRow } from "@/types/database";
 import { AppError, Errors } from "@/lib/server/error";
 
-export async function dbGetUser(
-    field: "id" | "username",
-    value: string
-): Promise<UserRow> {
-
+export async function dbGetUser(by: "id" | "username", value: string): Promise<UserRow> {
     const { data, error } = await supabase
         .from("users")
         .select("*")
-        .eq(field, value)
+        .eq(by, value)
         .single();
 
     if (error) {
@@ -21,14 +17,10 @@ export async function dbGetUser(
     return data;
 }
 
-export async function dbCreateUser(
-    username: string,
-    password: string
-): Promise<UserRow> {
-
+export async function dbInsertUser(username: string, hashedPassword: string): Promise<UserRow> {
     const { data, error } = await supabase
         .from("users")
-        .insert({ username, password })
+        .insert({ username, password: hashedPassword })
         .select("*")
         .single();
 
@@ -39,30 +31,7 @@ export async function dbCreateUser(
     return data;
 }
 
-// * for account deletion
-export async function dbDeleteUser(
-    field: "id" | "username",
-    value: string
-): Promise<void> {
-
-    const { error } = await supabase
-        .from("users")
-        .delete()
-        .eq(field, value)
-        .single();
-
-    if (error) {
-        if (error.code === "PGRST116" || error.code === "22P02")
-            throw new AppError(Errors.USER_NOT_FOUND);
-        throw error;
-    }
-}
-
-export async function dbUpdateUserBalance(
-    userId: string,
-    newBalance: number
-): Promise<void> {
-    
+export async function dbUpdateUserBalance(userId: string, newBalance: number): Promise<void> {
     const { error } = await supabase
         .from("users")
         .update({ balance: newBalance })
@@ -79,4 +48,15 @@ export async function dbGetUserRank(balance: number): Promise<number> {
 
     if (error) throw error;
     return (count ?? 0) + 1;
+}
+
+export async function dbGetTopUsers(limit: number): Promise<UserRow[]> {
+    const { data, error } = await supabase
+        .from("users")
+        .select("id, username, balance")
+        .order("balance", { ascending: false })
+        .limit(limit);
+
+    if (error) throw error;
+    return data ?? [];
 }

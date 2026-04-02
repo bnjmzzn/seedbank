@@ -11,20 +11,12 @@ export interface HistoryRow {
     user_id?: string;
     change: number;
     reason: string;
+    meta?: Record<string, unknown> | null;
     created_at?: string;
 }
 
 export interface UserProfile extends Pick<UserRow, "username" | "balance" | "created_at"> {
     rank: number;
-}
-
-export interface StealRow {
-    id: string;
-    stealer_id: string;
-    target_id: string;
-    amount: number;
-    success: boolean;
-    created_at?: string;
 }
 
 export interface LeaderboardEntry {
