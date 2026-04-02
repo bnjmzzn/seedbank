@@ -4,7 +4,7 @@ import { AppError, Errors } from "@/lib/server/error";
 import { STEAL_SUCCESS_PERCENT, STEAL_MIN, STEAL_MAX } from "@/lib/config";
 import { HistoryReason } from "@/types/database";
 
-export async function stealSeeds(
+export async function stealBalance(
     stealerId: string,
     fromUsername: string,
     amount: number

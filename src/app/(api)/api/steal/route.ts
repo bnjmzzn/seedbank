@@ -1,4 +1,4 @@
-import { stealSeeds } from "@/lib/server/services/steal";
+import { stealBalance } from "@/lib/server/services/steal";
 import { successResponse } from "@/lib/server/api/response";
 import { AppError, Errors, handleApiError } from "@/lib/server/error";
 
@@ -16,7 +16,7 @@ export async function POST(request: Request) {
         const userId = request.headers.get("x-user-id");
         if (!userId) throw new AppError(Errors.UNAUTHORIZED);
 
-        const result = await stealSeeds(userId, body.fromUsername, body.amount);
+        const result = await stealBalance(userId, body.fromUsername, body.amount);
         return successResponse(result);
     } catch (error) {
         return handleApiError(error);
