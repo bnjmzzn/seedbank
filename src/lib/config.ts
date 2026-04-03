@@ -1,4 +1,6 @@
+export const USERNAME_MIN = 3;
 export const USERNAME_MAX = 20;
+export const PASSWORD_MIN = 8;
 export const PASSWORD_MAX = 100;
 
 export const DAILY_AMOUNT = 100;
