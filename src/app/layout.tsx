@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
+import ThemeProvider from "@/components/providers/ThemeProvider";
 
 const geist = Geist({ subsets: ["latin"] });
 
@@ -28,14 +29,14 @@ export const metadata: Metadata = {
     },
 };
 
-export default function RootLayout({
-    children,
-}: Readonly<{
-    children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
         <html lang="en" className={geist.className}>
-            <body>{children}</body>
+            <body>
+                <ThemeProvider>
+                    {children}
+                </ThemeProvider>
+            </body>
         </html>
     );
 }
