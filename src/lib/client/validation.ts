@@ -23,6 +23,7 @@ export const registerSchema = z
         username: usernameRule,
         password: passwordRule,
         confirmPassword: z.string(),
+        tosAccepted: z.literal(true, "You must accept the Terms of Service"),
     })
     .refine((data) => data.password === data.confirmPassword, {
         message: "Passwords do not match",
