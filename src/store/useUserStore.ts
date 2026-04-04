@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { storage } from "@/lib/client/storage";
 
 interface UserState {
     username: string | null;
@@ -11,11 +12,23 @@ interface UserState {
 const useUserStore = create<UserState>((set) => ({
     username: null,
     balance: null,
-    setUser: (username, balance) => set({ username, balance }),
-    setBalance: (balance) => set({ balance }),
+
+    setUser: (username, balance) => set({ 
+        username, 
+        balance 
+    }),
+
+    setBalance: (balance) => set({ 
+        balance 
+    }),
+
     logout: () => {
-        localStorage.removeItem("token");
+        storage.clearAuth();
         set({ username: null, balance: null });
+        
+        if (typeof window !== "undefined") {
+            window.location.href = "/login";
+        }
     },
 }));
 
