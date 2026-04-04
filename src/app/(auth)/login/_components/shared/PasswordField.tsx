@@ -1,38 +1,40 @@
 "use client";
 
 import { useState } from "react";
-import { TextField, IconButton, InputAdornment } from "@mui/material";
-import Visibility from "@mui/icons-material/Visibility";
-import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import { TextField, InputAdornment, IconButton, TextFieldProps } from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
-interface Props {
-    label?: string;
-    placeholder?: string;
+interface Props extends Omit<TextFieldProps, "type"> {
     showToggle?: boolean;
 }
 
-export default function PasswordField({ label = "Password", placeholder = "••••••••", showToggle = true }: Props) {
+export default function PasswordField({ showToggle = true, ...props }: Props) {
     const [show, setShow] = useState(false);
 
     return (
         <TextField
-            label={label}
-            placeholder={placeholder}
+            {...props}
             size="small"
             fullWidth
             type="text"
             slotProps={{
                 htmlInput: {
                     autoComplete: "new-password",
-                    style: !show ? {
-                        WebkitTextSecurity: "disc",
-                    } : {},
+                    style: !show ? { WebkitTextSecurity: "disc" } : {},
                 },
                 input: {
                     endAdornment: showToggle ? (
                         <InputAdornment position="end">
-                            <IconButton onClick={() => setShow(p => !p)} edge="end" size="small">
-                                {show ? <Visibility fontSize="small" /> : <VisibilityOff fontSize="small" />}
+                            <IconButton
+                                onClick={() => setShow((p) => !p)}
+                                edge="end"
+                                size="small"
+                                disabled={!!props.disabled}
+                            >
+                                {show
+                                    ? <Visibility fontSize="small" />
+                                    : <VisibilityOff fontSize="small" />
+                                }
                             </IconButton>
                         </InputAdornment>
                     ) : undefined,
