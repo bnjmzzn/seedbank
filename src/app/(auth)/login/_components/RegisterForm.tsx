@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
     Stack, TextField, Button, Checkbox, FormControlLabel,
@@ -27,9 +27,16 @@ export default function RegisterForm({ onLoadingChange, onSuccess }: Props) {
         register,
         handleSubmit,
         reset,
+        control,
         formState: { errors, isSubmitting },
     } = useForm<RegisterInput>({
         resolver: zodResolver(registerSchema),
+        defaultValues: {
+            username: "",
+            password: "",
+            confirmPassword: "",
+            tosAccepted: false as unknown as true,
+        },
     });
 
     useEffect(() => {
@@ -86,10 +93,17 @@ export default function RegisterForm({ onLoadingChange, onSuccess }: Props) {
                 <Box>
                     <FormControlLabel
                         control={
-                            <Checkbox
-                                {...register("tosAccepted")}
-                                size="small"
-                                disabled={isSubmitting}
+                            <Controller
+                                name="tosAccepted"
+                                control={control}
+                                render={({ field }) => (
+                                    <Checkbox
+                                        {...field}
+                                        checked={field.value}
+                                        size="small"
+                                        disabled={isSubmitting}
+                                    />
+                                )}
                             />
                         }
                         label={
