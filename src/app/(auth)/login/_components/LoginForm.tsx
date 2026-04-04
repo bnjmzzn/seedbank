@@ -10,8 +10,13 @@ import { showSnackbar } from "@/components/shared/SnackBar";
 import { api } from "@/lib/client/api";
 import { storage } from "@/lib/client/storage";
 import useUserStore from "@/store/useUserStore";
+import { useEffect } from "react";
 
-export default function LoginForm() {
+interface Props {
+    onLoadingChange?: (loading: boolean) => void;
+}
+
+export default function({ onLoadingChange }: Props) {
     const router = useRouter();
     const setUser = useUserStore((state) => state.setUser);
     
@@ -22,6 +27,10 @@ export default function LoginForm() {
     } = useForm<LoginInput>({
         resolver: zodResolver(loginSchema),
     });
+
+    useEffect(() => {
+        onLoadingChange?.(isSubmitting);
+    }, [isSubmitting]);
 
     const onSubmit = async (data: LoginInput) => {
         try {

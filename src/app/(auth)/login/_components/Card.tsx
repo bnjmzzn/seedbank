@@ -7,6 +7,7 @@ import RegisterForm from "./RegisterForm";
 
 export default function Card() {
     const [tab, setTab] = useState(0);
+    const [isProcessing, setIsProcessing] = useState(false);
 
     return (
         <Stack spacing={3} sx={{ width: { xs: "100%", md: "400px" } }}>
@@ -19,8 +20,8 @@ export default function Card() {
                 </Typography>
             </Box>
             <Tabs value={tab} onChange={(_, v) => setTab(v)} variant="fullWidth">
-                <Tab label="Login" />
-                <Tab label="Sign Up" />
+                <Tab label="Login" disabled={isProcessing} />
+                <Tab label="Sign Up" disabled={isProcessing} />
             </Tabs>
             <Box sx={{ overflow: "hidden", width: "100%" }}>
                 <Box
@@ -28,15 +29,15 @@ export default function Card() {
                         display: "flex",
                         width: "200%",
                         transform: tab === 0 ? "translateX(0)" : "translateX(-50%)",
-                        transition: "transform   0.2s cubic-bezier(0.4, 0, 0.2, 1)",
+                        transition: "transform 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
                         py: 1
                     }}
                 >
                     <Box sx={{ width: "50%", pr: 1 }}>
-                        <LoginForm />
+                        <LoginForm onLoadingChange={setIsProcessing} />
                     </Box>
                     <Box sx={{ width: "50%", pl: 1 }}>
-                        <RegisterForm />
+                        <RegisterForm onLoadingChange={setIsProcessing} onSuccess={() => setTab(0)} />
                     </Box>
                 </Box>
             </Box>

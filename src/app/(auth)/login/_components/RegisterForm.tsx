@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -13,7 +13,12 @@ import { registerSchema, type RegisterInput } from "@/lib/client/validation";
 import { showSnackbar } from "@/components/shared/SnackBar";
 import { api } from "@/lib/client/api";
 
-export default function RegisterForm() {
+interface Props {
+    onLoadingChange?: (loading: boolean) => void;
+    onSuccess?: () => void;
+}
+
+export default function RegisterForm({ onLoadingChange, onSuccess }: Props) {
     const [tosOpen, setTosOpen] = useState(false);
     const [tosText, setTosText] = useState<string | null>(null);
     const [tosLoading, setTosLoading] = useState(false);
@@ -26,6 +31,10 @@ export default function RegisterForm() {
     } = useForm<RegisterInput>({
         resolver: zodResolver(registerSchema),
     });
+
+    useEffect(() => {
+        onLoadingChange?.(isSubmitting);
+    }, [isSubmitting]);
 
     const openTos = async () => {
         setTosOpen(true);
@@ -41,6 +50,7 @@ export default function RegisterForm() {
             await api.auth.register(data);
             showSnackbar("Account created! Please login.", "success");
             reset();
+            onSuccess?.();
         } catch (error: any) {
             showSnackbar(error, "error");
         }
