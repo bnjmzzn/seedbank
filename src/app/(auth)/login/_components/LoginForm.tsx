@@ -16,7 +16,7 @@ interface Props {
     onLoadingChange?: (loading: boolean) => void;
 }
 
-export default function({ onLoadingChange }: Props) {
+export default function LoginForm({ onLoadingChange }: Props) {
     const router = useRouter();
     const setUser = useUserStore((state) => state.setUser);
     

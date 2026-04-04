@@ -7,6 +7,7 @@ export const api = {
         register: (data: RegisterInput) => axios.post('/auth/register', data),
     },
     user: {
+        // TODO: fix proper endpoint
         getProfile: () => axios.get('/user/profile'),
         claimDaily: () => axios.post('/user/daily'),
     },

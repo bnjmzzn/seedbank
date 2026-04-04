@@ -1,5 +1,4 @@
 import { createTheme } from "@mui/material/styles";
-import { Main } from "next/document";
 
 // https://www.color-hex.com/color-palette/1072357
 const theme = createTheme({
