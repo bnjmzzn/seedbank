@@ -8,6 +8,9 @@ export const api = {
     },
     user: {
         me: () => axios.get("/users/me"),
-        claimDaily: () => axios.post("/daily"),
+        daily: {
+            status: () => axios.get("/daily"),
+            claim: () => axios.post("/daily"),
+        },
     },
 };
