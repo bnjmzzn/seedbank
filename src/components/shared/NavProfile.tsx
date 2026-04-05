@@ -33,12 +33,12 @@ export default function ProfileCard() {
                 transition: "all 0.15s ease",
             }}
         >
-            <Avatar 
+            <Avatar
                 sx={{ width: 30, height: 30, flexShrink: 0 }}
-                src={getAvatarUrl(username)}
+                src={username ? getAvatarUrl(username) : undefined}
             />
-            <Typography variant="body2" fontWeight={selected ? 600 : 500} noWrap>
-                @{username ?? "username"}
+            <Typography variant="body2" fontWeight={selected ? 600 : 500} noWrap sx={{ opacity: username ? 1 : 0.4 }}>
+                {username ? `@${username}` : "loading..."}
             </Typography>
         </ButtonBase>
     );
