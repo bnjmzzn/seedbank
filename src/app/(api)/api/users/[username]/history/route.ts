@@ -1,6 +1,6 @@
-import { getUserHistory } from "@/lib/server/services/history";
+import { getUserHistory, VALID_FILTER } from "@/lib/server/services/history";
 import { successResponse } from "@/lib/server/api/response";
-import { handleApiError } from "@/lib/server/error";
+import { AppError, Errors, handleApiError } from "@/lib/server/error";
 import { HISTORY_DEFAULT_LIMIT } from "@/lib/config";
 
 export async function GET(
@@ -10,9 +10,13 @@ export async function GET(
     try {
         const { username } = await params;
         const { searchParams } = new URL(request.url);
+
+        const type = searchParams.get("type") ?? undefined;
         const limit = parseInt(searchParams.get("limit") ?? HISTORY_DEFAULT_LIMIT.toString());
 
-        const result = await getUserHistory(username, limit);
+        if (type && !VALID_FILTER.has(type)) throw new AppError(Errors.INVALID_BODY);
+
+        const result = await getUserHistory(username, { type, limit });
         return successResponse(result);
     } catch (error) {
         return handleApiError(error);
