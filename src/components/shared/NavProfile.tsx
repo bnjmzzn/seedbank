@@ -29,6 +29,7 @@ export default function ProfileCard() {
                 "&:hover": {
                     bgcolor: "action.hover",
                     color: "text.primary",
+                    transform: "translateX(4px)",
                 },
                 transition: "all 0.15s ease",
             }}

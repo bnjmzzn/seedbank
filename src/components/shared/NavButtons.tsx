@@ -41,6 +41,7 @@ function NavButton({ icon, label, onClick, selected = false, danger = false }: N
                 "&:hover": {
                     bgcolor: danger ? "error.main" : "action.hover",
                     color: danger ? "#fff" : "text.primary",
+                    transform: "translateX(4px)",
                 },
                 transition: "all 0.15s ease",
             }}
