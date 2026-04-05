@@ -1,5 +1,5 @@
 import axios from "./axios";
-import { LoginInput, RegisterInput } from "@/lib/client/validation";
+import type { LoginInput, RegisterInput } from "@/lib/client/validation";
 
 export const api = {
     auth: {
@@ -9,6 +9,8 @@ export const api = {
     user: {
         me: () => axios.get("/users/me"),
         profile: (username: string) => axios.get(`/users/${username}/profile`),
+        history: (username: string, params?: { type?: string; limit?: number }) =>
+            axios.get(`/users/${username}/history`, { params }),
         daily: {
             status: () => axios.get("/daily"),
             claim: () => axios.post("/daily"),
