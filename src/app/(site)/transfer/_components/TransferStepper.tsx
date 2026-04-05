@@ -11,6 +11,7 @@ import useUserStore from "@/store/useUserStore";
 import BalanceCard from "./BalanceCard";
 import DetailsPanel from "./DetailsPanel";
 import SummaryPanel from "./SummaryPanel";
+import { mutate } from "swr";
 
 interface RecipientProfile {
     username: string;
@@ -88,6 +89,7 @@ export default function TransferStepper({ defaultTo }: Props) {
             const res = await api.transfer(toUsername.trim(), toAmount);
             setBalance(res.data.data.balance);
             showSnackbar(`Transferred ${toAmount.toLocaleString()} seeds to @${toUsername.trim()}`, "success");
+            mutate(["history", username, "TRANSFER", undefined]);
             setStep(1);
             setRecipient(null);
         } catch (error: any) {
