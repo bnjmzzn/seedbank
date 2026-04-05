@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { Button, Skeleton, Typography } from "@mui/material";
+import { Button, CircularProgress, Skeleton, Typography } from "@mui/material";
 import {
     Dashboard as DashboardIcon,
     Leaderboard as LeaderboardIcon,
@@ -92,6 +92,7 @@ export function TransferButton() {
 export function DailyButton() {
     const { daily, setBalance, setDaily } = useUserStore();
     const [remaining, setRemaining] = useState<number | null>(daily.remaining);
+    const [isClaiming, setIsClaiming] = useState(false);
 
     useEffect(() => {
         setRemaining(daily.remaining);
@@ -120,6 +121,7 @@ export function DailyButton() {
     };
 
     const handleClaim = async () => {
+        setIsClaiming(true);
         try {
             const res = await api.user.daily.claim();
             const { claimed, balance } = res.data.data;
@@ -129,6 +131,8 @@ export function DailyButton() {
             showSnackbar(`+${claimed} seeds claimed!`, "success");
         } catch (error: any) {
             showSnackbar(error, "error");
+        } finally {
+            setIsClaiming(false);
         }
     };
 
@@ -139,36 +143,37 @@ export function DailyButton() {
         <Button
             fullWidth
             onClick={claimable ? handleClaim : undefined}
-            startIcon={<CardGiftcardIcon />}
-            disabled={isLoading || !claimable}
+            startIcon={isClaiming
+                ? <CircularProgress size={16} sx={{ color: "#000" }} />
+                : <CardGiftcardIcon />
+            }
+            disabled={isLoading || !claimable || isClaiming}
             sx={{
                 justifyContent: "flex-start",
                 textTransform: "none",
                 px: 2,
                 py: 1.5,
                 borderRadius: 2,
-                color: claimable ? "primary.main" : "text.secondary",
+                color: claimable ? "#000" : "text.secondary",
                 fontWeight: claimable ? 600 : 400,
-                bgcolor: "transparent",
+                bgcolor: claimable ? "primary.main" : "transparent",
                 "&:hover": {
-                    bgcolor: claimable ? "action.hover" : "transparent",
-                    color: claimable ? "text.primary" : "text.secondary",
+                    bgcolor: claimable ? "primary.light" : "transparent",
+                    color: claimable ? "#000" : "text.secondary",
+                    transform: "translateX(4px)",
+                },
+                "&.Mui-disabled": {
+                    bgcolor: claimable || isClaiming ? "primary.main" : "transparent",
+                    color: claimable || isClaiming ? "#000" : undefined,
                 },
                 transition: "all 0.15s ease",
-                ...(claimable && {
-                    "@keyframes pulse": {
-                        "0%, 100%": { opacity: 1 },
-                        "50%": { opacity: 0.6 },
-                    },
-                    animation: "pulse 2s ease-in-out infinite",
-                }),
             }}
         >
             <Typography variant="body2" fontWeight="inherit" noWrap>
                 {isLoading
                     ? <Skeleton variant="text" width={80} />
                     : claimable
-                    ? "Claim Daily"
+                    ? isClaiming ? "Claiming..." : "Claim Daily"
                     : remaining !== null
                     ? formatRemaining(remaining)
                     : "Claim Daily"}
