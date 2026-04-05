@@ -14,8 +14,6 @@ import { showSnackbar } from "@/components/shared/SnackBar";
 import useUserStore from "@/store/useUserStore";
 import { useState, useEffect } from "react";
 import { api } from "@/lib/client/api";
-import { openTransferModal } from "@/components/modals/TransferModal";
-
 
 type NavButtonProps = {
     icon: React.ReactNode;
@@ -82,11 +80,12 @@ export function LeaderboardButton({ selected }: SelectableProps) {
 }
 
 export function TransferButton() {
+    const router = useRouter();
     return (
         <NavButton
             icon={<SwapHorizIcon />}
             label="Transfer"
-            onClick={openTransferModal}
+            onClick={() => router.push("/transfer")}
         />
     );
 }
