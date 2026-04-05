@@ -13,8 +13,6 @@ export function BrandIcon({ size = 28 }: BrandIconProps) {
             sx={{
                 width: size,
                 height: size,
-                borderRadius: `${size * 0.2}px`,
-                bgcolor: "primary.main",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -24,9 +22,8 @@ export function BrandIcon({ size = 28 }: BrandIconProps) {
             <Image
                 src="/icon.svg"
                 alt="SeedBank"
-                width={size * 0.8}
-                height={size * 0.8}
-                style={{ filter: "brightness(0)" }}
+                width={size}
+                height={size}
             />
         </Box>
     );
