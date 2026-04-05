@@ -32,8 +32,10 @@ export async function claimDaily(
     const user = await dbGetUser("id", userId);
     const newBalance = user.balance! + DAILY_AMOUNT;
 
-    await dbUpdateUserBalance(userId, newBalance);
-    await dbInsertHistory(userId, DAILY_AMOUNT, HistoryReason.DAILY);
+    await Promise.all([
+        dbUpdateUserBalance(userId, newBalance),
+        dbInsertHistory(userId, DAILY_AMOUNT, HistoryReason.DAILY),
+    ]);
 
     return { claimed: DAILY_AMOUNT, balance: newBalance };
 }

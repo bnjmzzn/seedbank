@@ -21,20 +21,12 @@ export async function transferBalance(
     const senderBalance = sender.balance! - amount;
     const receiverBalance = receiver.balance! + amount;
 
-    await dbUpdateUserBalance(senderId, senderBalance);
-    await dbUpdateUserBalance(receiver.id, receiverBalance);
-    await dbInsertHistory(
-        senderId,
-        -amount,
-        HistoryReason.Transfer.SENT,
-        { player: receiver.username }
-    );
-    await dbInsertHistory(
-        receiver.id,
-        amount,
-        HistoryReason.Transfer.RECEIVED,
-        { player: sender.username }
-    );
+    await Promise.all([
+        dbUpdateUserBalance(senderId, senderBalance),
+        dbUpdateUserBalance(receiver.id, receiverBalance),
+        dbInsertHistory(senderId, -amount, HistoryReason.Transfer.SENT, { player: receiver.username }),
+        dbInsertHistory(receiver.id, amount, HistoryReason.Transfer.RECEIVED, { player: sender.username }),
+    ]);
 
     return { transferred: amount, balance: senderBalance };
 }

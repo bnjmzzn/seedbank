@@ -24,20 +24,12 @@ export async function stealBalance(
     const stealerDelta = success ? amount : -amount;
     const targetDelta = success ? -amount : amount;
 
-    await dbUpdateUserBalance(stealerId, stealer.balance! + stealerDelta);
-    await dbUpdateUserBalance(target.id, target.balance! + targetDelta);
-    await dbInsertHistory(
-        stealerId,
-        stealerDelta,
-        HistoryReason.Steal.ROBBER,
-        { player: target.username }
-    );
-    await dbInsertHistory(
-        target.id,
-        targetDelta,
-        HistoryReason.Steal.VICTIM,
-        { player: stealer.username }
-    );
+    await Promise.all([
+        dbUpdateUserBalance(stealerId, stealer.balance! + stealerDelta),
+        dbUpdateUserBalance(target.id, target.balance! + targetDelta),
+        dbInsertHistory(stealerId, stealerDelta, HistoryReason.Steal.ROBBER, { player: target.username }),
+        dbInsertHistory(target.id, targetDelta, HistoryReason.Steal.VICTIM, { player: stealer.username }),
+    ]);
 
     return { success, delta: stealerDelta, balance: stealer.balance! + stealerDelta };
 }

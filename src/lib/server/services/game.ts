@@ -23,8 +23,10 @@ export async function playGame(
     const delta = won ? bet : -bet;
     const newBalance = user.balance! + delta;
 
-    await dbUpdateUserBalance(userId, newBalance);
-    await dbInsertHistory(userId, delta, game);
+    await Promise.all([
+        dbUpdateUserBalance(userId, newBalance),
+        dbInsertHistory(userId, delta, game),
+    ]);
 
     return { won, delta, balance: newBalance };
 }
