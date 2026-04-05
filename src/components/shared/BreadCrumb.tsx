@@ -16,13 +16,12 @@ export default function Breadcrumb() {
 
     return (
         <Breadcrumbs aria-label="breadcrumb">
-            <Typography variant="body2" color="primary" fontFamily="monospace" fontWeight={700}>
+            <Typography color="primary" fontFamily="monospace" fontWeight={700}>
                 seedbank
             </Typography>
             {crumbs.map((crumb) => (
                 <Typography
                     key={crumb.href}
-                    variant="body2"
                     fontFamily="monospace"
                     color={crumb.isLast ? "text.primary" : "text.secondary"}
                     fontWeight={700}

@@ -36,7 +36,7 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
             <Box sx={{ width: 270, flexShrink: 0 }}>
                 <DesktopSidebar />
             </Box>
-            <Box component="main" sx={{ flex: 1 }}>
+            <Box component="main" sx={{ flex: 1, overflowY: "scroll" }}>
                 <MainHeader />
                 {children}
             </Box>
