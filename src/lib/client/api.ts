@@ -18,4 +18,5 @@ export const api = {
     },
     transfer: (toUsername: string, amount: number) =>
         axios.post("/transfer", { toUsername, amount }),
+    leaderboard: () => axios.get("/leaderboard"),
 };
