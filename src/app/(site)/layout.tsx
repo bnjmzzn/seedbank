@@ -8,11 +8,10 @@ import MainHeader from "@/components/layout/MainHeader";
 import { storage } from "@/lib/client/storage";
 import { api } from "@/lib/client/api";
 import useUserStore from "@/store/useUserStore";
-import { showSnackbar } from "@/components/shared/SnackBar";
 
 export default function SiteLayout({ children }: { children: React.ReactNode }) {
     const router = useRouter();
-    const setUser = useUserStore((state) => state.setUser);
+    const { setUser, setDaily } = useUserStore();
 
     useEffect(() => {
         const token = storage.getToken();
@@ -23,11 +22,11 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
 
         api.user.me()
             .then((res) => {
-                const { username, balance } = res.data.data;
+                const { username, balance, daily } = res.data.data;
                 setUser(username, balance);
+                setDaily(daily);
             })
-            .catch((error) => {
-                showSnackbar(error, "error")
+            .catch(() => {
                 router.replace("/login");
             });
     }, []);

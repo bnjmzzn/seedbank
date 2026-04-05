@@ -12,6 +12,8 @@ import {
 } from "@mui/icons-material";
 import { showSnackbar } from "@/components/shared/SnackBar";
 import useUserStore from "@/store/useUserStore";
+import { useState, useEffect } from "react";
+import { api } from "@/lib/client/api";
 
 type NavButtonProps = {
     icon: React.ReactNode;
@@ -87,12 +89,90 @@ export function TransferButton() {
 }
 
 export function DailyButton() {
+    const { daily, setBalance, setDaily } = useUserStore();
+    const [remaining, setRemaining] = useState<number | null>(daily.remaining);
+
+    useEffect(() => {
+        setRemaining(daily.remaining);
+    }, [daily.remaining]);
+
+    useEffect(() => {
+        if (!remaining) return;
+        const interval = setInterval(() => {
+            setRemaining((prev) => {
+                if (prev === null || prev <= 1000) {
+                    clearInterval(interval);
+                    setDaily({ claimable: true, remaining: null });
+                    return null;
+                }
+                return prev - 1000;
+            });
+        }, 1000);
+        return () => clearInterval(interval);
+    }, [remaining]);
+
+    const formatRemaining = (ms: number) => {
+        const h = Math.floor(ms / 3600000);
+        const m = Math.floor((ms % 3600000) / 60000);
+        const s = Math.floor((ms % 60000) / 1000);
+        return `${h}h ${m}m ${s}s`;
+    };
+
+    const handleClaim = async () => {
+        try {
+            const res = await api.user.daily.claim();
+            const { claimed, balance } = res.data.data;
+            setBalance(balance);
+            setDaily({ claimable: false, remaining: 24 * 60 * 60 * 1000 });
+            setRemaining(24 * 60 * 60 * 1000);
+            showSnackbar(`+${claimed} seeds claimed!`, "success");
+        } catch (error: any) {
+            showSnackbar(error, "error");
+        }
+    };
+
+    const isLoading = daily.claimable === null;
+    const claimable = daily.claimable === true;
+
     return (
-        <NavButton
-            icon={<CardGiftcardIcon />}
-            label="Claim Daily"
-            onClick={() => showSnackbar("Daily claim coming soon", "info")}
-        />
+        <Button
+            fullWidth
+            onClick={claimable ? handleClaim : undefined}
+            startIcon={<CardGiftcardIcon />}
+            disabled={isLoading || !claimable}
+            sx={{
+                justifyContent: "flex-start",
+                textTransform: "none",
+                px: 2,
+                py: 1.5,
+                borderRadius: 2,
+                color: claimable ? "primary.main" : "text.secondary",
+                fontWeight: claimable ? 600 : 400,
+                bgcolor: "transparent",
+                "&:hover": {
+                    bgcolor: claimable ? "action.hover" : "transparent",
+                    color: claimable ? "text.primary" : "text.secondary",
+                },
+                transition: "all 0.15s ease",
+                ...(claimable && {
+                    "@keyframes pulse": {
+                        "0%, 100%": { opacity: 1 },
+                        "50%": { opacity: 0.6 },
+                    },
+                    animation: "pulse 2s ease-in-out infinite",
+                }),
+            }}
+        >
+            <Typography variant="body2" fontWeight="inherit" noWrap>
+                {isLoading
+                    ? "..."
+                    : claimable
+                    ? "Claim Daily"
+                    : remaining !== null
+                    ? formatRemaining(remaining)
+                    : "Claim Daily"}
+            </Typography>
+        </Button>
     );
 }
 
