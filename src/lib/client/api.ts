@@ -8,9 +8,12 @@ export const api = {
     },
     user: {
         me: () => axios.get("/users/me"),
+        profile: (username: string) => axios.get(`/users/${username}/profile`),
         daily: {
             status: () => axios.get("/daily"),
             claim: () => axios.post("/daily"),
         },
     },
+    transfer: (toUsername: string, amount: number) =>
+        axios.post("/transfer", { toUsername, amount }),
 };
