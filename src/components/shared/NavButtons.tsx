@@ -14,6 +14,8 @@ import { showSnackbar } from "@/components/shared/SnackBar";
 import useUserStore from "@/store/useUserStore";
 import { useState, useEffect } from "react";
 import { api } from "@/lib/client/api";
+import { openTransferModal } from "@/components/modals/TransferModal";
+
 
 type NavButtonProps = {
     icon: React.ReactNode;
@@ -84,7 +86,7 @@ export function TransferButton() {
         <NavButton
             icon={<SwapHorizIcon />}
             label="Transfer"
-            onClick={() => showSnackbar("Transfer coming soon", "info")}
+            onClick={openTransferModal}
         />
     );
 }
