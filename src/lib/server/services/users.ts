@@ -52,3 +52,8 @@ export async function getUserProfile(username: string): Promise<UserProfile> {
         created_at: user.created_at!,
     };
 }
+
+export async function getMe(userId: string): Promise<{ username: string; balance: number }> {
+    const user = await dbGetUser("id", userId);
+    return { username: user.username, balance: user.balance ?? 0 };
+}

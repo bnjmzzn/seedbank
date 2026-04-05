@@ -9,6 +9,7 @@ const PROTECTED_ROUTES: string[] = [
     "/api/play",
     "/api/transfer",
     "/api/steal",
+    "/api/users/me"
 ];
 
 export async function proxy(request: NextRequest) {
