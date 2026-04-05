@@ -5,6 +5,7 @@ import { AppError, Errors } from "@/lib/server/error";
 import { HASH_ROUNDS, JWT_SECRET, JWT_EXPIRES } from "@/lib/server/config";
 import { USERNAME_MAX, PASSWORD_MAX } from "@/lib/config";
 import type { UserRow, UserProfile } from "@/types/database";
+import { getDailyStatus } from "@/lib/server/services/daily";
 
 export async function registerUser(username: string, password: string): Promise<void> {
     if (username.length > USERNAME_MAX) throw new AppError(Errors.INVALID_BODY);
@@ -53,7 +54,19 @@ export async function getUserProfile(username: string): Promise<UserProfile> {
     };
 }
 
-export async function getMe(userId: string): Promise<{ username: string; balance: number }> {
-    const user = await dbGetUser("id", userId);
-    return { username: user.username, balance: user.balance ?? 0 };
+export async function getMe(userId: string): Promise<{ 
+    username: string; 
+    balance: number;
+    daily: { claimable: boolean; remaining: number | null };
+}> {
+    const [user, daily] = await Promise.all([
+        dbGetUser("id", userId),
+        getDailyStatus(userId),
+    ]);
+
+    return {
+        username: user.username,
+        balance: user.balance ?? 0,
+        daily,
+    };
 }
