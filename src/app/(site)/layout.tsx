@@ -8,7 +8,6 @@ import MainHeader from "@/components/layout/MainHeader";
 import { storage } from "@/lib/client/storage";
 import { api } from "@/lib/client/api";
 import useUserStore from "@/store/useUserStore";
-import Modals from "@/components/layout/Modals";
 
 export default function SiteLayout({ children }: { children: React.ReactNode }) {
     const router = useRouter();
@@ -34,7 +33,6 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
 
     return (
         <Box sx={{ display: "flex", height: "100vh" }}>
-            <Modals />
             <Box sx={{ width: 270, flexShrink: 0 }}>
                 <DesktopSidebar />
             </Box>
