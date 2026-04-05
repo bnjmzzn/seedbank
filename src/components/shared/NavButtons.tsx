@@ -79,13 +79,14 @@ export function LeaderboardButton({ selected }: SelectableProps) {
     );
 }
 
-export function TransferButton() {
+export function TransferButton({ selected }: SelectableProps) {
     const router = useRouter();
     return (
         <NavButton
             icon={<SwapHorizIcon />}
             label="Transfer"
             onClick={() => router.push("/transfer")}
+            selected={selected}
         />
     );
 }

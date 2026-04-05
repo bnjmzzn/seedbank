@@ -42,7 +42,7 @@ export default function DesktopSidebar() {
 
                 <Divider sx={{ my: 1 }} />
 
-                <TransferButton />
+                <TransferButton selected={pathname === "/transfer"} />
                 <DailyButton />
             </Stack>
 
