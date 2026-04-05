@@ -30,5 +30,15 @@ export const registerSchema = z
         path: ["confirmPassword"],
     });
 
+export const transferSchema = z.object({
+    username: usernameRule,
+    amount: z
+        .number()
+        .int("Must be a whole number")
+        .min(CONFIG.TRANSFER_MIN, `Minimum is ${CONFIG.TRANSFER_MIN} seed`)
+        .max(CONFIG.TRANSFER_MAX, `Maximum is ${CONFIG.TRANSFER_MAX.toLocaleString()} seeds`),
+});
+    
 export type LoginInput = z.infer<typeof loginSchema>;
 export type RegisterInput = z.infer<typeof registerSchema>;
+export type TransferInput = z.infer<typeof transferSchema>;
