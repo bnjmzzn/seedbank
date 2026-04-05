@@ -4,21 +4,30 @@ import { AppError, Errors } from "@/lib/server/error";
 import { DAILY_AMOUNT } from "@/lib/config";
 import { HistoryReason } from "@/types/database";
 
-export async function claimDaily(
+export async function getDailyStatus(
     userId: string
-): Promise<{ claimed: number; balance: number }> {
-    
+): Promise<{ claimable: boolean; remaining: number | null }> {
     const [lastClaim] = await dbGetHistory({
         userId,
         reason: HistoryReason.DAILY,
         limit: 1,
     });
 
-    if (lastClaim) {
-        const diff = Date.now() - new Date(lastClaim.created_at!).getTime();
-        const remaining = 24 * 60 * 60 * 1000 - diff;
-        if (remaining > 0) throw new AppError(Errors.COOLDOWN_ACTIVE, { remaining });
-    }
+    if (!lastClaim) return { claimable: true, remaining: null };
+
+    const diff = Date.now() - new Date(lastClaim.created_at!).getTime();
+    const remaining = 24 * 60 * 60 * 1000 - diff;
+
+    return remaining > 0
+        ? { claimable: false, remaining }
+        : { claimable: true, remaining: null };
+}
+
+export async function claimDaily(
+    userId: string
+): Promise<{ claimed: number; balance: number }> {
+    const { claimable, remaining } = await getDailyStatus(userId);
+    if (!claimable) throw new AppError(Errors.COOLDOWN_ACTIVE, { remaining });
 
     const user = await dbGetUser("id", userId);
     const newBalance = user.balance! + DAILY_AMOUNT;
