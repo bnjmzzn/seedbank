@@ -39,10 +39,10 @@ export default function DesktopSidebar() {
 
                 <DashboardButton selected={pathname === "/dashboard"} />
                 <LeaderboardButton selected={pathname === "/leaderboard"} />
+                <TransferButton selected={pathname === "/transfer"} />
 
                 <Divider sx={{ my: 1 }} />
-
-                <TransferButton selected={pathname === "/transfer"} />
+                
                 <DailyButton />
             </Stack>
 
