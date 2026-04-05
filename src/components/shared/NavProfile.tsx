@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { Box, Avatar, Typography, ButtonBase } from "@mui/material";
+import { Box, Avatar, Typography, ButtonBase, Skeleton } from "@mui/material";
 import { usePathname } from "next/navigation";
 import useUserStore from "@/store/useUserStore";
 import { getAvatarUrl } from "@/lib/client/avatar";
@@ -33,13 +33,17 @@ export default function ProfileCard() {
                 transition: "all 0.15s ease",
             }}
         >
-            <Avatar
-                sx={{ width: 30, height: 30, flexShrink: 0 }}
-                src={username ? getAvatarUrl(username) : undefined}
-            />
-            <Typography variant="body2" fontWeight={selected ? 600 : 500} noWrap sx={{ opacity: username ? 1 : 0.4 }}>
-                {username ? `@${username}` : "loading..."}
+        <Avatar
+            sx={{ width: 30, height: 30, flexShrink: 0 }}
+            src={username ? getAvatarUrl(username) : undefined}
+        />
+        {username ? (
+            <Typography variant="body2" fontWeight={selected ? 600 : 500} noWrap>
+                @{username}
             </Typography>
+        ) : (
+            <Skeleton variant="text" width={90} />
+        )}
         </ButtonBase>
     );
 }

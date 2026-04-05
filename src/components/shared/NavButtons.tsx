@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { Button, Typography } from "@mui/material";
+import { Button, Skeleton, Typography } from "@mui/material";
 import {
     Dashboard as DashboardIcon,
     Leaderboard as LeaderboardIcon,
@@ -165,7 +165,7 @@ export function DailyButton() {
         >
             <Typography variant="body2" fontWeight="inherit" noWrap>
                 {isLoading
-                    ? "..."
+                    ? <Skeleton variant="text" width={80} />
                     : claimable
                     ? "Claim Daily"
                     : remaining !== null
