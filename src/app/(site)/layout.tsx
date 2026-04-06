@@ -2,9 +2,6 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Box } from "@mui/material";
-import DesktopSidebar from "@/components/layout/DesktopSidebar";
-import MainHeader from "@/components/layout/MainHeader";
 import { storage } from "@/lib/client/storage";
 import { api } from "@/lib/client/api";
 import useUserStore from "@/store/useUserStore";
@@ -32,14 +29,8 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
     }, []);
 
     return (
-        <Box sx={{ display: "flex", height: "100vh" }}>
-            <Box sx={{ width: 270, flexShrink: 0 }}>
-                <DesktopSidebar />
-            </Box>
-            <Box component="main" sx={{ flex: 1, minWidth: 0, overflowY: "scroll" }}>
-                <MainHeader />
-                {children}
-            </Box>
-        </Box>
+        <>
+            {children}
+        </>
     );
 }
