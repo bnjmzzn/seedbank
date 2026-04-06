@@ -64,10 +64,7 @@ export default function DetailsPanel({ control, errors, balance, isChecking, isC
                             onClearErrors();
                         }}
                         error={!!errors.amount}
-                        helperText={
-                            errors.amount?.message ??
-                            (balance !== null ? `Your balance: ${balance.toLocaleString()} seeds` : " ")
-                        }
+                        helperText={errors.amount?.message ?? " "}
                         fullWidth
                         disabled={isChecking || isConfirmed}
                     />

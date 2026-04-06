@@ -12,6 +12,7 @@ import BalanceCard from "./BalanceCard";
 import DetailsPanel from "./DetailsPanel";
 import SummaryPanel from "./SummaryPanel";
 import { mutate } from "swr";
+import { TRANSFER_MIN, TRANSFER_MAX } from "@/lib/config";
 
 interface RecipientProfile {
     username: string;
@@ -62,6 +63,14 @@ export default function TransferStepper({ defaultTo }: Props) {
         }
         if (toUsername.trim() === username) {
             setError("username", { message: "You can't transfer to yourself" });
+            return;
+        }
+        if (toAmount < TRANSFER_MIN) {
+            setError("amount", { message: `Minimum is ${TRANSFER_MIN} seed` });
+            return;
+        }
+        if (toAmount > TRANSFER_MAX) {
+            setError("amount", { message: `Maximum is ${TRANSFER_MAX.toLocaleString()} seeds` });
             return;
         }
 
