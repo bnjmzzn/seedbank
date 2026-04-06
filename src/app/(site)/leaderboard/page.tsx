@@ -3,7 +3,7 @@ import LeaderboardTable from "./_components/LeaderboardTable";
 
 export default function LeaderboardPage() {
     return (
-        <Box sx={{ p: 4, display: "flex", justifyContent: "center" }}>
+        <Box sx={{ p: { xs: 2, md: 5 }, maxWidth: 720, mx: "auto" }}>
             <LeaderboardTable />
         </Box>
     );

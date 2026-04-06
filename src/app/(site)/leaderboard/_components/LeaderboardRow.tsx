@@ -4,31 +4,14 @@ import { useRouter } from "next/navigation";
 import { Box, Avatar, Typography, ButtonBase } from "@mui/material";
 import { getAvatarUrl } from "@/lib/client/avatar";
 
-type Variant = "gold" | "silver" | "bronze" | "default";
-
-const BG: Record<Variant, string> = {
-    gold: "#FFD700",
-    silver: "#C0C0C0",
-    bronze: "#7c3f00",
-    default: "#1a1a1a",
-};
-
-const TEXT: Record<Variant, string> = {
-    gold: "#000000",
-    silver: "#000000",
-    bronze: "#000000",
-    default: "inherit",
-};
-
 interface Props {
-    rank: number | null;
+    rank: number;
     username: string;
     balance: number;
-    variant?: Variant;
     isYou?: boolean;
 }
 
-export default function LeaderboardRow({ rank, username, balance, variant = "default", isYou = false }: Props) {
+export default function LeaderboardRow({ rank, username, balance, isYou = false }: Props) {
     const router = useRouter();
 
     return (
@@ -40,43 +23,62 @@ export default function LeaderboardRow({ rank, username, balance, variant = "def
                 alignItems: "center",
                 gap: 2,
                 px: 2,
-                py: 1.5,
-                borderRadius: 1,
-                bgcolor: BG[variant],
-                color: TEXT[variant],
-                transition: "transform 150ms ease-in-out",
-                "&:hover": {
-                    transform: "scale(1.01)",
-                },
+                py: 2,
+                borderRadius: 2,
+                bgcolor: isYou ? "primary" : "action.hover",
+                textAlign: "left",
+                transition: "all 150ms ease",
+                "&:hover": { transform: "scale(1.01)" },
             }}
         >
             <Typography
-                fontWeight={700}
                 fontFamily="monospace"
-                sx={{ width: 28, textAlign: "center", flexShrink: 0, color: TEXT[variant] }}
+                variant="h6"
+                fontWeight={700}
+                sx={{ minWidth: 32, textAlign: "center", flexShrink: 0 }}
             >
-                {rank ?? "—"}
+                {rank}
             </Typography>
+
             <Avatar
                 src={getAvatarUrl(username)}
                 sx={{
-                    width: 32,
-                    height: 32,
+                    width: 36,
+                    height: 36,
                     flexShrink: 0,
                     border: "3px solid",
                     borderColor: "background.default",
-                }} />
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1, flex: 1, minWidth: 0 }}>
-                <Typography fontWeight={600} noWrap>
+                }}
+            />
+
+            <Box sx={{ flex: 1, minWidth: 0, display: "flex", alignItems: "center", gap: 2 }}>
+                <Typography fontWeight={700} noWrap sx={{ color: isYou ? "#000000" : "text.primary" }}>
                     @{username}
                 </Typography>
                 {isYou && (
-                    <Typography fontWeight={500} sx={{ color: TEXT[variant] }}>
-                        (you)
+                    <Typography
+                        fontWeight={700}
+                        sx={{
+                            bgcolor: "#000000",
+                            color: "primary",
+                            px: 1,
+                            py: 0.5,
+                            borderRadius: 1,
+                            flexShrink: 0,
+                            fontSize: "0.7rem",
+                            letterSpacing: "0.06em",
+                        }}
+                    >
+                        you
                     </Typography>
                 )}
             </Box>
-            <Typography fontWeight={700} fontFamily="monospace" flexShrink={0}>
+
+            <Typography
+                fontFamily="monospace"
+                fontWeight={700}
+                sx={{ flexShrink: 0, color: isYou ? "#000000" : "" }}
+            >
                 {balance.toLocaleString()} seeds
             </Typography>
         </ButtonBase>
