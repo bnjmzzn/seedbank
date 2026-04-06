@@ -2,10 +2,12 @@
 
 import { Box, Typography } from "@mui/material";
 import HistoryTable from "@/components/shared/HistoryTable";
+import { useHistory } from "@/lib/client/hooks/useHistory";
 import useUserStore from "@/store/useUserStore";
 
 export default function TransferHistoryTable() {
     const username = useUserStore((s) => s.username);
+    const { rows, isLoading, error } = useHistory(username ?? "", { type: "TRANSFER" });
 
     if (!username) return null;
 
@@ -14,7 +16,7 @@ export default function TransferHistoryTable() {
             <Typography variant="h6" fontWeight={700}>
                 Transfer History
             </Typography>
-            <HistoryTable username={username} type="TRANSFER" />
+            <HistoryTable rows={rows} isLoading={isLoading} error={error} />
         </Box>
     );
 }

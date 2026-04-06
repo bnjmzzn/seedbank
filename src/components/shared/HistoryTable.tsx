@@ -8,16 +8,14 @@ import {
     Avatar,
     Chip,
     Skeleton,
-    Alert,
     Pagination,
 } from "@mui/material";
 import {
     CardGiftcard as DailyIcon,
     SwapHoriz as TransferIcon,
     SportsEsports as GameIcon,
-    AccountBalanceWallet as StealIcon
+    AccountBalanceWallet as StealIcon,
 } from "@mui/icons-material";
-import { useHistory } from "@/lib/client/hooks/useHistory";
 import { getAvatarUrl } from "@/lib/client/avatar";
 import { HistoryReason } from "@/types/database";
 import type { HistoryRow } from "@/types/database";
@@ -57,7 +55,6 @@ function formatLocalTime(iso: string): string {
     });
 }
 
-
 function PlayerChip({ username }: { username: string }) {
     const router = useRouter();
     return (
@@ -78,7 +75,7 @@ function PlayerChip({ username }: { username: string }) {
     );
 }
 
-function HistoryRow({ row }: { row: HistoryRow }) {
+function HistoryRowItem({ row }: { row: HistoryRow }) {
     const player = row.meta?.player as string | undefined;
 
     return (
@@ -91,17 +88,15 @@ function HistoryRow({ row }: { row: HistoryRow }) {
                 borderRadius: 1,
                 bgcolor: "grey.900",
                 gap: 2,
-                transformOrigin: "center",
                 transition: "transform 150ms ease-in-out",
-                "&:hover": {
-                    transform: "scale(1.01)",
-                },
+                transformOrigin: "center",
+                "&:hover": { transform: "scale(1.01)" },
             }}
         >
             <Box sx={{ color: "common.white", flexShrink: 0, display: "flex" }}>
                 {getReasonIcon(row.reason)}
             </Box>
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1, flex: 1, minWidth: 0 }}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1, flex: 1, minWidth: 0, overflow: "hidden" }}>
                 <Typography variant="body2" fontWeight={500} noWrap>
                     {getReasonLabel(row.reason)}
                 </Typography>
@@ -148,14 +143,13 @@ function HistoryRowSkeleton() {
     );
 }
 
-interface HistoryTableProps {
-    username: string;
-    type?: string;
-    limit?: number;
+interface Props {
+    rows: HistoryRow[];
+    isLoading: boolean;
+    error?: unknown;
 }
 
-export default function HistoryTable({ username, type, limit }: HistoryTableProps) {
-    const { rows, isLoading, error } = useHistory(username, { type, limit });
+export default function HistoryTable({ rows, isLoading, error }: Props) {
     const [page, setPage] = useState(1);
 
     const totalPages = Math.ceil(rows.length / ROWS_PER_PAGE);
@@ -170,7 +164,7 @@ export default function HistoryTable({ username, type, limit }: HistoryTableProp
     }
 
     return (
-        <Box sx={{ width: "100%", display: "flex", flexDirection: "column", gap: 1 }}>
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
             {isLoading
                 ? Array.from({ length: ROWS_PER_PAGE }).map((_, i) => (
                     <HistoryRowSkeleton key={i} />
@@ -182,7 +176,7 @@ export default function HistoryTable({ username, type, limit }: HistoryTableProp
                     </Typography>
                 )
                 : visibleRows.map((row) => (
-                    <HistoryRow key={row.id} row={row} />
+                    <HistoryRowItem key={row.id} row={row} />
                 ))
             }
 
