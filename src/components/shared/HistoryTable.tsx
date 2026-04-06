@@ -107,6 +107,7 @@ function HistoryRowItem({ row }: { row: HistoryRow }) {
                 fontWeight={700}
                 color={row.change >= 0 ? "success.main" : "error.main"}
                 flexShrink={0}
+                sx={{ minWidth: 80, textAlign: "center" }}
             >
                 {row.change >= 0 ? "+" : ""}{row.change.toLocaleString()}
             </Typography>
@@ -137,7 +138,7 @@ function HistoryRowSkeleton() {
         >
             <Skeleton variant="circular" width={20} height={20} />
             <Skeleton variant="text" width={120} sx={{ flex: 1 }} />
-            <Skeleton variant="text" width={50} />
+            <Skeleton variant="text" width={50} sx={{ textAlign: "center" }} />
             <Skeleton variant="text" width={80} />
         </Box>
     );
