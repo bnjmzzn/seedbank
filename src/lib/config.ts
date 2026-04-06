@@ -16,7 +16,7 @@ export const STEAL_SUCCESS_PERCENT = 50;
 export const STEAL_MIN = 1;
 export const STEAL_MAX = 100_000_000;
 
-export const LEADERBOARD_LIMIT = 20;
+export const LEADERBOARD_LIMIT = 10 ;
 
 export const HISTORY_DEFAULT_LIMIT = 20;
 export const HISTORY_MAX_LIMIT = 100;
