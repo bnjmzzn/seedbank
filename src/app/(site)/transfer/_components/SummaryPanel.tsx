@@ -108,7 +108,7 @@ export default function SummaryPanel({
                 flex: 1,
             }}
         >
-            <Typography variant="subtitle1" fontWeight={700}>
+            <Typography variant="h6" fontWeight={700}>
                 Summary
             </Typography>
 

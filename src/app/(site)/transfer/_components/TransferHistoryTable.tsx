@@ -10,7 +10,7 @@ export default function TransferHistoryTable() {
     if (!username) return null;
 
     return (
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 2, width: 600, alignSelf: "center" }}>
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 2.5, px: 4, py: 3.5 }}>
             <Typography variant="h6" fontWeight={700}>
                 Transfer History
             </Typography>

@@ -110,14 +110,14 @@ export default function TransferStepper({ defaultTo }: Props) {
 
     return (
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-            <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, gap: 2 }}>
+            <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, gap: 3 }}>
                 <BalanceCard />
                 <Stepper sx={{ flex: 1, px: 4, alignSelf: "center" }} activeStep={step - 1}>
                     <Step><StepLabel>Details</StepLabel></Step>
                     <Step><StepLabel>Summary</StepLabel></Step>
                 </Stepper>
             </Box>
-            <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, gap: 2 }}>
+            <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, gap: 3 }}>
                 <DetailsPanel
                     control={control}
                     errors={errors}

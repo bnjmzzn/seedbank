@@ -27,7 +27,7 @@ export default function DetailsPanel({ control, errors, balance, isChecking, isC
                 flex: 1,
             }}
         >
-            <Typography variant="subtitle1" fontWeight={700}>
+            <Typography variant="h6" fontWeight={700}>
                 Details
             </Typography>
 
