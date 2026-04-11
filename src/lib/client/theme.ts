@@ -10,7 +10,11 @@ const theme = createTheme({
         primary: {
             main: "#2ecc71",
             dark: "#2ecc7111"
-        }
+        },
+        error: {
+            main: "#d32f2f",
+            dark: "#d32f2f11",
+        },
     },
     components: {
         MuiListItemButton: {
