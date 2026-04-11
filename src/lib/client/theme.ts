@@ -11,8 +11,14 @@ const theme = createTheme({
             main: "#2ecc71",
         }
     },
-    shape: {
-        borderRadius: 5,
+    components: {
+        MuiListItemButton: {
+            styleOverrides: {
+                root: {
+                    borderRadius: 5,
+                },
+            },
+        },
     },
     typography: {
         fontFamily: "inherit",
