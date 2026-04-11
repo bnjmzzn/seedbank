@@ -3,34 +3,38 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { storage } from "@/lib/client/storage";
-import { api } from "@/lib/client/api";
-import useUserStore from "@/store/useUserStore";
+import { useMe } from "@/lib/client/hooks";
+import Box from "@mui/material/Box";
+import Sidebar from "@/components/layout/Sidebar";
+import BottomNav from "@/components/layout/BottomNav";
 
 export default function SiteLayout({ children }: { children: React.ReactNode }) {
     const router = useRouter();
-    const { setUser, setDaily } = useUserStore();
+    const { me, isLoading } = useMe();
 
     useEffect(() => {
-        const token = storage.getToken();
-        if (!token) {
+        if (!storage.getToken()) {
             router.replace("/login");
-            return;
         }
+    }, [router]);
 
-        api.user.me()
-            .then((res) => {
-                const { username, balance, daily } = res.data.data;
-                setUser(username, balance);
-                setDaily(daily);
-            })
-            .catch(() => {
-                router.replace("/login");
-            });
-    }, []);
+    if (isLoading) return null;
 
     return (
-        <>
-            {children}
-        </>
+        <Box sx={{ display: "flex" }}>
+            <Sidebar />
+            <Box
+                component="main"
+                sx={{
+                    flexGrow: 1,
+                    minHeight: "100vh",
+                    pt: { xs: 8, lg: 0 },
+                    pb: { xs: 8, lg: 0 },
+                }}
+            >
+                {children}
+            </Box>
+            <BottomNav />
+        </Box>
     );
 }
