@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Stack, TextField, Button } from "@mui/material";
@@ -9,8 +10,6 @@ import { loginSchema, type LoginInput } from "@/lib/client/validation";
 import { showSnackbar } from "@/components/shared/SnackBar";
 import { api } from "@/lib/client/api";
 import { storage } from "@/lib/client/storage";
-import useUserStore from "@/store/useUserStore";
-import { useEffect } from "react";
 
 interface Props {
     onLoadingChange?: (loading: boolean) => void;
@@ -18,8 +17,7 @@ interface Props {
 
 export default function LoginForm({ onLoadingChange }: Props) {
     const router = useRouter();
-    const setUser = useUserStore((state) => state.setUser);
-    
+
     const {
         register,
         handleSubmit,
@@ -32,18 +30,17 @@ export default function LoginForm({ onLoadingChange }: Props) {
         onLoadingChange?.(isSubmitting);
     }, [isSubmitting]);
 
-    const onSubmit = async (data: LoginInput) => {
+    async function onSubmit(data: LoginInput) {
         try {
             const res = await api.auth.login(data);
-            const { token, user } = res.data.data;
+            const { token } = res.data.data;
             storage.setToken(token);
-            setUser(user.username, user.balance);
             showSnackbar("Welcome back!", "success");
             router.push("/dashboard");
         } catch (error: any) {
             showSnackbar(error, "error");
         }
-    };
+    }
 
     return (
         <Stack component="form" onSubmit={handleSubmit(onSubmit)} spacing={2} noValidate>
