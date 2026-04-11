@@ -121,6 +121,8 @@ export default function Sidebar() {
                 open={Boolean(anchorEl)}
                 onClose={handleMenuClose}
                 username={me?.username ?? ""}
+                anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+                transformOrigin={{ horizontal: "left", vertical: "bottom" }}
             />
         </Drawer>
     );
