@@ -1,9 +1,9 @@
-import axios from 'axios';
-import { storage } from './storage';
+import axios from "axios";
+import { storage } from "./storage";
 
 const instance = axios.create({
-    baseURL: '/api',
-    headers: { 'Content-Type': 'application/json' },
+    baseURL: "/api",
+    headers: { "Content-Type": "application/json" },
 });
 
 instance.interceptors.request.use((config) => {
@@ -19,12 +19,13 @@ instance.interceptors.response.use(
     (error) => {
         if (error.response?.status === 401) {
             storage.clearAuth();
-            if (typeof window !== 'undefined') {
-                window.location.href = '/login'; 
+            if (typeof window !== "undefined") {
+                window.location.href = "/login";
             }
         }
-        const message = error.response?.data?.message || 'Something went wrong';
-        return Promise.reject(message);
+        const message = error.response?.data?.message ?? "Something went wrong";
+        const status = error.response?.status ?? 0;
+        return Promise.reject({ message, status });
     }
 );
 
