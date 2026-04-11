@@ -27,7 +27,8 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
                 component="main"
                 sx={{
                     flexGrow: 1,
-                    minHeight: "100vh",
+                    overflowX: "hidden",
+                    overflowY: "scroll",
                     pt: { xs: 8, lg: 0 },
                     pb: { xs: 8, lg: 0 },
                 }}
