@@ -1,18 +1,18 @@
 "use client";
 
 import { useState } from "react";
-import BottomNavigation from "@mui/material/BottomNavigation";
-import BottomNavigationAction from "@mui/material/BottomNavigationAction";
-import Avatar from "@mui/material/Avatar";
-import Paper from "@mui/material/Paper";
+import { BottomNavigation, BottomNavigationAction, Avatar, Paper } from "@mui/material";
 import { usePathname, useRouter } from "next/navigation";
 import { navItems } from "@/lib/client/nav";
+import { useMe } from "@/lib/client/hooks";
+import { getAvatarUrl } from "@/lib/client/utils";
 import ProfileMenu from "./ProfileMenu";
 
 export default function BottomNav() {
     const pathname = usePathname();
     const router = useRouter();
     const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+    const { me } = useMe();
 
     function handleProfileClick(e: React.MouseEvent<HTMLElement>) {
         setAnchorEl(e.currentTarget);
@@ -42,6 +42,9 @@ export default function BottomNav() {
                         minWidth: 0,
                         gap: 0.5,
                     },
+                    "& .MuiBottomNavigationAction-label": {
+                        color: "transparent",
+                    },
                 }}
             >
                 {navItems.map((item) => (
@@ -54,11 +57,11 @@ export default function BottomNav() {
                     />
                 ))}
                 <BottomNavigationAction
-                    label="Profile"
+                    label={me?.username ?? "—"}
                     value="/profile"
                     icon={
                         <Avatar
-                            src="https://api.dicebear.com/9.x/fun-emoji/svg?seed=seedbank_placeholder"
+                            src={me ? getAvatarUrl(me.username) : undefined}
                             sx={{ width: 24, height: 24 }}
                         />
                     }
@@ -70,7 +73,9 @@ export default function BottomNav() {
                 anchorEl={anchorEl}
                 open={Boolean(anchorEl)}
                 onClose={handleMenuClose}
-                username="placeholder"
+                username={me?.username ?? ""}
+                anchorOrigin={{ horizontal: "center", vertical: "top" }}
+                transformOrigin={{ horizontal: "center", vertical: "bottom" }}
             />
         </Paper>
     );
