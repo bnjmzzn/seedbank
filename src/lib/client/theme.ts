@@ -9,6 +9,7 @@ const theme = createTheme({
         mode: "dark",
         primary: {
             main: "#2ecc71",
+            dark: "#2ecc7111"
         }
     },
     components: {
