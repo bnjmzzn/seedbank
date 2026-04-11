@@ -1,6 +1,6 @@
 import useSWR from "swr";
 import { api } from "@/lib/client/api";
-import type { HistoryRow, UserProfile } from "@/types/database";
+import type { HistoryRow, UserProfile, UserMe } from "@/types/database";
 import type { ApiResponse } from "@/types/api";
 
 interface UseHistoryParams {
@@ -34,6 +34,21 @@ export function useProfile(username: string) {
 
     return {
         profile: data?.data ?? null,
+        isLoading,
+        error,
+        mutate,
+    };
+}
+
+export function useMe() {
+    const { data, error, isLoading, mutate } = useSWR<ApiResponse<UserMe>>(
+        "me",
+        () => api.user.me().then(res => res.data),
+        { revalidateOnFocus: true }
+    );
+
+    return {
+        me: data?.data ?? null,
         isLoading,
         error,
         mutate,

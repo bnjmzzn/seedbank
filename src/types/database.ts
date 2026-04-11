@@ -19,6 +19,15 @@ export interface UserProfile extends Pick<UserRow, "username" | "balance" | "cre
     rank: number;
 }
 
+export interface UserMe {
+    username: string;
+    balance: number;
+    daily: {
+        claimable: boolean;
+        remaining: number | null;
+    };
+}
+
 export interface LeaderboardEntry {
     rank: number;
     username: string;
