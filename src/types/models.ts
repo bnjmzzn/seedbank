@@ -1,21 +1,7 @@
-export interface UserRow {
-    id: string;
+export interface UserProfile {
     username: string;
-    password?: string;
     balance?: number;
     created_at?: string;
-}
-
-export interface HistoryRow {
-    id?: string;
-    user_id?: string;
-    change: number;
-    reason: string;
-    meta?: Record<string, unknown> | null;
-    created_at?: string;
-}
-
-export interface UserProfile extends Pick<UserRow, "username" | "balance" | "created_at"> {
     rank: number;
 }
 
@@ -23,10 +9,12 @@ export interface UserMe {
     username: string;
     balance: number;
     rank: number;
-    daily: {
-        claimable: boolean;
-        remaining: number | null;
-    };
+    daily: DailyStatus;
+}
+
+export interface DailyStatus {
+    claimable: boolean;
+    remaining: number | null;
 }
 
 export interface LeaderboardEntry {
