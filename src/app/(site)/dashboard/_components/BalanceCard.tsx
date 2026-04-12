@@ -1,11 +1,9 @@
 "use client";
 
-import Paper from "@mui/material/Paper";
-import Typography from "@mui/material/Typography";
-import Box from "@mui/material/Box";
-import AccountBalanceWalletOutlinedIcon from "@mui/icons-material/AccountBalanceWalletOutlined";
-import Skeleton from "@mui/material/Skeleton";
+import { Paper, Typography, Box, Skeleton } from "@mui/material";
+import { AccountBalanceWalletOutlined } from "@mui/icons-material";
 import type { HistoryRow } from "@/types/database";
+import { useCountUp } from "@/lib/client/hooks";
 
 interface Props {
     balance: number;
@@ -29,37 +27,37 @@ export default function BalanceCard({ balance, rows, isLoading }: Props) {
     const total = gain + loss;
     const gainPct = total === 0 ? 0 : (gain / total) * 100;
     const lossPct = total === 0 ? 0 : (loss / total) * 100;
+    const animatedBalance = useCountUp(balance);
 
     return (
         <Paper sx={paperSx} elevation={0}>
-            {isLoading ? (
-                <>
-                    <Box>
-                        <Skeleton variant="text" width={80} />
-                        <Skeleton variant="text" width={200} height={60} />
-                    </Box>
-                    <Box>
+            <Box>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                    <AccountBalanceWalletOutlined color="disabled" />
+                    <Typography color="text.secondary">Balance</Typography>
+                </Box>
+
+                {isLoading ? (
+                    <Skeleton variant="text" width={200} height={60} />
+                ) : (
+                    <Typography variant="h4" fontWeight={700}>
+                        {animatedBalance.toLocaleString()}{" "}
+                        <Typography component="span" variant="h6" color="text.secondary" fontWeight={400}>SEED</Typography>
+                    </Typography>
+                )}
+            </Box>
+
+            <Box>
+                {isLoading ? (
+                    <>
                         <Skeleton variant="rounded" height={4} />
                         <Box sx={{ display: "flex", justifyContent: "space-between", mt: 0.5 }}>
                             <Skeleton variant="text" width={60} />
                             <Skeleton variant="text" width={60} />
                         </Box>
-                    </Box>
-                </>
-            ) : (
-                <>
-                    <Box>
-                        <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-                            <AccountBalanceWalletOutlinedIcon fontSize="small" color="disabled" />
-                            <Typography color="text.secondary">Balance</Typography>
-                        </Box>
-                        <Typography variant="h4" fontWeight={700}>
-                            {balance.toLocaleString()} {" "}
-                            <Typography component="span" variant="h6" color="text.secondary" fontWeight={400}>SEED</Typography>
-                        </Typography>
-                    </Box>
-
-                    <Box>
+                    </>
+                ) : (
+                    <>
                         <Box sx={{ display: "flex", height: 4, borderRadius: 999, overflow: "hidden", bgcolor: "divider" }}>
                             {total > 0 && <Box sx={{ width: `${gainPct}%`, bgcolor: "success.main" }} />}
                             {total > 0 && <Box sx={{ width: `${lossPct}%`, bgcolor: "error.main" }} />}
@@ -68,9 +66,9 @@ export default function BalanceCard({ balance, rows, isLoading }: Props) {
                             <Typography color="success.main">+{gain.toLocaleString()}</Typography>
                             <Typography color="error.main">-{loss.toLocaleString()}</Typography>
                         </Box>
-                    </Box>
-                </>
-            )}
+                    </>
+                )}
+            </Box>
         </Paper>
     );
 }
