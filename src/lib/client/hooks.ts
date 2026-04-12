@@ -1,6 +1,7 @@
 import useSWR from "swr";
 import { api } from "@/lib/client/api";
-import type { HistoryRow, UserProfile, UserMe } from "@/types/database";
+import type { HistoryRow } from "@/types/db";
+import type { UserProfile, UserMe } from "@/types/models";
 import type { ApiResponse } from "@/types/api";
 import { useEffect, useRef, useState } from "react";
 

@@ -1,5 +1,5 @@
 import { supabase } from "./client";
-import type { HistoryRow } from "@/types/database";
+import type { HistoryRow } from "@/types/db";
 
 export async function dbInsertHistory(
     userId: string,

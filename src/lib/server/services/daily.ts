@@ -2,11 +2,15 @@ import { dbGetUser, dbUpdateUserBalance } from "@/lib/server/db/users";
 import { dbInsertHistory, dbGetHistory } from "@/lib/server/db/history";
 import { AppError, Errors } from "@/lib/server/error";
 import { DAILY_AMOUNT } from "@/lib/config";
-import { HistoryReason } from "@/types/database";
+import { DailyStatus, HistoryReason } from "@/types/models";
 
-export async function getDailyStatus(
-    userId: string
-): Promise<{ claimable: boolean; remaining: number | null }> {
+
+interface DailyClaimResult {
+    claimed: number;
+    balance: number;
+}
+
+export async function getDailyStatus(userId: string): Promise<DailyStatus> {
     const [lastClaim] = await dbGetHistory({
         userId,
         reason: HistoryReason.DAILY,
@@ -23,9 +27,7 @@ export async function getDailyStatus(
         : { claimable: true, remaining: null };
 }
 
-export async function claimDaily(
-    userId: string
-): Promise<{ claimed: number; balance: number }> {
+export async function claimDaily(userId: string): Promise<DailyClaimResult> {
     const { claimable, remaining } = await getDailyStatus(userId);
     if (!claimable) throw new AppError(Errors.COOLDOWN_ACTIVE, { remaining });
 

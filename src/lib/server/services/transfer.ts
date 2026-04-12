@@ -2,13 +2,18 @@ import { dbGetUser, dbUpdateUserBalance } from "@/lib/server/db/users";
 import { dbInsertHistory } from "@/lib/server/db/history";
 import { AppError, Errors } from "@/lib/server/error";
 import { TRANSFER_MIN, TRANSFER_MAX } from "@/lib/config";
-import { HistoryReason } from "@/types/database";
+import { HistoryReason } from "@/types/models";
+
+interface TransferResult {
+    transferred: number;
+    balance: number;
+}
 
 export async function transferBalance(
     senderId: string,
     toUsername: string,
     amount: number
-): Promise<{ transferred: number; balance: number }> {
+): Promise<TransferResult> {
 
     if (amount < TRANSFER_MIN || amount > TRANSFER_MAX)
         throw new AppError(Errors.TRANSFER_LIMIT);

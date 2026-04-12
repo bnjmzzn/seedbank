@@ -1,7 +1,7 @@
 import { playGame } from "@/lib/server/services/game";
 import { successResponse } from "@/lib/server/api/response";
 import { AppError, Errors, handleApiError } from "@/lib/server/error";
-import { HistoryReason } from "@/types/database";
+import { HistoryReason } from "@/types/models";
 
 export async function POST(request: Request) {
     try {

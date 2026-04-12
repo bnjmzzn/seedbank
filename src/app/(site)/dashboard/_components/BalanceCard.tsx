@@ -2,7 +2,7 @@
 
 import { Paper, Typography, Box, Skeleton } from "@mui/material";
 import { AccountBalanceWalletOutlined } from "@mui/icons-material";
-import type { HistoryRow } from "@/types/database";
+import type { HistoryRow } from "@/types/db";
 import { useCountUp } from "@/lib/client/hooks";
 
 interface Props {

@@ -2,13 +2,19 @@ import { dbGetUser, dbUpdateUserBalance } from "@/lib/server/db/users";
 import { dbInsertHistory } from "@/lib/server/db/history";
 import { AppError, Errors } from "@/lib/server/error";
 import { STEAL_SUCCESS_PERCENT, STEAL_MIN, STEAL_MAX } from "@/lib/config";
-import { HistoryReason } from "@/types/database";
+import { HistoryReason } from "@/types/models";
+
+interface StealResult {
+    success: boolean;
+    delta: number;
+    balance: number;
+}
 
 export async function stealBalance(
     stealerId: string,
     fromUsername: string,
     amount: number
-): Promise<{ success: boolean; delta: number; balance: number }> {
+): Promise<StealResult> {
 
     if (amount < STEAL_MIN || amount > STEAL_MAX)
         throw new AppError(Errors.STEAL_LIMIT);

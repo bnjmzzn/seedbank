@@ -4,8 +4,14 @@ import { dbGetUser, dbInsertUser, dbGetUserRank } from "@/lib/server/db/users";
 import { AppError, Errors } from "@/lib/server/error";
 import { HASH_ROUNDS, JWT_SECRET, JWT_EXPIRES } from "@/lib/server/config";
 import { USERNAME_MAX, PASSWORD_MAX } from "@/lib/config";
-import type { UserRow, UserProfile, UserMe } from "@/types/database";
+import type { UserRow } from "@/types/db";
+import type { UserProfile, UserMe } from "@/types/models";
 import { getDailyStatus } from "@/lib/server/services/daily";
+
+interface LoginResult {
+    token: string;
+    user: Omit<UserRow, "password">;
+}
 
 export async function registerUser(username: string, password: string): Promise<void> {
     if (username.length > USERNAME_MAX) throw new AppError(Errors.INVALID_BODY);
@@ -15,11 +21,7 @@ export async function registerUser(username: string, password: string): Promise<
     await dbInsertUser(username, hashedPassword);
 }
 
-export async function loginUser(
-    username: string,
-    password: string
-): Promise<{ token: string; user: Omit<UserRow, "password"> }> {
-    
+export async function loginUser(username: string, password: string): Promise<LoginResult> {
     let user: UserRow;
 
     try {

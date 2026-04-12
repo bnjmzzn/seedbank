@@ -1,8 +1,8 @@
 import { dbGetUser } from "@/lib/server/db/users";
 import { dbGetHistory } from "@/lib/server/db/history";
 import { HISTORY_DEFAULT_LIMIT, HISTORY_MAX_LIMIT } from "@/lib/config";
-import { HistoryReason } from "@/types/database";
-import type { HistoryRow } from "@/types/database";
+import { HistoryReason } from "@/types/models";
+import type { HistoryRow } from "@/types/db";
 
 const VALID_TYPES = new Set<string>([
     HistoryReason.DAILY,

@@ -1,6 +1,6 @@
 import { TollRounded, CasinoRounded, ColorLensRounded, WhatshotRounded, SportsScoreRounded } from "@mui/icons-material";
 import type { SvgIconComponent } from "@mui/icons-material";
-import { HistoryReason } from "@/types/database";
+import { HistoryReason } from "@/types/models";
 
 export interface Game {
     id: HistoryReason.Game;

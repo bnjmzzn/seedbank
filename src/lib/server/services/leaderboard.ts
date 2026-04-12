@@ -1,6 +1,6 @@
 import { dbGetTopUsers } from "@/lib/server/db/users";
 import { LEADERBOARD_LIMIT } from "@/lib/config";
-import type { LeaderboardEntry } from "@/types/database";
+import type { LeaderboardEntry } from "@/types/models";
 
 export async function getBalanceLeaderboard(): Promise<LeaderboardEntry[]> {
     const users = await dbGetTopUsers(LEADERBOARD_LIMIT);
