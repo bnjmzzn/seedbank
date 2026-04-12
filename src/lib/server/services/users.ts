@@ -4,7 +4,7 @@ import { dbGetUser, dbInsertUser, dbGetUserRank } from "@/lib/server/db/users";
 import { AppError, Errors } from "@/lib/server/error";
 import { HASH_ROUNDS, JWT_SECRET, JWT_EXPIRES } from "@/lib/server/config";
 import { USERNAME_MAX, PASSWORD_MAX } from "@/lib/config";
-import type { UserRow, UserProfile } from "@/types/database";
+import type { UserRow, UserProfile, UserMe } from "@/types/database";
 import { getDailyStatus } from "@/lib/server/services/daily";
 
 export async function registerUser(username: string, password: string): Promise<void> {
@@ -54,19 +54,17 @@ export async function getUserProfile(username: string): Promise<UserProfile> {
     };
 }
 
-export async function getMe(userId: string): Promise<{ 
-    username: string; 
-    balance: number;
-    daily: { claimable: boolean; remaining: number | null };
-}> {
-    const [user, daily] = await Promise.all([
-        dbGetUser("id", userId),
+export async function getMe(userId: string): Promise<UserMe> {
+    const user = await dbGetUser("id", userId);
+    const [daily, rank] = await Promise.all([
         getDailyStatus(userId),
+        dbGetUserRank(user.balance ?? 0),
     ]);
 
     return {
         username: user.username,
         balance: user.balance ?? 0,
+        rank,
         daily,
     };
 }
