@@ -1,7 +1,7 @@
 import { dbGetUser, dbUpdateUserBalance } from "@/lib/server/db/users";
 import { dbInsertHistory, dbGetHistory } from "@/lib/server/db/history";
 import { AppError, Errors } from "@/lib/server/error";
-import { DAILY_AMOUNT } from "@/lib/config";
+import { DAILY_AMOUNT, DAILY_COOLDOWN_MS } from "@/lib/config";
 import { DailyStatus, HistoryReason } from "@/types/models";
 
 
@@ -20,7 +20,7 @@ export async function getDailyStatus(userId: string): Promise<DailyStatus> {
     if (!lastClaim) return { claimable: true, remaining: null };
 
     const diff = Date.now() - new Date(lastClaim.created_at!).getTime();
-    const remaining = 24 * 60 * 60 * 1000 - diff;
+    const remaining = DAILY_COOLDOWN_MS - diff;
 
     return remaining > 0
         ? { claimable: false, remaining }
