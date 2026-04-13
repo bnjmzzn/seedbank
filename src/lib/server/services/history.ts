@@ -13,7 +13,7 @@ const VALID_TYPES = new Set<string>([
 
 const VALID_PREFIXES = new Set<string>(
     [...VALID_TYPES]
-        .filter((v): v is string => typeof v === "string" && v.includes(":"))
+        .filter((v): v is string => v.includes(":"))
         .map(v => v.split(":")[0])
 );
 
@@ -21,20 +21,18 @@ export const VALID_FILTER = new Set<string>([...VALID_TYPES, ...VALID_PREFIXES])
 
 export async function getUserHistory(
     username: string,
-    filters: {
-        type?: string;
-        limit?: number;
-    } = {}
+    filters: { type?: string; limit?: number } = {}
 ): Promise<HistoryRow[]> {
-    const safeLimit = Math.min(
-        Math.max(1, Number.isNaN(filters.limit) ? HISTORY_DEFAULT_LIMIT : filters.limit ?? HISTORY_DEFAULT_LIMIT),
-        HISTORY_MAX_LIMIT
-    );
+    const rawLimit = filters.limit ?? HISTORY_DEFAULT_LIMIT;
+    const safeLimit = Math.min(Math.max(1, Number.isNaN(rawLimit) ? HISTORY_DEFAULT_LIMIT : rawLimit), HISTORY_MAX_LIMIT);
 
     const user = await dbGetUser("username", username);
+    const isPrefixFilter = filters.type ? VALID_PREFIXES.has(filters.type) : false;
+
     return dbGetHistory({
         userId: user.id,
-        reason: filters.type ? `${filters.type}%` : undefined,
+        reason: !isPrefixFilter ? filters.type : undefined,
+        reasonLike: isPrefixFilter ? filters.type : undefined,
         limit: safeLimit,
     });
 }

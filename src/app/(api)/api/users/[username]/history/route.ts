@@ -12,7 +12,8 @@ export async function GET(
         const { searchParams } = new URL(request.url);
 
         const type = searchParams.get("type") ?? undefined;
-        const limit = parseInt(searchParams.get("limit") ?? HISTORY_DEFAULT_LIMIT.toString());
+        const rawLimit = parseInt(searchParams.get("limit") ?? HISTORY_DEFAULT_LIMIT.toString());
+        const limit = Number.isNaN(rawLimit) ? HISTORY_DEFAULT_LIMIT : rawLimit;
 
         if (type && !VALID_FILTER.has(type)) throw new AppError(Errors.INVALID_BODY);
 

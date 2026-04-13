@@ -17,7 +17,7 @@ export async function dbInsertHistory(
 export async function dbGetHistory(filters: {
     userId?: string;
     reason?: string;
-    meta?: Record<string, unknown>;
+    reasonLike?: string;
     limit?: number;
 }): Promise<HistoryRow[]> {
     
@@ -27,13 +27,8 @@ export async function dbGetHistory(filters: {
         .order("created_at", { ascending: false });
 
     if (filters.userId) query = query.eq("user_id", filters.userId);
-    if (filters.reason) {
-        if (filters.reason.includes("%"))
-            query = query.like("reason", filters.reason);
-        else
-            query = query.eq("reason", filters.reason);
-    }
-    if (filters.meta) query = query.contains("meta", filters.meta);
+    if (filters.reason) query = query.eq("reason", filters.reason);
+    if (filters.reasonLike) query = query.like("reason", `${filters.reasonLike}%`);
     if (filters.limit) query = query.limit(filters.limit);
 
     const { data, error } = await query;
