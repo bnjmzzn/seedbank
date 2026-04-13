@@ -1,3 +1,6 @@
+export const CURRENCY_NAME = "Seeds";
+export const CURRENCY_TICKER = "SEED";
+
 export const USERNAME_MIN = 3;
 export const USERNAME_MAX = 20;
 export const USERNAME_REGEX = /^[a-zA-Z][a-zA-Z0-9_]+$/;
