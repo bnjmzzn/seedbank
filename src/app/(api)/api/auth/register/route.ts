@@ -1,18 +1,11 @@
 import { registerUser } from "@/lib/server/services/users";
 import { successResponse } from "@/lib/server/api/response";
-import { AppError, Errors, handleApiError } from "@/lib/server/error";
+import { handleApiError } from "@/lib/server/error";
+import { registerBodySchema, parseBody } from "@/lib/server/validation";
 
 export async function POST(request: Request) {
     try {
-        let body;
-        try {
-            body = await request.json();
-            body.username = body.username?.trim();
-            if (!body.username || !body.password) throw new Error();
-        } catch {
-            throw new AppError(Errors.INVALID_BODY);
-        }
-
+        const body = parseBody(registerBodySchema, await request.json());
         await registerUser(body.username, body.password);
         return successResponse();
     } catch (error) {

@@ -1,19 +1,11 @@
 import { loginUser } from "@/lib/server/services/users";
 import { successResponse } from "@/lib/server/api/response";
 import { handleApiError } from "@/lib/server/error";
-import { AppError, Errors } from "@/lib/server/error";
+import { loginBodySchema, parseBody } from "@/lib/server/validation";
 
 export async function POST(request: Request) {
     try {
-        let body;
-        try {
-            body = await request.json();
-            body.username = body.username?.trim();
-            if (!body.username || !body.password) throw new Error();
-        } catch {
-            throw new AppError(Errors.INVALID_BODY);
-        }
-
+        const body = parseBody(loginBodySchema, await request.json());
         const result = await loginUser(body.username, body.password);
         return successResponse(result);
     } catch (error) {
