@@ -12,8 +12,8 @@ describe("GET /api/leaderboard", () => {
 
     it("returns 200 with leaderboard data", async () => {
         vi.mocked(getBalanceLeaderboard).mockResolvedValueOnce([
-            { rank: 1, username: "alice", balance: 1000 },
-            { rank: 2, username: "bob", balance: 500 },
+            { rank: 1, username: "user1", balance: 1000 },
+            { rank: 2, username: "user2", balance: 500 },
         ]);
 
         const res = await GET();
