@@ -19,7 +19,7 @@
     "@emotion/react": "11.14.0",
     "@emotion/styled": "11.14.1",
     "@hookform/resolvers": "5.2.2",
-    "@mui/icons-material": "7.3.9",
+    "@iconify/react": "6.0.2",
     "@mui/material": "7.3.9",
     "@mui/x-charts": "8.28.2",
     "@scalar/nextjs-api-reference": "0.10.4",
