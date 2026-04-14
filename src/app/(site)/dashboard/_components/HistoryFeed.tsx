@@ -13,10 +13,6 @@ interface Props {
 export default function HistoryFeed({ rows, isLoading }: Props) {
     return (
         <Paper elevation={0} sx={{ display: "flex", flex: 1, flexDirection: "column", gap: 1.5 }}>
-            <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-                <Iconify icon="mdi:history" sx={{ color: "text.disabled" }} />
-                <Typography color="text.secondary">Activity Feed</Typography>
-            </Box>
             <HistoryTable rows={rows} isLoading={isLoading} maxRowsPerPage={10} limit={5} />
         </Paper>
     );

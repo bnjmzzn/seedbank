@@ -93,11 +93,6 @@ export default function BalanceChart({ balance, rows, isLoading, maxBins = 10 }:
                 gap: 1.5,
             }}
         >
-            <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-                <Iconify icon="mdi:chart-bar" sx={{ color: "text.disabled" }} />
-                <Typography color="text.secondary">Recent Activity</Typography>
-            </Box>
-
             {isLoading && <Skeleton variant="rounded" sx={{ flex: 1, minHeight: 140 }} />}
 
             {isEmpty && (

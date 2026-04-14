@@ -32,11 +32,6 @@ export default function BalanceCard({ balance, rows, isLoading }: Props) {
     return (
         <Paper sx={paperSx} elevation={0}>
             <Box>
-                <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-                    <Iconify icon="mdi:wallet-outline" sx={{ color: "text.disabled" }} />
-                    <Typography color="text.secondary">Balance</Typography>
-                </Box>
-
                 {isLoading ? (
                     <Skeleton variant="text" width={200} height={60} />
                 ) : (

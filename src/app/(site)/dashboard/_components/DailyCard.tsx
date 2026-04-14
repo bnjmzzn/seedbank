@@ -102,11 +102,6 @@ export default function DailyCard({ daily, isLoading, onClaimed }: Props) {
     return (
         <Paper sx={paperSx} elevation={0}>
             <Box>
-                <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-                    <Iconify icon="mdi:calendar-outline" sx={{ color: "text.disabled" }} />
-                    <Typography color="text.secondary">Daily Reward</Typography>
-                </Box>
-
                 {daily?.claimable && (
                     <Box sx={{ mt: 1.5 }}>
                         <Button

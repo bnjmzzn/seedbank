@@ -97,11 +97,6 @@ export default function GameList() {
 
     return (
         <Box>
-            <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, mb: 1.5 }}>
-                <Iconify icon="mdi:controller" sx={{ color: "text.disabled" }} />
-                <Typography color="text.secondary">Games</Typography>
-            </Box>
-
             {isMobile && (
                 <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
                     {GAMES.map((game) => (
