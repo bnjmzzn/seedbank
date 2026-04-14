@@ -12,9 +12,10 @@ interface UseHistoryParams {
 
 export function useHistory(username: string, params: UseHistoryParams = {}) {
     const { type, limit } = params;
+    const hasUsername  = username.length > 0;
 
     const { data, error, isLoading, mutate } = useSWR<ApiResponse<HistoryRow[]>>(
-        ["history", username, type, limit],
+        hasUsername ? ["history", username, type, limit] : null,
         () => api.user.history(username, { type, limit }).then(res => res.data),
         { revalidateOnFocus: false }
     );
