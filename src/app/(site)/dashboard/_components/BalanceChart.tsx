@@ -48,8 +48,18 @@ function ChartTooltip({ active, payload }: TooltipProps) {
                 borderRadius: 1,
                 px: 1.5,
                 py: 1,
+                fontFamily: "monospace"
             }}
         >
+            <Typography fontWeight={700}>
+                {point.reason}
+            </Typography>
+            <Typography
+                fontWeight={600}
+                sx={{ color: isPositive ? "success.main" : "error.main" }}
+            >
+                {changeStr}
+            </Typography>
             <Typography variant="caption" color="text.secondary" display="block">
                 {new Date(point.date).toLocaleDateString(undefined, {
                     month: "short",
@@ -58,15 +68,8 @@ function ChartTooltip({ active, payload }: TooltipProps) {
                     minute: "2-digit",
                 })}
             </Typography>
-            <Typography fontWeight={700} sx={{ fontFamily: "monospace" }}>
-                {point.balanceAfter.toLocaleString()}
-            </Typography>
-            <Typography
-                variant="caption"
-                fontWeight={600}
-                sx={{ fontFamily: "monospace", color: isPositive ? "success.main" : "error.main" }}
-            >
-                {changeStr}
+            <Typography fontWeight={700}>
+                Balance: {""} {point.balanceAfter.toLocaleString()}
             </Typography>
         </Box>
     );
