@@ -1,9 +1,9 @@
 "use client";
 
 import { Paper, Typography, Box, Skeleton } from "@mui/material";
-import { AccountBalanceWalletOutlined } from "@mui/icons-material";
 import type { HistoryRow } from "@/types/db";
 import { useCountUp } from "@/lib/client/hooks";
+import Iconify from "@/components/shared/Iconify";
 
 interface Props {
     balance: number;
@@ -33,7 +33,7 @@ export default function BalanceCard({ balance, rows, isLoading }: Props) {
         <Paper sx={paperSx} elevation={0}>
             <Box>
                 <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-                    <AccountBalanceWalletOutlined color="disabled" />
+                    <Iconify icon="mdi:wallet-outline" sx={{ color: "text.disabled" }} />
                     <Typography color="text.secondary">Balance</Typography>
                 </Box>
 

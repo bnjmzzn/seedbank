@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { BottomNavigation, BottomNavigationAction, Avatar, Paper } from "@mui/material";
 import { usePathname, useRouter } from "next/navigation";
-import { navItems } from "@/lib/client/nav";
+import { NAV_ITEMS } from "@/lib/client/registry/nav";
+import Iconify from "@/components/shared/Iconify";
 import { useMe } from "@/lib/client/hooks";
 import { getAvatarUrl } from "@/lib/client/utils";
 import ProfileMenu from "./ProfileMenu";
@@ -47,12 +48,12 @@ export default function BottomNav() {
                     },
                 }}
             >
-                {navItems.map((item) => (
+                {NAV_ITEMS.map((item) => (
                     <BottomNavigationAction
                         key={item.href}
                         label={item.label}
                         value={item.href}
-                        icon={<item.icon />}
+                        icon={<Iconify icon={item.icon} />}
                         onClick={() => router.push(item.href)}
                     />
                 ))}

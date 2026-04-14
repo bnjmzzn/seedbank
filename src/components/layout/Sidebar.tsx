@@ -14,7 +14,8 @@ import {
     Divider,
 } from "@mui/material";
 import { usePathname, useRouter } from "next/navigation";
-import { navItems } from "@/lib/client/nav";
+import { NAV_ITEMS } from "@/lib/client/registry/nav";
+import Iconify from "@/components/shared/Iconify";
 import { useMe } from "@/lib/client/hooks";
 import { getAvatarUrl } from "@/lib/client/utils";
 import ProfileMenu from "./ProfileMenu";
@@ -55,34 +56,34 @@ export default function Sidebar() {
             <Brand sx={{ px: 1, mb: 3 }} />
 
             <List disablePadding sx={{ display: "flex", flexDirection: "column", gap: 0.5 }}>
-                {navItems.map((item) => {
-                    const active = pathname === item.href;
-                    return (
-                        <ListItemButton
-                            key={item.href}
-                            selected={active}
-                            onClick={() => router.push(item.href)}
-                            sx={{
-                                py: 1.5,
-                                "&.Mui-selected": {
+            {NAV_ITEMS.map((item) => {
+                const active = pathname === item.href;
+                return (
+                    <ListItemButton
+                        key={item.href}
+                        selected={active}
+                        onClick={() => router.push(item.href)}
+                        sx={{
+                            py: 1.5,
+                            "&.Mui-selected": {
+                                bgcolor: "primary.dark",
+                                color: "primary.main",
+                                "&:hover": {
                                     bgcolor: "primary.dark",
-                                    color: "primary.main",
-                                    "&:hover": {
-                                        bgcolor: "primary.dark",
-                                    },
-                                    "& .MuiListItemIcon-root": {
-                                        color: "primary.main",
-                                    },
                                 },
-                            }}
-                        >
-                            <ListItemIcon sx={{ minWidth: 40 }}>
-                                <item.icon />
-                            </ListItemIcon>
-                            <ListItemText primary={item.label} />
-                        </ListItemButton>
-                    );
-                })}
+                                "& .MuiListItemIcon-root": {
+                                    color: "primary.main",
+                                },
+                            },
+                        }}
+                    >
+                        <ListItemIcon sx={{ minWidth: 40 }}>
+                            <Iconify icon={item.icon} />
+                        </ListItemIcon>
+                        <ListItemText primary={item.label} />
+                    </ListItemButton>
+                );
+            })}
             </List>
 
             <Box sx={{ flexGrow: 1 }} />

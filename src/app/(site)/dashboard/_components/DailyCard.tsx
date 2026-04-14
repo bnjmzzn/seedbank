@@ -2,10 +2,10 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { Paper, Typography, Box, Button, Skeleton } from "@mui/material";
-import { CalendarTodayOutlined } from "@mui/icons-material";
 import { api } from "@/lib/client/api";
 import { DAILY_AMOUNT } from "@/lib/config";
 import { showSnackbar } from "@/components/shared/SnackBar";
+import Iconify from "@/components/shared/Iconify";
 
 interface DailyStatus {
     claimable: boolean;
@@ -104,7 +104,7 @@ export default function DailyCard({ daily, isLoading, onClaimed }: Props) {
         <Paper sx={paperSx} elevation={0}>
             <Box>
                 <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-                    <CalendarTodayOutlined color="disabled" />
+                    <Iconify icon="mdi:calendar-outline" sx={{ color: "text.disabled" }} />
                     <Typography color="text.secondary">Daily Reward</Typography>
                 </Box>
 

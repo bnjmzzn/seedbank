@@ -2,10 +2,9 @@
 
 import { Menu, MenuItem, ListItemIcon, ListItemText, Divider } from "@mui/material";
 import type { PopoverOrigin } from "@mui/material";
-import PersonIcon from "@mui/icons-material/Person";
-import LogoutIcon from "@mui/icons-material/Logout";
 import { useRouter } from "next/navigation";
 import { logout } from "@/lib/client/utils";
+import Iconify from "../shared/Iconify";
 
 interface ProfileMenuProps {
     anchorEl: HTMLElement | null;
@@ -59,7 +58,9 @@ export default function ProfileMenu({
             }}
         >
             <MenuItem onClick={handleProfile}>
-                <ListItemIcon><PersonIcon/></ListItemIcon>
+                <ListItemIcon>
+                    <Iconify icon="mdi:account" />
+                </ListItemIcon>
                 <ListItemText>View profile</ListItemText>
             </MenuItem>
             <Divider />
@@ -71,7 +72,9 @@ export default function ProfileMenu({
                         backgroundColor: "error.dark",
                     }
                 }}>
-                <ListItemIcon><LogoutIcon sx={{ color: "error.main" }} /></ListItemIcon>
+                <ListItemIcon>
+                    <Iconify icon="mdi:logout" sx={{ color: "error.main" }} />
+                </ListItemIcon>
                 <ListItemText>Logout</ListItemText>
             </MenuItem>
         </Menu>

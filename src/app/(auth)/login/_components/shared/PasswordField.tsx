@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { TextField, InputAdornment, IconButton, TextFieldProps } from "@mui/material";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
+import Iconify from "@/components/shared/Iconify";
 
 interface Props extends Omit<TextFieldProps, "type"> {
     showToggle?: boolean;
@@ -31,10 +31,7 @@ export default function PasswordField({ showToggle = true, ...props }: Props) {
                                 size="small"
                                 disabled={!!props.disabled}
                             >
-                                {show
-                                    ? <Visibility fontSize="small" />
-                                    : <VisibilityOff fontSize="small" />
-                                }
+                                <Iconify icon={show ? "mdi:eye" : "mdi:eye-off"} />
                             </IconButton>
                         </InputAdornment>
                     ) : undefined,
