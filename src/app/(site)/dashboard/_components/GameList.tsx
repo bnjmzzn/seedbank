@@ -96,7 +96,7 @@ export default function GameList() {
     }
 
     return (
-        <Box sx={{ p: 2 }}>
+        <Box>
             <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, mb: 2 }}>
                 <Iconify icon="mdi:controller" sx={{ color: "text.disabled" }} />
                 <Typography color="text.secondary">Games</Typography>

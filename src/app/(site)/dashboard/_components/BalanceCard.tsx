@@ -12,7 +12,6 @@ interface Props {
 }
 
 const paperSx = {
-    p: 2,
     height: 160,
     minWidth: 300,
     display: "flex",
