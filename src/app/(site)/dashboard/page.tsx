@@ -6,6 +6,7 @@ import DailyCard from "./_components/DailyCard";
 import GameList from "./_components/GameList";
 import TransactionFeed from "./_components/HistoryFeed";
 import { useHistory, useMe } from "@/lib/client/hooks";
+import BalanceChart from "./_components/BalanceChart";
 
 export default function DashboardPage() {
     const { me, isLoading, mutate: mutateMe } = useMe();
@@ -33,7 +34,14 @@ export default function DashboardPage() {
                 />
             </Box>
             <GameList />
-            <TransactionFeed rows={rows} isLoading={historyLoading} />
+            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
+                <TransactionFeed rows={rows} isLoading={historyLoading} />
+                <BalanceChart
+                    balance={me?.balance ?? 0}
+                    rows={rows}
+                    isLoading={isLoading || historyLoading}
+                />
+            </Box>
         </Box>
     );
 }
