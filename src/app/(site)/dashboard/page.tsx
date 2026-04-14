@@ -16,12 +16,12 @@ export default function DashboardPage() {
         <Box sx={{
             display: "flex",
             flexDirection: "column",
-            gap: 2,
+            gap: 4,
             minWidth: 0,
             overflow: "hidden",
             p: { sm: 1, md:2 }
         }}>
-            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
+            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
                 <BalanceCard
                     balance={me?.balance ?? 0}
                     rows={rows}
@@ -34,7 +34,7 @@ export default function DashboardPage() {
                 />
             </Box>
             <GameList />
-            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
+            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
                 <TransactionFeed rows={rows} isLoading={historyLoading} />
                 <BalanceChart
                     balance={me?.balance ?? 0}
