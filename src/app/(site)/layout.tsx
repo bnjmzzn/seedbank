@@ -30,6 +30,7 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
                     overflowX: "hidden",
                     overflowY: "scroll",
                     p: 3,
+                    pb: { xs: 10, md: 3 },
                 }}
             >
                 {children}
