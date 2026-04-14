@@ -1,20 +1,19 @@
 "use client";
 
 import { Typography, Box, ButtonBase, Paper, useTheme, useMediaQuery } from "@mui/material";
-import VideogameAssetIcon from "@mui/icons-material/VideogameAsset";
-import { PlayArrowRounded } from "@mui/icons-material";
 import { useRouter } from "next/navigation";
-import { GAMES, type Game } from "@/lib/client/games";
+import { GAMES, type GameEntry } from "@/lib/client/registry/games";
+import Iconify from "@/components/shared/Iconify";
 
-function GameCard({ game, onPlay }: { game: Game; onPlay: (slug: string) => void }) {
+function GameCard({ game, onPlay }: { game: GameEntry; onPlay: (href: string) => void }) {
     const theme = useTheme();
-    const bg = theme.palette[game.color].main;
-    const fg = theme.palette[game.color].contrastText;
-    const Icon = game.icon;
+    const palette = theme.palette[game.color as keyof typeof theme.palette] as { main: string; contrastText: string };
+    const bg = palette.main;
+    const fg = palette.contrastText;
 
     return (
         <ButtonBase
-            onClick={() => onPlay(game.slug)}
+            onClick={() => onPlay(game.href)}
             sx={{
                 display: "block",
                 borderRadius: 2,
@@ -33,33 +32,57 @@ function GameCard({ game, onPlay }: { game: Game; onPlay: (slug: string) => void
                 justifyContent: "center",
                 gap: 1.5,
             }}>
-                <Icon sx={{ color: fg, fontSize: 40 }} />
+                <Iconify icon={game.icon} sx={{ color: fg, fontSize: 50 }} />
                 <Typography fontWeight={700} sx={{ color: fg }}>{game.label}</Typography>
             </Box>
         </ButtonBase>
     );
 }
 
-function GameRow({ game, onPlay }: { game: Game; onPlay: (slug: string) => void }) {
+function GameRow({ game, onPlay }: { game: GameEntry; onPlay: (href: string) => void }) {
     const theme = useTheme();
-    const bg = theme.palette[game.color].main;
-    const fg = theme.palette[game.color].contrastText;
-    const Icon = game.icon;
+    const palette = theme.palette[game.color as keyof typeof theme.palette] as { main: string; contrastText: string };
 
     return (
-        <Paper elevation={1} sx={{ display: "flex", alignItems: "center", borderRadius: 2, overflow: "hidden", height: 72 }}>
-            <Box sx={{ bgcolor: bg, height: "100%", aspectRatio: "1", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                <Icon sx={{ color: fg, fontSize: 28 }} />
-            </Box>
-
-            <Typography fontWeight={700} sx={{ flex: 1, px: 2 }}>{game.label}</Typography>
-
-            <ButtonBase onClick={() => onPlay(game.slug)} sx={{ height: "100%", aspectRatio: "1", flexShrink: 0 }}>
-                <Box sx={{ bgcolor: theme.palette.primary.main, height: "100%", width: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                    <PlayArrowRounded sx={{ color: theme.palette.primary.contrastText, fontSize: 28 }} />
+        <ButtonBase
+            onClick={() => onPlay(game.href)}
+            sx={{ display: "block", width: "100%", borderRadius: 2 }}
+        >
+            <Paper
+                elevation={1}
+                sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    borderRadius: 2,
+                    overflow: "hidden",
+                    px: 2,
+                    py: 1.5,
+                    gap: 2,
+                }}
+            >
+                <Box
+                    sx={{
+                        bgcolor: palette.main,
+                        borderRadius: 1.5,
+                        width: 44,
+                        height: 44,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        flexShrink: 0,
+                    }}
+                >
+                    <Iconify icon={game.icon} sx={{ color: palette.contrastText }} />
                 </Box>
-            </ButtonBase>
-        </Paper>
+
+                <Box sx={{ flex: 1, textAlign: "left" }}>
+                    <Typography fontWeight={700}>{game.label}</Typography>
+                    <Typography variant="body2" color="text.secondary">{game.desc}</Typography>
+                </Box>
+
+                <Iconify icon="mdi:chevron-right" sx={{ color: "text.disabled" }} />
+            </Paper>
+        </ButtonBase>
     );
 }
 
@@ -68,20 +91,20 @@ export default function GameList() {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
-    const handlePlay = (slug: string) => {
-        router.push(`/games/${slug}`);
-    };
+    function handlePlay(href: string) {
+        router.push(href);
+    }
 
     return (
         <Box sx={{ p: 2 }}>
             <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, mb: 2 }}>
-                <VideogameAssetIcon color="disabled" />
+                <Iconify icon="mdi:controller" sx={{ color: "text.disabled" }} />
                 <Typography color="text.secondary">Games</Typography>
             </Box>
 
             {isMobile && (
                 <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
-                    {GAMES.map(game => (
+                    {GAMES.map((game) => (
                         <GameRow key={game.id} game={game} onPlay={handlePlay} />
                     ))}
                 </Box>
@@ -89,7 +112,7 @@ export default function GameList() {
 
             {!isMobile && (
                 <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1.5 }}>
-                    {GAMES.map(game => (
+                    {GAMES.map((game) => (
                         <GameCard key={game.id} game={game} onPlay={handlePlay} />
                     ))}
                 </Box>
