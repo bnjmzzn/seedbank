@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Paper, Typography, Box, Button, Skeleton } from "@mui/material";
 import { api } from "@/lib/client/api";
-import { DAILY_AMOUNT } from "@/lib/config";
+import { CURRENCY_TICKER, DAILY_AMOUNT } from "@/lib/config";
 import { showSnackbar } from "@/components/shared/SnackBar";
 import Iconify from "@/components/shared/Iconify";
 
@@ -69,7 +69,7 @@ export default function DailyCard({ daily, isLoading, onClaimed }: Props) {
         try {
             const res = await api.user.daily.claim();
             onClaimed?.();
-            showSnackbar(`You claimed ${res.data.data.claimed.toLocaleString()} SEED!`, "success");
+            showSnackbar(`You claimed ${res.data.data.claimed.toLocaleString()} ${CURRENCY_TICKER}!`, "success");
         } finally {
             setClaiming(false);
         }
@@ -137,7 +137,7 @@ export default function DailyCard({ daily, isLoading, onClaimed }: Props) {
                         {bottomLeftText}
                     </Typography>
                     <Typography color="text.secondary">
-                        {DAILY_AMOUNT.toLocaleString()} SEED
+                        {DAILY_AMOUNT.toLocaleString()} {CURRENCY_TICKER}
                     </Typography>
                 </Box>
             </Box>

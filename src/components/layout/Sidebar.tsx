@@ -20,6 +20,7 @@ import { useMe } from "@/lib/client/hooks";
 import { getAvatarUrl } from "@/lib/client/utils";
 import ProfileMenu from "./ProfileMenu";
 import Brand from "@/components/shared/Brand";
+import { CURRENCY_TICKER } from "@/lib/config";
 
 export default function Sidebar() {
     const pathname = usePathname();
@@ -112,7 +113,7 @@ export default function Sidebar() {
                         {me?.username ?? "—"}
                     </Typography>
                     <Typography color="text.secondary">
-                        {me ? `${me.balance.toLocaleString()} seeds` : "—"}
+                        {me ? `${me.balance.toLocaleString()} ${CURRENCY_TICKER}` : "—"}
                     </Typography>
                 </Box>
             </ButtonBase>

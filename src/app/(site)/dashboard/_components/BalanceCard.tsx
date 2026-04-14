@@ -4,6 +4,7 @@ import { Paper, Typography, Box, Skeleton } from "@mui/material";
 import type { HistoryRow } from "@/types/db";
 import { useCountUp } from "@/lib/client/hooks";
 import Iconify from "@/components/shared/Iconify";
+import { CURRENCY_TICKER } from "@/lib/config";
 
 interface Props {
     balance: number;
@@ -41,7 +42,7 @@ export default function BalanceCard({ balance, rows, isLoading }: Props) {
                 ) : (
                     <Typography variant="h4" fontWeight={700}>
                         {animatedBalance.toLocaleString()}{" "}
-                        <Typography component="span" variant="h6" color="text.secondary" fontWeight={400}>SEED</Typography>
+                        <Typography component="span" variant="h6" color="text.secondary" fontWeight={400}>{CURRENCY_TICKER}</Typography>
                     </Typography>
                 )}
             </Box>

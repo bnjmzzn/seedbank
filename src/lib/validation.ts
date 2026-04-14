@@ -17,5 +17,5 @@ export const amountRule = (min: number, max: number) =>
     z
         .number()
         .int({ error: "Must be a whole number" })
-        .min(min, { error: `Minimum is ${min.toLocaleString()} SEED` })
-        .max(max, { error: `Maximum is ${max.toLocaleString()} SEED` });
+        .min(min, { error: `Minimum is ${min.toLocaleString()} ${CONFIG.CURRENCY_TICKER}` })
+        .max(max, { error: `Maximum is ${max.toLocaleString()} ${CONFIG.CURRENCY_TICKER}` });
