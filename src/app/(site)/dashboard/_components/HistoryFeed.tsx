@@ -1,9 +1,8 @@
 "use client";
 
-import { Paper, Typography, Box } from "@mui/material";
-import { HistoryRow } from "@/types/db";
+import { Paper } from "@mui/material";
+import type { HistoryRow } from "@/types/db";
 import HistoryTable from "@/components/shared/HistoryTable";
-import Iconify from "@/components/shared/Iconify";
 
 interface Props {
     rows: HistoryRow[];
@@ -12,7 +11,7 @@ interface Props {
 
 export default function HistoryFeed({ rows, isLoading }: Props) {
     return (
-        <Paper elevation={0} sx={{ display: "flex", flex: 1, flexDirection: "column", gap: 1.5 }}>
+        <Paper elevation={0} sx={{ display: "flex", flex: 1, flexDirection: "column" }}>
             <HistoryTable rows={rows} isLoading={isLoading} maxRowsPerPage={10} limit={5} />
         </Paper>
     );

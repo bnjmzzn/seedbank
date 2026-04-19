@@ -16,7 +16,6 @@ import {
 import type { HistoryRow } from "@/types/db";
 import type { BalancePoint } from "@/lib/client/utils";
 import { buildBalanceTimeline } from "@/lib/client/utils";
-import Iconify from "@/components/shared/Iconify";
 
 interface Props {
     balance: number;
@@ -40,24 +39,17 @@ function ChartTooltip({ active, payload }: TooltipProps) {
         : point.change.toLocaleString();
 
     return (
-        <Box
-            sx={{
-                bgcolor: "background.paper",
-                border: "1px solid",
-                borderColor: "divider",
-                borderRadius: 1,
-                px: 1.5,
-                py: 1,
-                fontFamily: "monospace"
-            }}
-        >
-            <Typography fontWeight={700}>
-                {point.reason}
-            </Typography>
-            <Typography
-                fontWeight={600}
-                sx={{ color: isPositive ? "success.main" : "error.main" }}
-            >
+        <Box sx={{
+            bgcolor: "background.paper",
+            border: "1px solid",
+            borderColor: "divider",
+            borderRadius: 1,
+            px: 1.5,
+            py: 1,
+            fontFamily: "monospace",
+        }}>
+            <Typography fontWeight={700}>{point.reason}</Typography>
+            <Typography fontWeight={600} sx={{ color: isPositive ? "success.main" : "error.main" }}>
                 {changeStr}
             </Typography>
             <Typography variant="caption" color="text.secondary" display="block">
@@ -69,7 +61,7 @@ function ChartTooltip({ active, payload }: TooltipProps) {
                 })}
             </Typography>
             <Typography fontWeight={700}>
-                Balance: {""} {point.balanceAfter.toLocaleString()}
+                Balance: {point.balanceAfter.toLocaleString()}
             </Typography>
         </Box>
     );
@@ -85,26 +77,23 @@ export default function BalanceChart({ balance, rows, isLoading, maxBins = 10 }:
 
     const isEmpty = !isLoading && data.length === 0;
 
-    return (
-        <Paper
-            elevation={0}
-            sx={{
-                flex: 1,
-                minWidth: 300,
-                display: "flex",
-                flexDirection: "column",
-                gap: 1.5,
-            }}
-        >
-            {isLoading && <Skeleton variant="rounded" sx={{ flex: 1, minHeight: 140 }} />}
+    if (isLoading) {
+        return (
+            <Paper elevation={0} sx={{ flex: 1, minWidth: 300, display: "flex", flexDirection: "column" }}>
+                <Skeleton variant="rounded" sx={{ flex: 1, minHeight: 140 }} />
+            </Paper>
+        );
+    }
 
+    return (
+        <Paper elevation={0} sx={{ flex: 1, minWidth: 300, display: "flex", flexDirection: "column" }}>
             {isEmpty && (
-                <Box sx={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <Box sx={{ flex: 1, minHeight: 140, display: "flex", alignItems: "center", justifyContent: "center" }}>
                     <Typography color="text.secondary">No history yet.</Typography>
                 </Box>
             )}
 
-            {!isLoading && !isEmpty && (
+            {!isEmpty && (
                 <Box sx={{ flex: 1, minHeight: 140 }}>
                     <ResponsiveContainer width="100%" height="100%">
                         <BarChart data={data} barCategoryGap="20%">
@@ -119,10 +108,9 @@ export default function BalanceChart({ balance, rows, isLoading, maxBins = 10 }:
                                 {data.map((point, i) => (
                                     <Cell
                                         key={i}
-                                        fill={
-                                            point.change > 0
-                                                ? theme.palette.success.main
-                                                : theme.palette.error.main
+                                        fill={point.change > 0
+                                            ? theme.palette.success.main
+                                            : theme.palette.error.main
                                         }
                                     />
                                 ))}
