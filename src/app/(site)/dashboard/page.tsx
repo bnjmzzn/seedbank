@@ -23,7 +23,7 @@ export default function DashboardPage() {
             p: { sm: 1, md: 2 }
         }}>
             <Box sx={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
-                <Stack flex={1}>
+                <Stack flex={1} minHeight={150}>
                     <SectionHeader icon="mdi:wallet-outline" label="Balance" />
                     <BalanceCard
                         balance={me?.balance ?? 0}
@@ -31,7 +31,7 @@ export default function DashboardPage() {
                         isLoading={loading}
                     />
                 </Stack>
-                <Stack flex={1}>
+                <Stack flex={1} minHeight={150}>
                     <SectionHeader icon="mdi:calendar-outline" label="Daily Reward" />
                     <DailyCard
                         daily={me?.daily ?? null}

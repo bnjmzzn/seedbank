@@ -5,7 +5,6 @@ import { Paper, Typography, Box, Button, Skeleton } from "@mui/material";
 import { api } from "@/lib/client/api";
 import { CURRENCY_TICKER, DAILY_AMOUNT } from "@/lib/config";
 import { showSnackbar } from "@/components/shared/SnackBar";
-import Iconify from "@/components/shared/Iconify";
 
 interface DailyStatus {
     claimable: boolean;
@@ -29,7 +28,6 @@ function formatCountdown(ms: number): string {
 }
 
 const paperSx = {
-    height: 160,
     minWidth: 300,
     display: "flex",
     flex: 1,
@@ -77,21 +75,21 @@ export default function DailyCard({ daily, isLoading, onClaimed }: Props) {
 
     const elapsed = remaining !== null ? TWENTY_FOUR_HOURS - remaining : TWENTY_FOUR_HOURS;
     const elapsedPct = Math.min((elapsed / TWENTY_FOUR_HOURS) * 100, 100);
-    const countdownText = remaining !== null ? formatCountdown(remaining) : "00:00:00";
     const progressColor = daily?.claimable ? "success.main" : "primary.main";
     const bottomLeftText = daily?.claimable ? "Ready to claim" : "Come back later";
+    const countdownText = remaining !== null ? formatCountdown(remaining) : "00:00:00";
+    const isClaimable = daily?.claimable ?? false;
 
     if (isLoading) {
         return (
             <Paper sx={paperSx} elevation={0}>
                 <Box>
-                    <Skeleton variant="text" width={80} />
-                    <Skeleton variant="text" width={160} height={60} />
+                    <Skeleton variant="rounded" width={160} height={42} />
                 </Box>
                 <Box>
                     <Skeleton variant="rounded" height={4} />
                     <Box sx={{ display: "flex", justifyContent: "space-between", mt: 0.5 }}>
-                        <Skeleton variant="text" width={60} />
+                        <Skeleton variant="text" width={80} />
                         <Skeleton variant="text" width={60} />
                     </Box>
                 </Box>
@@ -102,22 +100,20 @@ export default function DailyCard({ daily, isLoading, onClaimed }: Props) {
     return (
         <Paper sx={paperSx} elevation={0}>
             <Box>
-                {daily?.claimable && (
-                    <Box sx={{ mt: 1.5 }}>
-                        <Button
-                            variant="contained"
-                            size="large"
-                            onClick={handleClaim}
-                            loading={claiming}
-                            sx={{ borderRadius: 2, fontWeight: 700 }}
-                        >
-                            Claim Daily
-                        </Button>
-                    </Box>
+                {isClaimable && (
+                    <Button
+                        variant="contained"
+                        size="large"
+                        onClick={handleClaim}
+                        loading={claiming}
+                        sx={{ borderRadius: 2, fontWeight: 700 }}
+                    >
+                        Claim Daily
+                    </Button>
                 )}
 
-                {!daily?.claimable && (
-                    <Typography variant="h4" fontWeight={700} sx={{ fontVariantNumeric: "tabular-nums", mt: 0.5 }}>
+                {!isClaimable && (
+                    <Typography variant="h4" fontWeight={700} sx={{ fontVariantNumeric: "tabular-nums" }}>
                         {countdownText}
                     </Typography>
                 )}
@@ -125,15 +121,11 @@ export default function DailyCard({ daily, isLoading, onClaimed }: Props) {
 
             <Box>
                 <Box sx={{ display: "flex", height: 4, borderRadius: 999, overflow: "hidden", bgcolor: "divider" }}>
-                    <Box sx={{ width: `${elapsedPct}%`, bgcolor: progressColor }} />
+                    <Box sx={{ width: `${elapsedPct}%`, bgcolor: progressColor, transition: "width 0.6s ease" }} />
                 </Box>
                 <Box sx={{ display: "flex", justifyContent: "space-between", mt: 0.5 }}>
-                    <Typography color="text.secondary">
-                        {bottomLeftText}
-                    </Typography>
-                    <Typography color="text.secondary">
-                        {DAILY_AMOUNT.toLocaleString()} {CURRENCY_TICKER}
-                    </Typography>
+                    <Typography color="text.secondary">{bottomLeftText}</Typography>
+                    <Typography color="text.secondary">{DAILY_AMOUNT.toLocaleString()} {CURRENCY_TICKER}</Typography>
                 </Box>
             </Box>
         </Paper>
