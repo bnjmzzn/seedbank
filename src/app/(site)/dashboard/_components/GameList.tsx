@@ -1,15 +1,17 @@
 "use client";
 
-import { Typography, Box, ButtonBase, Paper, useTheme, useMediaQuery } from "@mui/material";
+import { Typography, Box, ButtonBase, Paper, Skeleton, useTheme, useMediaQuery } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { GAMES, type GameEntry } from "@/lib/client/registry/games";
 import Iconify from "@/components/shared/Iconify";
 
+interface Props {
+    isLoading?: boolean;
+}
+
 function GameCard({ game, onPlay }: { game: GameEntry; onPlay: (href: string) => void }) {
     const theme = useTheme();
     const palette = theme.palette[game.color as keyof typeof theme.palette] as { main: string; contrastText: string };
-    const bg = palette.main;
-    const fg = palette.contrastText;
 
     return (
         <ButtonBase
@@ -22,7 +24,7 @@ function GameCard({ game, onPlay }: { game: GameEntry; onPlay: (href: string) =>
             }}
         >
             <Box sx={{
-                bgcolor: bg,
+                bgcolor: palette.main,
                 borderRadius: 2,
                 width: 140,
                 height: 200,
@@ -32,8 +34,8 @@ function GameCard({ game, onPlay }: { game: GameEntry; onPlay: (href: string) =>
                 justifyContent: "center",
                 gap: 1.5,
             }}>
-                <Iconify icon={game.icon} sx={{ color: fg, fontSize: 50 }} />
-                <Typography fontWeight={700} sx={{ color: fg }}>{game.label}</Typography>
+                <Iconify icon={game.icon} sx={{ color: palette.contrastText, fontSize: 50 }} />
+                <Typography fontWeight={700} sx={{ color: palette.contrastText }}>{game.label}</Typography>
             </Box>
         </ButtonBase>
     );
@@ -60,18 +62,16 @@ function GameRow({ game, onPlay }: { game: GameEntry; onPlay: (href: string) => 
                     gap: 2,
                 }}
             >
-                <Box
-                    sx={{
-                        bgcolor: palette.main,
-                        borderRadius: 1.5,
-                        width: 44,
-                        height: 44,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        flexShrink: 0,
-                    }}
-                >
+                <Box sx={{
+                    bgcolor: palette.main,
+                    borderRadius: 1.5,
+                    width: 44,
+                    height: 44,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexShrink: 0,
+                }}>
                     <Iconify icon={game.icon} sx={{ color: palette.contrastText }} />
                 </Box>
 
@@ -86,13 +86,47 @@ function GameRow({ game, onPlay }: { game: GameEntry; onPlay: (href: string) => 
     );
 }
 
-export default function GameList() {
+function GameCardSkeleton() {
+    return <Skeleton variant="rounded" width={140} height={200} />;
+}
+
+function GameRowSkeleton() {
+    return (
+        <Box sx={{ display: "flex", alignItems: "center", gap: 2, px: 2, py: 1.5 }}>
+            <Skeleton variant="rounded" width={44} height={44} sx={{ flexShrink: 0 }} />
+            <Box sx={{ flex: 1 }}>
+                <Skeleton variant="text" width="40%" />
+                <Skeleton variant="text" width="60%" />
+            </Box>
+        </Box>
+    );
+}
+
+export default function GameList({ isLoading }: Props) {
     const router = useRouter();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
     function handlePlay(href: string) {
         router.push(href);
+    }
+
+    if (isLoading) {
+        return (
+            <Box>
+                {isMobile && (
+                    <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
+                        {GAMES.map((g) => <GameRowSkeleton key={g.id} />)}
+                    </Box>
+                )}
+
+                {!isMobile && (
+                    <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1.5 }}>
+                        {GAMES.map((g) => <GameCardSkeleton key={g.id} />)}
+                    </Box>
+                )}
+            </Box>
+        );
     }
 
     return (

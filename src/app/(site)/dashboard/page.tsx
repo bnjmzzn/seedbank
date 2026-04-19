@@ -42,7 +42,7 @@ export default function DashboardPage() {
             </Box>
             <Stack>
                 <SectionHeader icon="mdi:controller" label="Games" />
-                <GameList />
+                <GameList isLoading={loading} />
             </Stack>
 
             <Box sx={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
