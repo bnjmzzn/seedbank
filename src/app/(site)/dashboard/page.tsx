@@ -1,5 +1,4 @@
 "use client";
-
 import { Box, Stack } from "@mui/material";
 import BalanceCard from "./_components/BalanceCard";
 import DailyCard from "./_components/DailyCard";
@@ -12,6 +11,7 @@ import SectionHeader from "@/components/shared/SectionHeader";
 export default function DashboardPage() {
     const { me, isLoading, mutate: mutateMe } = useMe();
     const { rows, isLoading: historyLoading } = useHistory(me?.username ?? "");
+    const loading = isLoading && historyLoading;
 
     return (
         <Box sx={{
@@ -20,7 +20,7 @@ export default function DashboardPage() {
             gap: 4,
             minWidth: 0,
             overflow: "hidden",
-            p: { sm: 1, md:2 }
+            p: { sm: 1, md: 2 }
         }}>
             <Box sx={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
                 <Stack flex={1}>
@@ -28,35 +28,34 @@ export default function DashboardPage() {
                     <BalanceCard
                         balance={me?.balance ?? 0}
                         rows={rows}
-                        isLoading={isLoading || historyLoading}
+                        isLoading={loading}
                     />
                 </Stack>
                 <Stack flex={1}>
                     <SectionHeader icon="mdi:calendar-outline" label="Daily Reward" />
                     <DailyCard
                         daily={me?.daily ?? null}
-                        isLoading={isLoading}
+                        isLoading={loading}
                         onClaimed={mutateMe}
                     />
                 </Stack>
             </Box>
-
             <Stack>
                 <SectionHeader icon="mdi:controller" label="Games" />
                 <GameList />
             </Stack>
-            
+
             <Box sx={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
                 <Stack flex={1}>
                     <SectionHeader icon="mdi:history" label="Recent Activity" />
-                    <TransactionFeed rows={rows} isLoading={historyLoading} />
+                    <TransactionFeed rows={rows} isLoading={loading} />
                 </Stack>
                 <Stack flex={1}>
                     <SectionHeader icon="mdi:chart-bar" label="Balance Chart" />
                     <BalanceChart
                         balance={me?.balance ?? 0}
                         rows={rows}
-                        isLoading={isLoading || historyLoading}
+                        isLoading={loading}
                     />
                 </Stack>
             </Box>
