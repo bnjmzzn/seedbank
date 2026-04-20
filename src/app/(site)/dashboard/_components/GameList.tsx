@@ -9,9 +9,15 @@ interface Props {
     isLoading?: boolean;
 }
 
-function GameCard({ game, onPlay }: { game: GameEntry; onPlay: (href: string) => void }) {
+function useGamePalette(color: string) {
     const theme = useTheme();
-    const palette = theme.palette[game.color as keyof typeof theme.palette] as { main: string; contrastText: string };
+    return theme.palette[color as keyof typeof theme.palette] as { main: string; contrastText: string };
+}
+
+function GameCard({ game, onPlay }: { game: GameEntry; onPlay: (href: string) => void }) {
+    const palette = useGamePalette(game.color);
+
+    if (!palette) return null;
 
     return (
         <ButtonBase
@@ -42,8 +48,9 @@ function GameCard({ game, onPlay }: { game: GameEntry; onPlay: (href: string) =>
 }
 
 function GameRow({ game, onPlay }: { game: GameEntry; onPlay: (href: string) => void }) {
-    const theme = useTheme();
-    const palette = theme.palette[game.color as keyof typeof theme.palette] as { main: string; contrastText: string };
+    const palette = useGamePalette(game.color);
+
+    if (!palette) return null;
 
     return (
         <ButtonBase
@@ -111,41 +118,23 @@ export default function GameList({ isLoading }: Props) {
         router.push(href);
     }
 
-    if (isLoading) {
+    if (isMobile) {
         return (
-            <Box>
-                {isMobile && (
-                    <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
-                        {GAMES.map((g) => <GameRowSkeleton key={g.id} />)}
-                    </Box>
-                )}
-
-                {!isMobile && (
-                    <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1.5 }}>
-                        {GAMES.map((g) => <GameCardSkeleton key={g.id} />)}
-                    </Box>
-                )}
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
+                {isLoading
+                    ? GAMES.map((g) => <GameRowSkeleton key={g.id} />)
+                    : GAMES.map((g) => <GameRow key={g.id} game={g} onPlay={handlePlay} />)
+                }
             </Box>
         );
     }
 
     return (
-        <Box>
-            {isMobile && (
-                <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
-                    {GAMES.map((game) => (
-                        <GameRow key={game.id} game={game} onPlay={handlePlay} />
-                    ))}
-                </Box>
-            )}
-
-            {!isMobile && (
-                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1.5 }}>
-                    {GAMES.map((game) => (
-                        <GameCard key={game.id} game={game} onPlay={handlePlay} />
-                    ))}
-                </Box>
-            )}
+        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1.5 }}>
+            {isLoading
+                ? GAMES.map((g) => <GameCardSkeleton key={g.id} />)
+                : GAMES.map((g) => <GameCard key={g.id} game={g} onPlay={handlePlay} />)
+            }
         </Box>
     );
 }
