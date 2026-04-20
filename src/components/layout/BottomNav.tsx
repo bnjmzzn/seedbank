@@ -1,27 +1,18 @@
 "use client";
 
-import { useState } from "react";
 import { BottomNavigation, BottomNavigationAction, Avatar, Paper } from "@mui/material";
 import { usePathname, useRouter } from "next/navigation";
 import { NAV_ITEMS } from "@/lib/client/registry/nav";
 import Iconify from "@/components/shared/Iconify";
 import { useMe } from "@/lib/client/hooks";
 import { getAvatarUrl } from "@/lib/client/utils";
-import ProfileMenu from "./ProfileMenu";
+import ProfileMenu, { useProfileMenu } from "./ProfileMenu";
 
 export default function BottomNav() {
     const pathname = usePathname();
     const router = useRouter();
-    const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
     const { me } = useMe();
-
-    function handleProfileClick(e: React.MouseEvent<HTMLElement>) {
-        setAnchorEl(e.currentTarget);
-    }
-
-    function handleMenuClose() {
-        setAnchorEl(null);
-    }
+    const { anchorEl, open, close, isOpen } = useProfileMenu();
 
     return (
         <Paper
@@ -59,21 +50,20 @@ export default function BottomNav() {
                 ))}
                 <BottomNavigationAction
                     label={me?.username ?? "—"}
-                    value="/profile"
                     icon={
                         <Avatar
                             src={me ? getAvatarUrl(me.username) : undefined}
                             sx={{ width: 24, height: 24 }}
                         />
                     }
-                    onClick={handleProfileClick}
+                    onClick={open}
                 />
             </BottomNavigation>
 
             <ProfileMenu
                 anchorEl={anchorEl}
-                open={Boolean(anchorEl)}
-                onClose={handleMenuClose}
+                open={isOpen}
+                onClose={close}
                 username={me?.username ?? ""}
                 anchorOrigin={{ horizontal: "center", vertical: "top" }}
                 transformOrigin={{ horizontal: "center", vertical: "bottom" }}

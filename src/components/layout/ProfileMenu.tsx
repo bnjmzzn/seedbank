@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Menu, MenuItem, ListItemIcon, ListItemText, Divider } from "@mui/material";
 import type { PopoverOrigin } from "@mui/material";
 import { useRouter } from "next/navigation";
@@ -13,6 +14,20 @@ interface ProfileMenuProps {
     username: string;
     anchorOrigin?: PopoverOrigin;
     transformOrigin?: PopoverOrigin;
+}
+
+export function useProfileMenu() {
+    const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+
+    function open(e: React.MouseEvent<HTMLElement>) {
+        setAnchorEl(e.currentTarget);
+    }
+
+    function close() {
+        setAnchorEl(null);
+    }
+
+    return { anchorEl, open, close, isOpen: Boolean(anchorEl) };
 }
 
 export default function ProfileMenu({
@@ -44,9 +59,7 @@ export default function ProfileMenu({
             transformOrigin={transformOrigin}
             elevation={0}
             slotProps={{
-                list: {
-                    sx: { p: 1 },
-                },
+                list: { sx: { p: 1 } },
                 paper: {
                     sx: {
                         minWidth: 180,
@@ -68,10 +81,9 @@ export default function ProfileMenu({
                 onClick={handleLogout}
                 sx={{
                     color: "error.main",
-                    "&:hover": {
-                        backgroundColor: "error.dark",
-                    }
-                }}>
+                    "&:hover": { backgroundColor: "error.dark" },
+                }}
+            >
                 <ListItemIcon>
                     <Iconify icon="mdi:logout" sx={{ color: "error.main" }} />
                 </ListItemIcon>

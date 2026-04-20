@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import {
     Box,
     ButtonBase,
@@ -18,23 +17,15 @@ import { NAV_ITEMS } from "@/lib/client/registry/nav";
 import Iconify from "@/components/shared/Iconify";
 import { useMe } from "@/lib/client/hooks";
 import { getAvatarUrl } from "@/lib/client/utils";
-import ProfileMenu from "./ProfileMenu";
+import ProfileMenu, { useProfileMenu } from "./ProfileMenu";
 import Brand from "@/components/shared/Brand";
 import { CURRENCY_TICKER } from "@/lib/config";
 
 export default function Sidebar() {
     const pathname = usePathname();
     const router = useRouter();
-    const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
     const { me } = useMe();
-
-    function handleProfileClick(e: React.MouseEvent<HTMLElement>) {
-        setAnchorEl(e.currentTarget);
-    }
-
-    function handleMenuClose() {
-        setAnchorEl(null);
-    }
+    const { anchorEl, open, close, isOpen } = useProfileMenu();
 
     return (
         <Drawer
@@ -57,34 +48,30 @@ export default function Sidebar() {
             <Brand sx={{ px: 1, mb: 3 }} />
 
             <List disablePadding sx={{ display: "flex", flexDirection: "column", gap: 0.5 }}>
-            {NAV_ITEMS.map((item) => {
-                const active = pathname === item.href;
-                return (
-                    <ListItemButton
-                        key={item.href}
-                        selected={active}
-                        onClick={() => router.push(item.href)}
-                        sx={{
-                            py: 1.5,
-                            "&.Mui-selected": {
-                                bgcolor: "primary.dark",
-                                color: "primary.main",
-                                "&:hover": {
+                {NAV_ITEMS.map((item) => {
+                    const isActive = pathname === item.href;
+                    return (
+                        <ListItemButton
+                            key={item.href}
+                            selected={isActive}
+                            onClick={() => router.push(item.href)}
+                            sx={{
+                                py: 1.5,
+                                "&.Mui-selected": {
                                     bgcolor: "primary.dark",
-                                },
-                                "& .MuiListItemIcon-root": {
                                     color: "primary.main",
+                                    "&:hover": { bgcolor: "primary.dark" },
+                                    "& .MuiListItemIcon-root": { color: "primary.main" },
                                 },
-                            },
-                        }}
-                    >
-                        <ListItemIcon sx={{ minWidth: 40 }}>
-                            <Iconify icon={item.icon} />
-                        </ListItemIcon>
-                        <ListItemText primary={item.label} />
-                    </ListItemButton>
-                );
-            })}
+                            }}
+                        >
+                            <ListItemIcon sx={{ minWidth: 40 }}>
+                                <Iconify icon={item.icon} />
+                            </ListItemIcon>
+                            <ListItemText primary={item.label} />
+                        </ListItemButton>
+                    );
+                })}
             </List>
 
             <Box sx={{ flexGrow: 1 }} />
@@ -92,7 +79,7 @@ export default function Sidebar() {
             <Divider sx={{ mb: 2 }} />
 
             <ButtonBase
-                onClick={handleProfileClick}
+                onClick={open}
                 sx={{
                     display: "flex",
                     alignItems: "center",
@@ -109,9 +96,7 @@ export default function Sidebar() {
                     sx={{ width: 32, height: 32 }}
                 />
                 <Box sx={{ flexGrow: 1 }}>
-                    <Typography>
-                        {me?.username ?? "—"}
-                    </Typography>
+                    <Typography>{me?.username ?? "—"}</Typography>
                     <Typography color="text.secondary">
                         {me ? `${me.balance.toLocaleString()} ${CURRENCY_TICKER}` : "—"}
                     </Typography>
@@ -120,8 +105,8 @@ export default function Sidebar() {
 
             <ProfileMenu
                 anchorEl={anchorEl}
-                open={Boolean(anchorEl)}
-                onClose={handleMenuClose}
+                open={isOpen}
+                onClose={close}
                 username={me?.username ?? ""}
                 anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
                 transformOrigin={{ horizontal: "left", vertical: "bottom" }}
