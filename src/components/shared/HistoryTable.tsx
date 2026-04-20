@@ -166,7 +166,7 @@ export default function HistoryTable({ rows, type, limit, maxRowsPerPage = 10, i
                 Array.from({ length: 5 }).map((_, i) => <HistoryRowSkeleton key={i} />)
             )}
             {isEmpty && (
-                <Box sx={{ py: 6, textAlign: "center" }}>
+                <Box sx={{ flex: 1, minHeight: 140, display: "flex", alignItems: "center", justifyContent: "center" }}>
                     <Typography color="text.secondary">No history yet.</Typography>
                 </Box>
             )}
