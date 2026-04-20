@@ -26,6 +26,8 @@ export default function BalanceCard({ balance, rows, isLoading }: Props) {
     const gainPct = total === 0 ? 0 : (gain / total) * 100;
     const lossPct = total === 0 ? 0 : (loss / total) * 100;
     const animatedBalance = useCountUp(balance);
+    const animatedGain = useCountUp(gain);
+    const animatedLoss = useCountUp(loss)
 
     if (isLoading) {
         return (
@@ -61,8 +63,8 @@ export default function BalanceCard({ balance, rows, isLoading }: Props) {
                     {total > 0 && <Box sx={{ width: `${lossPct}%`, bgcolor: "error.main", transition: "width 0.6s ease" }} />}
                 </Box>
                 <Box sx={{ display: "flex", justifyContent: "space-between", mt: 0.5 }}>
-                    <Typography color="success.main">+{gain.toLocaleString()}</Typography>
-                    <Typography color="error.main">-{loss.toLocaleString()}</Typography>
+                    <Typography color="success.main">+{animatedGain.toLocaleString()}</Typography>
+                    <Typography color="error.main">-{animatedLoss.toLocaleString()}</Typography>
                 </Box>
             </Box>
         </Paper>
