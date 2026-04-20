@@ -14,16 +14,9 @@ export default function DashboardPage() {
     const loading = isLoading && historyLoading;
 
     return (
-        <Box sx={{
-            display: "flex",
-            flexDirection: "column",
-            gap: 4,
-            minWidth: 0,
-            overflow: "hidden",
-            p: { sm: 1, md: 2 }
-        }}>
-            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
-                <Stack flex={1} minHeight={150}>
+        <Stack gap={4} sx={{ minWidth: 0, overflow: "hidden", p: { sm: 1, md: 2 } }}>
+            <Stack direction="row" flexWrap="wrap" gap={4}>
+                <Stack flex={1} minHeight={150} gap={1}>
                     <SectionHeader icon="mdi:wallet-outline" label="Balance" />
                     <BalanceCard
                         balance={me?.balance ?? 0}
@@ -31,7 +24,7 @@ export default function DashboardPage() {
                         isLoading={loading}
                     />
                 </Stack>
-                <Stack flex={1} minHeight={150}>
+                <Stack flex={1} minHeight={150} gap={1}>
                     <SectionHeader icon="mdi:calendar-outline" label="Daily Reward" />
                     <DailyCard
                         daily={me?.daily ?? null}
@@ -39,18 +32,19 @@ export default function DashboardPage() {
                         onClaimed={mutateMe}
                     />
                 </Stack>
-            </Box>
-            <Stack>
+            </Stack>
+
+            <Stack gap={1}>
                 <SectionHeader icon="mdi:controller" label="Games" />
                 <GameList isLoading={loading} />
             </Stack>
 
-            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
-                <Stack flex={1}>
+            <Stack direction="row" flexWrap="wrap" gap={4}>
+                <Stack flex={1} gap={1}>
                     <SectionHeader icon="mdi:history" label="Recent Activity" />
                     <TransactionFeed rows={rows} isLoading={loading} />
                 </Stack>
-                <Stack flex={1}>
+                <Stack flex={1} gap={1}>
                     <SectionHeader icon="mdi:chart-bar" label="Balance Chart" />
                     <BalanceChart
                         balance={me?.balance ?? 0}
@@ -58,7 +52,7 @@ export default function DashboardPage() {
                         isLoading={loading}
                     />
                 </Stack>
-            </Box>
-        </Box>
+            </Stack>
+        </Stack>
     );
 }
