@@ -62,7 +62,7 @@ export default function ProfileMenu({
                 list: { sx: { p: 1 } },
                 paper: {
                     sx: {
-                        minWidth: 180,
+                        width: 248,
                         borderRadius: 1,
                         border: "1px solid",
                         borderColor: "divider",
