@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Snackbar, Alert, AlertColor } from "@mui/material";
+import { Snackbar, Alert, type AlertColor } from "@mui/material";
 
 interface SnackbarMessage {
     message: string;
@@ -10,66 +10,77 @@ interface SnackbarMessage {
     key: number;
 }
 
-let snackbarTrigger: (msg: string, sev: AlertColor, dur?: number) => void;
+const SNACKBAR_EVENT = "app:snackbar";
 
-export const showSnackbar = (message: string, severity: AlertColor = "info", duration?: number) => {
-    if (snackbarTrigger) {
-        snackbarTrigger(message, severity, duration);
-    }
-};
+interface SnackbarEventDetail {
+    message: string;
+    severity: AlertColor;
+    duration?: number;
+}
+
+export function showSnackbar(message: string, severity: AlertColor = "info", duration?: number) {
+    const detail: SnackbarEventDetail = { message, severity, duration };
+    window.dispatchEvent(new CustomEvent(SNACKBAR_EVENT, { detail }));
+}
 
 export default function SnackBar() {
-    const [snackPack, setSnackPack] = useState<readonly SnackbarMessage[]>([]);
+    const [queue, setQueue] = useState<SnackbarMessage[]>([]);
+    const [current, setCurrent] = useState<SnackbarMessage | null>(null);
     const [open, setOpen] = useState(false);
-    const [messageInfo, setMessageInfo] = useState<SnackbarMessage | undefined>(undefined);
 
     useEffect(() => {
-        snackbarTrigger = (message, severity, duration) => {
-            setSnackPack((prev) => [
-                ...prev, 
-                { message, severity, duration, key: new Date().getTime() }
-            ]);
-        };
+        function handleEvent(e: Event) {
+            const { message, severity, duration } = (e as CustomEvent<SnackbarEventDetail>).detail;
+            setQueue(prev => [...prev, { message, severity, duration, key: Date.now() }]);
+        }
+
+        window.addEventListener(SNACKBAR_EVENT, handleEvent);
+        return () => window.removeEventListener(SNACKBAR_EVENT, handleEvent);
     }, []);
 
     useEffect(() => {
-        if (snackPack.length && !messageInfo) {
-            setMessageInfo({ ...snackPack[0] });
-            setSnackPack((prev) => prev.slice(1));
+        const hasNext = queue.length > 0;
+        const isIdle = !current;
+        const isVisible = open;
+
+        if (hasNext && isIdle) {
+            setCurrent(queue[0]);
+            setQueue(prev => prev.slice(1));
             setOpen(true);
-        } else if (snackPack.length && messageInfo && open) {
+            return;
+        }
+
+        if (hasNext && isVisible) {
             setOpen(false);
         }
-    }, [snackPack, messageInfo, open]);
+    }, [queue, current, open]);
 
-    const handleClose = (_?: React.SyntheticEvent | Event, reason?: string) => {
+    function handleClose(_?: React.SyntheticEvent | Event, reason?: string) {
         if (reason === "clickaway") return;
         setOpen(false);
-    };
+    }
 
-    const handleExited = () => {
-        setMessageInfo(undefined);
-    };
+    function handleExited() {
+        setCurrent(null);
+    }
 
     return (
         <Snackbar
-            key={messageInfo?.key}
+            key={current?.key}
             open={open}
-            autoHideDuration={messageInfo?.duration ?? 4000}
+            autoHideDuration={current?.duration ?? 4000}
             onClose={handleClose}
-            TransitionProps={{ onExited: handleExited }}
+            slotProps={{ transition: { onExited: handleExited } }}
             anchorOrigin={{ vertical: "top", horizontal: "center" }}
             sx={{ my: 2 }}
         >
             <Alert
                 onClose={handleClose}
-                severity={messageInfo?.severity ?? "info"}
+                severity={current?.severity ?? "info"}
                 variant="filled"
-                sx={{ 
-                    width: "100%",
-                }}
+                sx={{ width: "100%" }}
             >
-                {messageInfo?.message}
+                {current?.message}
             </Alert>
         </Snackbar>
     );
