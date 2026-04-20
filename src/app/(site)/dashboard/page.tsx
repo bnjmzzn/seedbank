@@ -10,8 +10,13 @@ import SectionHeader from "@/components/shared/SectionHeader";
 
 export default function DashboardPage() {
     const { me, isLoading, mutate: mutateMe } = useMe();
-    const { rows, isLoading: historyLoading } = useHistory(me?.username ?? "");
+    const { rows, isLoading: historyLoading, mutate: mutateHistory } = useHistory(me?.username ?? null);
     const loading = isLoading || historyLoading || me === null;
+
+    function handleClaimed() {
+        mutateMe();
+        mutateHistory();
+    }
 
     return (
         <Stack gap={4} sx={{ minWidth: 0, overflow: "hidden", p: { sm: 1, md: 2 } }}>
@@ -29,7 +34,7 @@ export default function DashboardPage() {
                     <DailyCard
                         daily={me?.daily ?? null}
                         isLoading={loading}
-                        onClaimed={mutateMe}
+                        onClaimed={handleClaimed}
                     />
                 </Stack>
             </Stack>
