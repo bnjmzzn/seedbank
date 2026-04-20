@@ -24,6 +24,17 @@ const theme = createTheme({
                 },
             },
         },
+        MuiCssBaseline: {
+            styleOverrides: {
+                "*": {
+                    scrollbarWidth: "none",
+                    msOverflowStyle: "none",
+                },
+                "*::-webkit-scrollbar": {
+                    display: "none",
+                },
+            },
+        },
     },
     typography: {
         fontFamily: "inherit",
