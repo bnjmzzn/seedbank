@@ -11,7 +11,7 @@ import SectionHeader from "@/components/shared/SectionHeader";
 export default function DashboardPage() {
     const { me, isLoading, mutate: mutateMe } = useMe();
     const { rows, isLoading: historyLoading } = useHistory(me?.username ?? "");
-    const loading = isLoading && historyLoading;
+    const loading = isLoading || historyLoading || me === null;
 
     return (
         <Stack gap={4} sx={{ minWidth: 0, overflow: "hidden", p: { sm: 1, md: 2 } }}>
