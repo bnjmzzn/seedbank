@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { storage } from "@/lib/client/storage";
-import { useMe } from "@/lib/client/hooks";
+import { useMe } from "@/lib/client/hooks/data";
 import Box from "@mui/material/Box";
 import Sidebar from "@/components/layout/Sidebar";
 import BottomNav from "@/components/layout/BottomNav";

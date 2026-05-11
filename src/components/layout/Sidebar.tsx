@@ -15,7 +15,7 @@ import {
 import { usePathname, useRouter } from "next/navigation";
 import { NAV_ITEMS } from "@/lib/client/registry/nav";
 import Iconify from "@/components/shared/Iconify";
-import { useMe } from "@/lib/client/hooks";
+import { useMe } from "@/lib/client/hooks/data";
 import { getAvatarUrl } from "@/lib/client/utils";
 import ProfileMenu, { useProfileMenu } from "./ProfileMenu";
 import Brand from "@/components/shared/Brand";

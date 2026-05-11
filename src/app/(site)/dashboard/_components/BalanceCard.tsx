@@ -2,7 +2,7 @@
 
 import { Paper, Typography, Box, Skeleton } from "@mui/material";
 import type { HistoryRow } from "@/types/db";
-import { useCountUp } from "@/lib/client/hooks";
+import { useCountUp } from "@/lib/client/hooks/ui";
 import { CURRENCY_TICKER } from "@/lib/config";
 
 interface Props {

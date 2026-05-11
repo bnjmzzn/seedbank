@@ -4,7 +4,7 @@ import BalanceCard from "./_components/BalanceCard";
 import DailyCard from "./_components/DailyCard";
 import GameList from "./_components/GameList";
 import TransactionFeed from "./_components/HistoryFeed";
-import { useHistory, useMe } from "@/lib/client/hooks";
+import { useHistory, useMe } from "@/lib/client/hooks/data";
 import BalanceChart from "./_components/BalanceChart";
 import SectionHeader from "@/components/shared/SectionHeader";
 
