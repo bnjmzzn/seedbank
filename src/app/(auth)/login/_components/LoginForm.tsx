@@ -10,6 +10,7 @@ import { loginSchema, type LoginInput } from "@/lib/client/validation";
 import { showSnackbar } from "@/components/shared/SnackBar";
 import { api } from "@/lib/client/api";
 import { storage } from "@/lib/client/storage";
+import { getErrorMessage } from "@/lib/client/errors";
 
 interface Props {
     onLoadingChange?: (loading: boolean) => void;
@@ -21,6 +22,7 @@ export default function LoginForm({ onLoadingChange }: Props) {
     const {
         register,
         handleSubmit,
+        setError,
         formState: { errors, isSubmitting },
     } = useForm<LoginInput>({
         resolver: zodResolver(loginSchema),
@@ -38,7 +40,11 @@ export default function LoginForm({ onLoadingChange }: Props) {
             showSnackbar("Welcome back!", "success");
             router.push("/dashboard");
         } catch (error: any) {
-            showSnackbar(error, "error");
+            if (error.code === "INVALID_CREDENTIALS") {
+                setError("username", { message: "" });
+                setError("password", { message: "" });
+                showSnackbar(getErrorMessage(error.code), "error");
+            }
         }
     }
 

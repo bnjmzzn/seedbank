@@ -12,6 +12,7 @@ import PasswordField from "./shared/PasswordField";
 import { registerSchema, type RegisterInput } from "@/lib/client/validation";
 import { showSnackbar } from "@/components/shared/SnackBar";
 import { api } from "@/lib/client/api";
+import { getErrorMessage } from "@/lib/client/errors";
 
 interface Props {
     onLoadingChange?: (loading: boolean) => void;
@@ -28,6 +29,7 @@ export default function RegisterForm({ onLoadingChange, onSuccess }: Props) {
         handleSubmit,
         reset,
         control,
+        setError,
         formState: { errors, isSubmitting },
     } = useForm<RegisterInput>({
         resolver: zodResolver(registerSchema),
@@ -59,7 +61,11 @@ export default function RegisterForm({ onLoadingChange, onSuccess }: Props) {
             reset();
             onSuccess?.();
         } catch (error: any) {
-            showSnackbar(error, "error");
+            if (error.code === "USERNAME_TAKEN") {
+                setError("username", { message: "That username is already taken." });
+            } else {
+                showSnackbar(getErrorMessage(error.code), "error");
+            }
         }
     };
 
