@@ -23,9 +23,9 @@ instance.interceptors.response.use(
                 window.location.href = "/login";
             }
         }
-        const message = error.response?.data?.message ?? "Something went wrong";
+        const code = error.response?.data?.code ?? (error.response ? "SERVER_ERROR" : "NETWORK_ERROR");
         const status = error.response?.status ?? 0;
-        return Promise.reject({ message, status });
+        return Promise.reject({ code, status });
     }
 );
 
