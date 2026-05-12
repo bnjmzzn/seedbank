@@ -12,10 +12,10 @@ export const registerSchema = z
         username: usernameRule,
         password: passwordRule,
         confirmPassword: z.string(),
-        tosAccepted: z.literal(true, { error: "You must accept the Terms of Service" }),
+        tosAccepted: z.literal(true, { message: "You must accept the Terms of Service" }),
     })
     .refine((data) => data.password === data.confirmPassword, {
-        error: "Passwords do not match",
+        message: "Passwords do not match",
         path: ["confirmPassword"],
     });
 
