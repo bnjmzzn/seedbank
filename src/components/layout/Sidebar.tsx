@@ -57,6 +57,7 @@ export default function Sidebar() {
                             onClick={() => router.push(item.href)}
                             sx={{
                                 py: 1.5,
+                                borderRadius: 2,
                                 "&.Mui-selected": {
                                     color: "primary.main",
                                     "& .MuiListItemIcon-root": { color: "primary.main" },

@@ -15,13 +15,6 @@ const theme = createTheme({
         },
     },
     components: {
-        MuiListItemButton: {
-            styleOverrides: {
-                root: {
-                    borderRadius: 5,
-                },
-            },
-        },
         MuiCssBaseline: {
             styleOverrides: {
                 "*": {
