@@ -58,9 +58,7 @@ export default function Sidebar() {
                             sx={{
                                 py: 1.5,
                                 "&.Mui-selected": {
-                                    bgcolor: "primary.dark",
                                     color: "primary.main",
-                                    "&:hover": { bgcolor: "primary.dark" },
                                     "& .MuiListItemIcon-root": { color: "primary.main" },
                                 },
                             }}

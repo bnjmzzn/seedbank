@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Menu, MenuItem, ListItemIcon, ListItemText, Divider } from "@mui/material";
+import { Menu, MenuItem, ListItemIcon, ListItemText, Divider, alpha } from "@mui/material";
 import type { PopoverOrigin } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { logout } from "@/lib/client/utils";
@@ -81,7 +81,7 @@ export default function ProfileMenu({
                 onClick={handleLogout}
                 sx={{
                     color: "error.main",
-                    "&:hover": { backgroundColor: "error.dark" },
+                    "&:hover": { backgroundColor: (theme) => alpha(theme.palette.error.main, 0.08) }
                 }}
             >
                 <ListItemIcon>
