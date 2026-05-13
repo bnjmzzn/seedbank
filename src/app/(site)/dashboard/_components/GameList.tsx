@@ -41,7 +41,7 @@ function GameCard({ game, onPlay }: { game: GameEntry; onPlay: (href: string) =>
                 gap: 1.5,
             }}>
                 <Iconify icon={game.icon} sx={{ color: palette.contrastText, fontSize: 50 }} />
-                <Typography fontWeight={700} sx={{ color: palette.contrastText }}>{game.label}</Typography>
+                <Typography fontWeight="bold" sx={{ color: palette.contrastText }}>{game.label}</Typography>
             </Box>
         </ButtonBase>
     );
@@ -83,7 +83,7 @@ function GameRow({ game, onPlay }: { game: GameEntry; onPlay: (href: string) => 
                 </Box>
 
                 <Box sx={{ flex: 1, textAlign: "left" }}>
-                    <Typography fontWeight={700}>{game.label}</Typography>
+                    <Typography fontWeight="bold">{game.label}</Typography>
                     <Typography variant="body2" color="text.secondary">{game.desc}</Typography>
                 </Box>
 

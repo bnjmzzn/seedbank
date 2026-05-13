@@ -106,14 +106,14 @@ export default function DailyCard({ daily, isLoading, onClaimed }: Props) {
                         size="large"
                         onClick={handleClaim}
                         loading={claiming}
-                        sx={{ borderRadius: 2, fontWeight: 700 }}
+                        sx={{ borderRadius: 2, fontWeight: "bold" }}
                     >
                         Claim Daily
                     </Button>
                 )}
 
                 {!isClaimable && (
-                    <Typography variant="h4" fontWeight={700} sx={{ fontVariantNumeric: "tabular-nums" }}>
+                    <Typography variant="h4" fontWeight="bold" sx={{ fontVariantNumeric: "tabular-nums" }}>
                         {countdownText}
                     </Typography>
                 )}

@@ -77,12 +77,12 @@ function HistoryRowItem({ row, onClick }: HistoryRowItemProps) {
                 <Iconify icon={icon} sx={{ color: iconBg, flexShrink: 0, fontSize: 30 }} />
 
                 <Box sx={{ flex: 1, minWidth: 0, textAlign: "left" }}>
-                    <Typography fontWeight={600} noWrap>{label}</Typography>
+                    <Typography fontWeight="medium" noWrap>{label}</Typography>
                     <Typography variant="caption" color="text.secondary">{dateStr}</Typography>
                 </Box>
 
                 <Typography
-                    fontWeight={600}
+                    fontWeight="medium"
                     sx={{ flexShrink: 0, color: changeColor, fontFamily: "monospace"}}
                 >
                     {changeStr}
@@ -131,7 +131,7 @@ function Paginator({ page, pageCount, onChange }: PaginatorProps) {
                 <Iconify icon="mdi:chevron-left" />
             </IconButton>
             <Typography color="text.secondary">
-                <Box component="span" fontWeight={700} color="text.primary">{page}</Box>
+                <Box component="span" fontWeight="bold" color="text.primary">{page}</Box>
                 {" / "}
                 {pageCount}
             </Typography>

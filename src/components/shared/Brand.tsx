@@ -30,7 +30,7 @@ export default function Brand({
     );
 
     const text = (
-        <Typography variant={textVariant} fontWeight={700} lineHeight={1}>
+        <Typography variant={textVariant} fontWeight="bold" lineHeight={1}>
             SeedBank
         </Typography>
     );

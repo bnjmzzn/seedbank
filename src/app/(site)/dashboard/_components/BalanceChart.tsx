@@ -48,8 +48,8 @@ function ChartTooltip({ active, payload }: TooltipProps) {
             py: 1,
             fontFamily: "monospace",
         }}>
-            <Typography fontWeight={700}>{point.reason}</Typography>
-            <Typography fontWeight={600} sx={{ color: isPositive ? "success.main" : "error.main" }}>
+            <Typography fontWeight="bold">{point.reason}</Typography>
+            <Typography fontWeight="medium" sx={{ color: isPositive ? "success.main" : "error.main" }}>
                 {changeStr}
             </Typography>
             <Typography variant="caption" color="text.secondary" display="block">
@@ -60,7 +60,7 @@ function ChartTooltip({ active, payload }: TooltipProps) {
                     minute: "2-digit",
                 })}
             </Typography>
-            <Typography fontWeight={700}>
+            <Typography fontWeight="bold">
                 Balance: {point.balanceAfter.toLocaleString()}
             </Typography>
         </Box>

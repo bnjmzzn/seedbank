@@ -49,9 +49,9 @@ export default function BalanceCard({ balance, rows, isLoading }: Props) {
     return (
         <Paper sx={paperSx} elevation={0}>
             <Box>
-                <Typography variant="h4" fontWeight={700}>
+                <Typography variant="h4" fontWeight="bold">
                     {animatedBalance.toLocaleString()}{" "}
-                    <Typography component="span" variant="h6" color="text.secondary" fontWeight={400}>
+                    <Typography component="span" variant="h6" color="text.secondary" fontWeight="regular">
                         {CURRENCY_TICKER}
                     </Typography>
                 </Typography>
