@@ -30,10 +30,10 @@ export enum HistoryReason {
 export namespace HistoryReason {
     export enum Game {
         COINFLIP = "GAME:COINFLIP",
-        DICE = "GAME:DICE",
         COLOR = "GAME:COLOR",
         BOMB = "GAME:BOMB",
-        RACE = "GAME:RACE",
+        SLOTS = "GAME:SLOTS",
+        VAULT = "GAME:VAULT",
     }
     export enum Transfer {
         SENT = "TRANSFER:SENT",
