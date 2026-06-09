@@ -15,8 +15,10 @@ export const api = {
             status: () => axios.get("/daily"),
             claim: () => axios.post("/daily"),
         },
+        transfer: (toUsername: string, amount: number) =>
+            axios.post("/transfer", { toUsername, amount }),
+        play: (game: string, bet: number) =>
+            axios.post("/play", { game, bet }),
     },
-    transfer: (toUsername: string, amount: number) =>
-        axios.post("/transfer", { toUsername, amount }),
     leaderboard: () => axios.get("/leaderboard"),
 };
