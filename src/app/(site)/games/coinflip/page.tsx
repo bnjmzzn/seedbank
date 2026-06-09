@@ -1,11 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Box, Typography } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 
 import AmountInput from "@/components/shared/action/AmountInput";
 import PlayButton from "@/components/shared/action/PlayButton";
-import BalanceDisplay from "@/components/shared/data/BalanceDisplay";
 import ChoiceMenu from "./_components/ChoiceMenu";
 import Visualizer from "./_components/Visualizer";
 
@@ -13,6 +12,7 @@ import { useMe } from "@/lib/client/hooks/data";
 import { api } from "@/lib/client/api";
 import { BET_MIN, BET_MAX } from "@/lib/config";
 import { HistoryReason } from "@/types/models";
+import SectionHeader from "@/components/shared/generic/SectionHeader";
 
 type CoinSide = "heads" | "tails";
 
@@ -64,31 +64,40 @@ export default function CoinflipPage() {
     }
 
     return (
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-            <Typography variant="h6">Coinflip</Typography>
-
-            <BalanceDisplay balance={me?.balance ?? 0} />
-
-            <ChoiceMenu
-                value={choice}
-                onChange={setChoice}
-                error={errors.choice}
-                disabled={isLocked}
-            />
-
-            <AmountInput
-                value={amount}
-                onChange={setAmount}
-                balance={me?.balance ?? 0}
-                min={BET_MIN}
-                max={BET_MAX}
-                disabled={isLocked}
-                externalError={errors.amount ?? undefined}
-            />
-
-            <PlayButton onClick={handlePlay} disabled={isLocked} label="Flip" />
-
-            <Visualizer result={result} onFinish={handleFinish} />
-        </Box>
+        <Stack gap={4} sx={{ minWidth: 0, overflow: "hidden", p: { sm: 1, md: 2 } }}>
+            <Stack direction={{ xs: "column", md: "row" }} gap={4}>
+                <Stack flex={2} gap={1}>
+                    <SectionHeader icon="mdi:coin-outline" label="Coinflip" />
+                    <Visualizer result={result} onFinish={handleFinish} />
+                </Stack>
+    
+                <Stack flex={1} gap={2}>
+                    <Stack gap={1}>
+                        <SectionHeader icon="mdi:hand-coin-outline" label="Your Pick" />
+                        <ChoiceMenu
+                            value={choice}
+                            onChange={setChoice}
+                            error={errors.choice}
+                            disabled={isLocked}
+                        />
+                    </Stack>
+    
+                    <Stack gap={1}>
+                        <SectionHeader icon="mdi:wallet-outline" label="Bet" />
+                        <AmountInput
+                            value={amount}
+                            onChange={setAmount}
+                            balance={me?.balance ?? 0}
+                            min={BET_MIN}
+                            max={BET_MAX}
+                            disabled={isLocked}
+                            externalError={errors.amount ?? undefined}
+                        />
+                    </Stack>
+    
+                    <PlayButton onClick={handlePlay} disabled={isLocked} label="Flip" />
+                </Stack>
+            </Stack>
+        </Stack>
     );
 }
