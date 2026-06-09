@@ -13,6 +13,7 @@ import { api } from "@/lib/client/api";
 import { BET_MIN, BET_MAX } from "@/lib/config";
 import { HistoryReason } from "@/types/models";
 import SectionHeader from "@/components/shared/generic/SectionHeader";
+import GameResult from "@/components/shared/data/GameResult";
 
 type CoinSide = "heads" | "tails";
 
@@ -68,10 +69,13 @@ export default function CoinflipPage() {
             <Stack direction={{ xs: "column", md: "row" }} gap={4}>
                 <Stack flex={2} gap={1}>
                     <SectionHeader icon="mdi:coin-outline" label="Coinflip" />
-                    <Visualizer result={result} onFinish={handleFinish} />
+                    <Visualizer result={result} choice={choice} onFinish={handleFinish} />
                 </Stack>
     
                 <Stack flex={1} gap={2}>
+                    <Stack gap={1}>
+                        <GameResult result={result}/>
+                    </Stack>
                     <Stack gap={1}>
                         <SectionHeader icon="mdi:hand-coin-outline" label="Your Pick" />
                         <ChoiceMenu
