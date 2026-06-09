@@ -1,6 +1,6 @@
 "use client";
 
-import { TextField, Box, Button } from "@mui/material";
+import { TextField, Box, Button, Typography } from "@mui/material";
 import { CURRENCY_TICKER } from "@/lib/config";
 
 interface Props {
@@ -49,6 +49,9 @@ export default function AmountInput({ value, onChange, balance, min, max, disabl
 
     return (
         <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+            <Typography color="text.secondary">
+                Balance: {balance.toLocaleString()} {CURRENCY_TICKER}
+            </Typography>
             <TextField
                 label={inputLabel}
                 value={value}
