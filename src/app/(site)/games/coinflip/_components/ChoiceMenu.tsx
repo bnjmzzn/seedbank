@@ -14,6 +14,11 @@ interface Props {
 export default function ChoiceMenu({ value, onChange, error, disabled }: Props) {
     return (
         <>
+            <Typography
+                sx={{ display: "block", minHeight: "1.5em", color: error ? "error.main" : "text.secondary" }}
+            >
+                {error ?? (value ? `Selected: ${value.charAt(0).toUpperCase() + value.slice(1)}` : "No selection")}
+            </Typography>
             <ToggleButtonGroup
                 value={value}
                 exclusive
@@ -23,12 +28,6 @@ export default function ChoiceMenu({ value, onChange, error, disabled }: Props) 
                 <ToggleButton value="heads">Heads</ToggleButton>
                 <ToggleButton value="tails">Tails</ToggleButton>
             </ToggleButtonGroup>
-
-            {error !== null && error !== undefined && (
-                <Typography variant="caption" color="error.main">
-                    {error}
-                </Typography>
-            )}
         </>
     );
 }
