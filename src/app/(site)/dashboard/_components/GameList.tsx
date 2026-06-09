@@ -3,7 +3,7 @@
 import { Typography, Box, ButtonBase, Paper, Skeleton, useTheme, useMediaQuery } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { GAMES, type GameEntry } from "@/lib/client/registry/games";
-import Iconify from "@/components/shared/Iconify";
+import Iconify from "@/components/shared/generic/Iconify";
 
 interface Props {
     isLoading?: boolean;

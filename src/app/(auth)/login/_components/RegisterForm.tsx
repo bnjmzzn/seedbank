@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import PasswordField from "./shared/PasswordField";
 import { registerSchema, type RegisterInput } from "@/lib/client/validation";
-import { showSnackbar } from "@/components/shared/SnackBar";
+import { showSnackbar } from "@/components/shared/generic/SnackBar";
 import { api } from "@/lib/client/api";
 import { getErrorMessage } from "@/lib/client/errors";
 

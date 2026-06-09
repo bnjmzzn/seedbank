@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { Paper, Typography, Box, Button, Skeleton } from "@mui/material";
 import { api } from "@/lib/client/api";
 import { CURRENCY_TICKER, DAILY_AMOUNT } from "@/lib/config";
-import { showSnackbar } from "@/components/shared/SnackBar";
+import { showSnackbar } from "@/components/shared/generic/SnackBar";
 
 interface DailyStatus {
     claimable: boolean;

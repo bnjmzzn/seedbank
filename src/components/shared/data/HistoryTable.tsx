@@ -7,7 +7,7 @@ import { useTheme } from "@mui/material/styles";
 import { HistoryRow } from "@/types/db";
 import { HISTORY_META } from "@/lib/client/registry/history";
 import { filterHistory } from "@/lib/client/utils";
-import Iconify from "./Iconify";
+import Iconify from "@/components/shared/generic/Iconify";
 
 interface HistoryTableProps {
     rows: HistoryRow[];

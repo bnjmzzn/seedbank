@@ -6,7 +6,7 @@ import GameList from "./_components/GameList";
 import TransactionFeed from "./_components/HistoryFeed";
 import { useHistory, useMe } from "@/lib/client/hooks/data";
 import BalanceChart from "./_components/BalanceChart";
-import SectionHeader from "@/components/shared/SectionHeader";
+import SectionHeader from "@/components/shared/generic/SectionHeader";
 
 export default function DashboardPage() {
     const { me, isLoading, mutate: mutateMe } = useMe();

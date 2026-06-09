@@ -7,7 +7,7 @@ import { Stack, TextField, Button } from "@mui/material";
 import { useRouter } from "next/navigation";
 import PasswordField from "./shared/PasswordField";
 import { loginSchema, type LoginInput } from "@/lib/client/validation";
-import { showSnackbar } from "@/components/shared/SnackBar";
+import { showSnackbar } from "@/components/shared/generic/SnackBar";
 import { api } from "@/lib/client/api";
 import { storage } from "@/lib/client/storage";
 import { getErrorMessage } from "@/lib/client/errors";

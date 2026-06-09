@@ -3,9 +3,9 @@
 import { useState } from "react";
 import { Box, Typography } from "@mui/material";
 
-import AmountInput from "@/components/shared/AmountInput";
-import PlayButton from "@/components/shared/PlayButton";
-import BalanceDisplay from "@/components/shared/BalanceDisplay";
+import AmountInput from "@/components/shared/action/AmountInput";
+import PlayButton from "@/components/shared/action/PlayButton";
+import BalanceDisplay from "@/components/shared/data/BalanceDisplay";
 import ChoiceMenu from "./_components/ChoiceMenu";
 import Visualizer from "./_components/Visualizer";
 

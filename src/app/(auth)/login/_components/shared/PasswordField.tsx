@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { TextField, InputAdornment, IconButton, TextFieldProps } from "@mui/material";
-import Iconify from "@/components/shared/Iconify";
+import Iconify from "@/components/shared/generic/Iconify";
 
 interface Props extends Omit<TextFieldProps, "type"> {
     showToggle?: boolean;

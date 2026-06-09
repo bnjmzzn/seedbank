@@ -5,7 +5,7 @@ import { Menu, MenuItem, ListItemIcon, ListItemText, Divider, alpha } from "@mui
 import type { PopoverOrigin } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { logout } from "@/lib/client/utils";
-import Iconify from "../shared/Iconify";
+import Iconify from "../shared/generic/Iconify";
 
 interface ProfileMenuProps {
     anchorEl: HTMLElement | null;

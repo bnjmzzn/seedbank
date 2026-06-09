@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import ThemeProvider from "@/components/providers/ThemeProvider";
-import SnackBar from "@/components/shared/SnackBar";
+import SnackBar from "@/components/shared/generic/SnackBar";
 
 const geist = Geist({ subsets: ["latin"] });
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { Box, Typography } from "@mui/material";
-import Iconify from "./Iconify";
+import Iconify from "@/components/shared/generic/Iconify";
 
 interface Props {
     icon: string;
