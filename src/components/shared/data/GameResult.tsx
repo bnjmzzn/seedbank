@@ -11,10 +11,11 @@ interface GameResult {
 
 interface Props {
     result: GameResult | null;
+    isLocked: boolean;
 }
 
-export default function Result({ result }: Props) {
-    if (result === null) {
+export default function Result({ result, isLocked }: Props) {
+    if (result === null || isLocked) {
         return (
             <Typography variant="body2" color="text.secondary">
                 Try your luck.
