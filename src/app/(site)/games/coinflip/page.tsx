@@ -52,7 +52,6 @@ export default function CoinflipPage() {
         try {
             const response = await api.user.play(HistoryReason.Game.COINFLIP, Number(amount));
             setResult(response.data.data);
-            mutateMe();
         } catch {
             setIsLocked(false);
         }
@@ -61,7 +60,7 @@ export default function CoinflipPage() {
     function handleFinish() {
         setIsLocked(false);
         setResult(null);
-        setChoice(null);
+        mutateMe();
     }
 
     return (
