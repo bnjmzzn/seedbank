@@ -1,14 +1,12 @@
 "use client";
 
 import { TextField, Box, Button, Typography } from "@mui/material";
-import { CURRENCY_TICKER } from "@/lib/config";
+import { CURRENCY_TICKER, BET_MIN, BET_MAX } from "@/lib/config";
 
 interface Props {
     value: string;
     onChange: (value: string) => void;
     balance: number;
-    min?: number;
-    max?: number;
     disabled?: boolean;
     label?: string;
     externalError?: string;
@@ -20,21 +18,21 @@ const PRESETS = [
     { label: "100%", factor: 1 },
 ];
 
-function getError(value: string, balance: number, min?: number, max?: number): string | null {
+function getError(value: string, balance: number): string | null {
     if (value === "") return null;
 
     const num = Number(value);
 
     if (isNaN(num) || num <= 0) return "Must be a positive number";
     if (num > balance) return "Exceeds your balance";
-    if (min !== undefined && num < min) return `Min ${min.toLocaleString()} ${CURRENCY_TICKER}`;
-    if (max !== undefined && num > max) return `Max ${max.toLocaleString()} ${CURRENCY_TICKER}`;
+    if (num < BET_MIN) return `Min ${BET_MIN.toLocaleString()} ${CURRENCY_TICKER}`;
+    if (num > BET_MAX) return `Max ${BET_MAX.toLocaleString()} ${CURRENCY_TICKER}`;
 
     return null;
 }
 
-export default function AmountInput({ value, onChange, balance, min, max, disabled, label = "Amount", externalError }: Props) {
-    const internalError = getError(value, balance, min, max);
+export default function AmountInput({ value, onChange, balance, disabled, label = "Amount", externalError }: Props) {
+    const internalError = getError(value, balance);
     const activeError = externalError ?? internalError;
     const hasError = !!activeError;
     const inputLabel = hasError ? activeError : label;
@@ -62,8 +60,8 @@ export default function AmountInput({ value, onChange, balance, min, max, disabl
                 error={hasError}
                 disabled={disabled}
                 slotProps={{
-                    htmlInput: { 
-                        min: 0, 
+                    htmlInput: {
+                        min: 0,
                         step: 1,
                         sx: {
                             "& input[type=number]": { MozAppearance: "textfield" },
