@@ -10,16 +10,22 @@ import Visualizer from "./_components/Visualizer";
 
 import { useMe } from "@/lib/client/hooks/data";
 import { api } from "@/lib/client/api";
-import { BET_MIN, BET_MAX } from "@/lib/config";
 import { HistoryReason } from "@/types/models";
 import SectionHeader from "@/components/shared/generic/SectionHeader";
 import GameResult from "@/components/shared/data/GameResult";
 
 type CoinSide = "heads" | "tails";
+type Phase = "idle" | "pending" | "animating" | "settled";
 
 interface FormErrors {
     amount: string | null;
     choice: string | null;
+}
+
+interface Result {
+    won: boolean;
+    delta: number;
+    balance: number;
 }
 
 function validate(amount: string, choice: CoinSide | null): FormErrors {
@@ -30,13 +36,15 @@ function validate(amount: string, choice: CoinSide | null): FormErrors {
 }
 
 export default function CoinflipPage() {
+    const { me, mutate: mutateMe } = useMe();
+
+    const [phase, setPhase] = useState<Phase>("idle");
     const [amount, setAmount] = useState("");
     const [choice, setChoice] = useState<CoinSide | null>(null);
-    const [isLocked, setIsLocked] = useState(false);
-    const [result, setResult] = useState<{ won: boolean; delta: number; balance: number } | null>(null);
+    const [result, setResult] = useState<Result | null>(null);
     const [errors, setErrors] = useState<FormErrors>({ amount: null, choice: null });
 
-    const { me, mutate: mutateMe } = useMe();
+    const locked = phase === "pending" || phase === "animating";
 
     async function handlePlay() {
         const validated = validate(amount, choice);
@@ -48,19 +56,21 @@ export default function CoinflipPage() {
         }
 
         setErrors({ amount: null, choice: null });
-        setIsLocked(true);
+        setResult(null);
+        setPhase("pending");
 
         try {
             const response = await api.user.play(HistoryReason.Game.COINFLIP, Number(amount));
             setResult(response.data.data);
+            setPhase("animating");
         } catch {
-            setIsLocked(false);
+            setPhase("idle");
         }
     }
 
     function handleFinish() {
-        setIsLocked(false);
         mutateMe();
+        setPhase("settled");
     }
 
     return (
@@ -68,12 +78,16 @@ export default function CoinflipPage() {
             <Stack direction={{ xs: "column", md: "row" }} gap={4}>
                 <Stack flex={2} gap={1}>
                     <SectionHeader icon="mdi:coin-outline" label="Coinflip" />
-                    <Visualizer result={result} choice={choice} onFinish={handleFinish} />
+                    <Visualizer
+                        result={phase === "animating" ? result : null}
+                        choice={choice}
+                        onFinish={handleFinish}
+                    />
                 </Stack>
-    
+
                 <Stack flex={1} gap={2}>
                     <Stack gap={1}>
-                        <GameResult result={result} isLocked={isLocked} />
+                        <GameResult result={result} isLocked={locked} />
                     </Stack>
                     <Stack gap={1}>
                         <SectionHeader icon="mdi:hand-coin-outline" label="Your Pick" />
@@ -81,24 +95,22 @@ export default function CoinflipPage() {
                             value={choice}
                             onChange={setChoice}
                             error={errors.choice}
-                            disabled={isLocked}
+                            disabled={locked}
                         />
                     </Stack>
-    
+
                     <Stack gap={1}>
                         <SectionHeader icon="mdi:wallet-outline" label="Bet" />
                         <AmountInput
                             value={amount}
                             onChange={setAmount}
                             balance={me?.balance ?? 0}
-                            min={BET_MIN}
-                            max={BET_MAX}
-                            disabled={isLocked}
+                            disabled={locked}
                             externalError={errors.amount ?? undefined}
                         />
                     </Stack>
-    
-                    <PlayButton onClick={handlePlay} disabled={isLocked} label="Flip" />
+
+                    <PlayButton onClick={handlePlay} disabled={locked} label="Flip" />
                 </Stack>
             </Stack>
         </Stack>
