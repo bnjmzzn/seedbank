@@ -7,6 +7,7 @@ import { api } from "@/lib/client/api";
 import { HistoryReason } from "@/types/models";
 import AmountInput from "@/components/shared/action/AmountInput";
 import CoinflipVisualizer from "./_components/CoinflipVisualizer";
+import { playSchema } from "@/lib/client/validation";
 
 type GamePhase = "idle" | "pending" | "animating";
 
@@ -65,6 +66,7 @@ export default function CoinflipPage() {
                 setAmount={setAmount}
                 balance={balance}
                 isLocked={isLocked}
+                schema={playSchema.shape.amount}
             />
         </Box>
     );
