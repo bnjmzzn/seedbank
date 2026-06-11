@@ -48,26 +48,31 @@ export default function CoinflipPage() {
     }
 
     return (
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 2, p: 2 }}>
-            <Typography variant="h5" fontWeight="bold">
-                Coinflip
-            </Typography>
+        <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, gap: 2, p: 2 }}>
+            <Box sx={{ flex: 2 }}>
+                <Typography variant="h5" fontWeight="bold">
+                    Coinflip
+                </Typography>
+                <CoinflipVisualizer
+                    handlePlay={handlePlay}
+                    handleFinish={handleFinish}
+                    result={result}
+                    isLocked={isLocked}
+                    amountValid={amountValid}
+                />
+            </Box>
 
-            <CoinflipVisualizer
-                handlePlay={handlePlay}
-                handleFinish={handleFinish}
-                result={result}
-                isLocked={isLocked}
-                amountValid={amountValid}
-            />
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 2, flex: 1 }}>
+                
 
-            <AmountInput
-                amount={amount}
-                setAmount={setAmount}
-                balance={balance}
-                isLocked={isLocked}
-                schema={playSchema.shape.amount}
-            />
+                <AmountInput
+                    amount={amount}
+                    setAmount={setAmount}
+                    balance={balance}
+                    isLocked={isLocked}
+                    schema={playSchema.shape.amount}
+                />
+            </Box>
         </Box>
     );
 }
