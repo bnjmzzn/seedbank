@@ -3,14 +3,20 @@
 import { useState } from "react";
 import { TextField, Box, Button, Typography } from "@mui/material";
 import { CURRENCY_TICKER } from "@/lib/config";
-import { playSchema } from "@/lib/client/validation";
 import { getErrorMessage } from "@/lib/client/errors";
+import { z } from "zod";
 
 interface Props {
     amount: number | null;
     setAmount: (value: number | null) => void;
     balance: number;
     isLocked?: boolean;
+    schema: z.ZodNumber;
+}
+
+interface Validation {
+    error: boolean;
+    message: string;
 }
 
 const PRESETS = [
@@ -19,27 +25,27 @@ const PRESETS = [
     { label: "100%", factor: 1 },
 ];
 
-function getValidation(value: string, balance: number): { error: boolean; message: string } {
+function validate(value: string, balance: number, schema: z.ZodNumber): Validation {
     if (value === "") return { error: false, message: "" };
 
-    const result = playSchema.shape.amount.safeParse(Number(value));
+    const parsed = schema.safeParse(Number(value));
 
-    if (!result.success) return { error: true, message: result.error.issues[0].message };
+    if (!parsed.success) return { error: true, message: parsed.error.issues[0].message };
     if (Number(value) > balance) return { error: true, message: getErrorMessage("INSUFFICIENT_BALANCE") };
 
     return { error: false, message: "" };
 }
 
-export default function AmountInput({ amount, setAmount, balance, isLocked }: Props) {
+export default function AmountInput({ amount, setAmount, balance, isLocked, schema }: Props) {
     const [raw, setRaw] = useState(amount !== null ? String(amount) : "");
 
-    const { error: isError, message: errorMessage } = getValidation(raw, balance);
+    const { error: isError, message: errorMessage } = validate(raw, balance, schema);
 
     function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
         const str = e.target.value;
         setRaw(str);
 
-        const { error } = getValidation(str, balance);
+        const { error } = validate(str, balance, schema);
         setAmount(error || str === "" ? null : Number(str));
     }
 
@@ -48,7 +54,7 @@ export default function AmountInput({ amount, setAmount, balance, isLocked }: Pr
         const str = String(num);
         setRaw(str);
 
-        const { error } = getValidation(str, balance);
+        const { error } = validate(str, balance, schema);
         setAmount(error ? null : num);
     }
 
