@@ -1,15 +1,16 @@
 "use client";
 
+import { useState } from "react";
 import { TextField, Box, Button, Typography } from "@mui/material";
-import { CURRENCY_TICKER, BET_MIN, BET_MAX } from "@/lib/config";
+import { CURRENCY_TICKER } from "@/lib/config";
+import { playSchema } from "@/lib/client/validation";
+import { getErrorMessage } from "@/lib/client/errors";
 
 interface Props {
-    value: string;
-    onChange: (value: string) => void;
+    amount: number | null;
+    setAmount: (value: number | null) => void;
     balance: number;
-    disabled?: boolean;
-    label?: string;
-    externalError?: string;
+    isLocked?: boolean;
 }
 
 const PRESETS = [
@@ -18,31 +19,37 @@ const PRESETS = [
     { label: "100%", factor: 1 },
 ];
 
-function getError(value: string, balance: number): string | null {
-    if (value === "") return null;
+function getValidation(value: string, balance: number): { error: boolean; message: string } {
+    if (value === "") return { error: false, message: "" };
 
-    const num = Number(value);
+    const result = playSchema.shape.amount.safeParse(Number(value));
 
-    if (isNaN(num) || num <= 0) return "Must be a positive number";
-    if (num > balance) return "Exceeds your balance";
-    if (num < BET_MIN) return `Min ${BET_MIN.toLocaleString()} ${CURRENCY_TICKER}`;
-    if (num > BET_MAX) return `Max ${BET_MAX.toLocaleString()} ${CURRENCY_TICKER}`;
+    if (!result.success) return { error: true, message: result.error.issues[0].message };
+    if (Number(value) > balance) return { error: true, message: getErrorMessage("INSUFFICIENT_BALANCE") };
 
-    return null;
+    return { error: false, message: "" };
 }
 
-export default function AmountInput({ value, onChange, balance, disabled, label = "Amount", externalError }: Props) {
-    const internalError = getError(value, balance);
-    const activeError = externalError ?? internalError;
-    const hasError = !!activeError;
-    const inputLabel = hasError ? activeError : label;
+export default function AmountInput({ amount, setAmount, balance, isLocked }: Props) {
+    const [raw, setRaw] = useState(amount !== null ? String(amount) : "");
+
+    const { error: isError, message: errorMessage } = getValidation(raw, balance);
 
     function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-        onChange(e.target.value);
+        const str = e.target.value;
+        setRaw(str);
+
+        const { error } = getValidation(str, balance);
+        setAmount(error || str === "" ? null : Number(str));
     }
 
     function handlePreset(factor: number) {
-        onChange(String(Math.floor(balance * factor)));
+        const num = Math.floor(balance * factor);
+        const str = String(num);
+        setRaw(str);
+
+        const { error } = getValidation(str, balance);
+        setAmount(error ? null : num);
     }
 
     return (
@@ -51,14 +58,14 @@ export default function AmountInput({ value, onChange, balance, disabled, label 
                 Balance: {balance.toLocaleString()} {CURRENCY_TICKER}
             </Typography>
             <TextField
-                label={inputLabel}
-                value={value}
+                label={isError ? errorMessage : "Amount"}
+                value={raw}
                 onChange={handleChange}
                 size="small"
                 fullWidth
                 type="number"
-                error={hasError}
-                disabled={disabled}
+                error={isError}
+                disabled={isLocked}
                 slotProps={{
                     htmlInput: {
                         min: 0,
@@ -67,9 +74,8 @@ export default function AmountInput({ value, onChange, balance, disabled, label 
                             "& input[type=number]": { MozAppearance: "textfield" },
                             "&::-webkit-outer-spin-button": { display: "none" },
                             "&::-webkit-inner-spin-button": { display: "none" },
-                        }
+                        },
                     },
-                    inputLabel: { shrink: hasError ? true : undefined },
                 }}
             />
             <Box sx={{ display: "flex", gap: 1 }}>
@@ -78,7 +84,7 @@ export default function AmountInput({ value, onChange, balance, disabled, label 
                         key={preset.label}
                         variant="contained"
                         onClick={() => handlePreset(preset.factor)}
-                        disabled={disabled || balance <= 0}
+                        disabled={isLocked || balance <= 0}
                         sx={{ flex: 1, fontWeight: "bold" }}
                     >
                         {preset.label}
