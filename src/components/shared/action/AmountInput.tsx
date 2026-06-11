@@ -42,9 +42,9 @@ export default function AmountInput({ amount, setAmount, balance, isLocked, sche
     const { error: isError, message: errorMessage } = validate(raw, balance, schema);
 
     function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-        const str = e.target.value;
+        const str = e.target.value.replace(/[^0-9]/g, "");
         setRaw(str);
-
+    
         const { error } = validate(str, balance, schema);
         setAmount(error || str === "" ? null : Number(str));
     }
@@ -69,12 +69,14 @@ export default function AmountInput({ amount, setAmount, balance, isLocked, sche
                 onChange={handleChange}
                 size="small"
                 fullWidth
-                type="number"
+                type="text"
+                inputMode="numeric"
                 error={isError}
                 disabled={isLocked}
                 slotProps={{
                     htmlInput: {
                         min: 0,
+                        maxLength: 20,
                         step: 1,
                         sx: {
                             "& input[type=number]": { MozAppearance: "textfield" },
