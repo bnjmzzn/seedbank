@@ -24,6 +24,11 @@ export const transferSchema = z.object({
     amount: amountRule(CONFIG.TRANSFER_MIN, CONFIG.TRANSFER_MAX),
 });
 
+export const playSchema = z.object({
+    amount: amountRule(CONFIG.BET_MIN, CONFIG.BET_MAX),
+});
+
 export type LoginInput = z.infer<typeof loginSchema>;
 export type RegisterInput = z.infer<typeof registerSchema>;
 export type TransferInput = z.infer<typeof transferSchema>;
+export type PlayInput = z.infer<typeof playSchema>;
