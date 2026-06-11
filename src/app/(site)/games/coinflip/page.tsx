@@ -1,67 +1,40 @@
 "use client";
 
 import { useState } from "react";
-import { Box, Stack, Typography } from "@mui/material";
-
-import AmountInput from "@/components/shared/action/AmountInput";
-import PlayButton from "@/components/shared/action/PlayButton";
-import ChoiceMenu from "./_components/ChoiceMenu";
-import Visualizer from "./_components/Visualizer";
-
+import { Box, Typography } from "@mui/material";
 import { useMe } from "@/lib/client/hooks/data";
 import { api } from "@/lib/client/api";
 import { HistoryReason } from "@/types/models";
-import SectionHeader from "@/components/shared/generic/SectionHeader";
-import GameResult from "@/components/shared/data/GameResult";
+import AmountInput from "@/components/shared/action/AmountInput";
+import CoinflipVisualizer from "./_components/CoinflipVisualizer";
 
-type CoinSide = "heads" | "tails";
-type Phase = "idle" | "pending" | "animating" | "settled";
+type GamePhase = "idle" | "pending" | "animating";
 
-interface FormErrors {
-    amount: string | null;
-    choice: string | null;
-}
-
-interface Result {
+export interface ApiResult {
     won: boolean;
     delta: number;
     balance: number;
 }
 
-function validate(amount: string, choice: CoinSide | null): FormErrors {
-    const num = Number(amount);
-    const amountError = amount === "" || isNaN(num) || num <= 0 ? "Enter a valid amount" : null;
-    const choiceError = choice === null ? "Pick heads or tails" : null;
-    return { amount: amountError, choice: choiceError };
-}
-
 export default function CoinflipPage() {
-    const { me, mutate: mutateMe } = useMe();
+    const { me, mutate } = useMe();
 
-    const [phase, setPhase] = useState<Phase>("idle");
-    const [amount, setAmount] = useState("");
-    const [choice, setChoice] = useState<CoinSide | null>(null);
-    const [result, setResult] = useState<Result | null>(null);
-    const [errors, setErrors] = useState<FormErrors>({ amount: null, choice: null });
+    const [phase, setPhase] = useState<GamePhase>("idle");
+    const [amount, setAmount] = useState<number | null>(null);
+    const [result, setResult] = useState<ApiResult | null>(null);
 
-    const locked = phase === "pending" || phase === "animating";
+    const isLocked = phase !== "idle";
+    const balance = me?.balance ?? 0;
+    const amountValid = amount !== null;
 
     async function handlePlay() {
-        const validated = validate(amount, choice);
-        const hasErrors = validated.amount !== null || validated.choice !== null;
+        if (amount === null) return;
 
-        if (hasErrors) {
-            setErrors(validated);
-            return;
-        }
-
-        setErrors({ amount: null, choice: null });
-        setResult(null);
         setPhase("pending");
 
         try {
-            const response = await api.user.play(HistoryReason.Game.COINFLIP, Number(amount));
-            setResult(response.data.data);
+            const res = await api.user.play(HistoryReason.Game.COINFLIP, amount);
+            setResult(res.data.data);
             setPhase("animating");
         } catch {
             setPhase("idle");
@@ -69,50 +42,30 @@ export default function CoinflipPage() {
     }
 
     function handleFinish() {
-        mutateMe();
-        setPhase("settled");
+        setPhase("idle");
+        mutate();
     }
 
     return (
-        <Stack gap={4} sx={{ minWidth: 0, overflow: "hidden", p: { sm: 1, md: 2 } }}>
-            <Stack direction={{ xs: "column", md: "row" }} gap={4}>
-                <Stack flex={2} gap={1}>
-                    <SectionHeader icon="mdi:coin-outline" label="Coinflip" />
-                    <Visualizer
-                        result={phase === "animating" ? result : null}
-                        choice={choice}
-                        onFinish={handleFinish}
-                    />
-                </Stack>
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 2, p: 2 }}>
+            <Typography variant="h5" fontWeight="bold">
+                Coinflip
+            </Typography>
 
-                <Stack flex={1} gap={2}>
-                    <Stack gap={1}>
-                        <GameResult result={result} isLocked={locked} />
-                    </Stack>
-                    <Stack gap={1}>
-                        <SectionHeader icon="mdi:hand-coin-outline" label="Your Pick" />
-                        <ChoiceMenu
-                            value={choice}
-                            onChange={setChoice}
-                            error={errors.choice}
-                            disabled={locked}
-                        />
-                    </Stack>
+            <CoinflipVisualizer
+                handlePlay={handlePlay}
+                handleFinish={handleFinish}
+                result={result}
+                isLocked={isLocked}
+                amountValid={amountValid}
+            />
 
-                    <Stack gap={1}>
-                        <SectionHeader icon="mdi:wallet-outline" label="Bet" />
-                        <AmountInput
-                            value={amount}
-                            onChange={setAmount}
-                            balance={me?.balance ?? 0}
-                            disabled={locked}
-                            externalError={errors.amount ?? undefined}
-                        />
-                    </Stack>
-
-                    <PlayButton onClick={handlePlay} disabled={locked} label="Flip" />
-                </Stack>
-            </Stack>
-        </Stack>
+            <AmountInput
+                amount={amount}
+                setAmount={setAmount}
+                balance={balance}
+                isLocked={isLocked}
+            />
+        </Box>
     );
 }
