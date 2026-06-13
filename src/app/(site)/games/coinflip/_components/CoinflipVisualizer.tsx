@@ -8,7 +8,6 @@ import { ApiResult } from "../page";
 // --- Types ---
 
 type CoinFace = "heads" | "tails";
-type GamePhase = "idle" | "pending" | "animating";
 
 // --- Constants ---
 
@@ -33,14 +32,11 @@ function getOtherFace(face: CoinFace): CoinFace {
 function getChoiceBorderColor(
     value: CoinFace,
     selectedChoice: CoinFace | null,
-    phase: GamePhase,
     won: boolean | null,
     canPlay: boolean,
 ): string {
     const isSelected = selectedChoice === value;
 
-    if (phase === "animating" && isSelected && won === true) return "success.main";
-    if (phase === "animating" && isSelected && won === false) return "error.main";
     if (isSelected) return "secondary.main";
     if (canPlay) return "rgba(255,255,255,0.25)";
 
@@ -53,15 +49,14 @@ interface GameProps {
     canPlay: boolean;
     onChoice: (value: CoinFace) => void;
     selectedChoice: CoinFace | null;
-    phase: GamePhase;
     won: boolean | null;
 }
 
-function CoinflipGame({ canPlay, onChoice, selectedChoice, phase, won }: GameProps) {
+function CoinflipGame({ canPlay, onChoice, selectedChoice, won }: GameProps) {
     return (
         <Box sx={{ display: "flex", gap: 2 }}>
             {CHOICES.map((choice) => {
-                const borderColor = getChoiceBorderColor(choice.value, selectedChoice, phase, won, canPlay);
+                const borderColor = getChoiceBorderColor(choice.value, selectedChoice, won, canPlay);
                 const isSelectable = canPlay;
 
                 return (
@@ -154,10 +149,9 @@ interface VisualizerProps {
     result: ApiResult | null;
     isLocked: boolean;
     amountValid: boolean;
-    phase: GamePhase;
 }
 
-export default function CoinflipVisualizer({ handlePlay, handleFinish, result, isLocked, amountValid, phase }: VisualizerProps) {
+export default function CoinflipVisualizer({ handlePlay, handleFinish, result, isLocked, amountValid }: VisualizerProps) {
     const wrapperRef = useRef<HTMLDivElement>(null);
     const currentRotationRef = useRef(0);
     const selectedChoiceRef = useRef<CoinFace | null>(null);
@@ -231,7 +225,6 @@ export default function CoinflipVisualizer({ handlePlay, handleFinish, result, i
                 canPlay={canPlay}
                 onChoice={handleChoice}
                 selectedChoice={selectedChoice}
-                phase={phase}
                 won={won}
             />
         </Box>
