@@ -14,6 +14,7 @@ const SFX: Record<string, Howl> = {
     "lose/lose4": new Howl({ src: [`${BASE}/lose/lose4.mp3`] }),
     "lose/lose5": new Howl({ src: [`${BASE}/lose/lose5.mp3`] }),
     "lose/lose6": new Howl({ src: [`${BASE}/lose/lose6.mp3`] }),
+    "shared/click": new Howl({ src: [`${BASE}/shared/click.mp3`] }),
 };
 
 function pickRandom(prefix: string): Howl {
