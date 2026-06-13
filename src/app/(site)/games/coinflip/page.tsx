@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Box, Stack, Typography } from "@mui/material";
-import { useMe } from "@/lib/client/hooks/data";
+import { useHistory, useMe } from "@/lib/client/hooks/data";
 import { api } from "@/lib/client/api";
 import { HistoryReason } from "@/types/models";
 import AmountInput from "@/components/shared/action/AmountInput";
@@ -13,6 +13,7 @@ import { playRandomSfxByPrefix } from "@/lib/client/sfx";
 import SectionHeader from "@/components/shared/generic/SectionHeader";
 import { GAMES } from "@/lib/client/registry/games";
 import GameStatusDisplay from "@/components/shared/action/GameStatusDisplay";
+import HistoryTable from "@/components/shared/data/HistoryTable";
 
 const game = GAMES.find((game) => game.id === HistoryReason.Game.COINFLIP)!;
 
@@ -26,6 +27,7 @@ export interface ApiResult {
 
 export default function CoinflipPage() {
     const { me, mutate } = useMe();
+    const { rows, isLoading: historyLoading, mutate: mutateHistory } = useHistory(me?.username ?? null);
 
     const [phase, setPhase] = useState<GamePhase>("idle");
     const [amount, setAmount] = useState<number | null>(null);
@@ -64,6 +66,7 @@ export default function CoinflipPage() {
         setDisplayResult(result);
         setPhase("idle");
         mutate();
+        mutateHistory();
     }
 
     return (
@@ -96,6 +99,15 @@ export default function CoinflipPage() {
                         result={displayResult}
                         amountValid={amountValid}
                         readyLabel="Pick your choice"
+                    />
+                </Stack>
+                <Stack>
+                    <SectionHeader icon="mdi:history" label="Recent Activity" />
+                    <HistoryTable
+                        rows={rows}
+                        type={game.id}
+                        isLoading={historyLoading}
+                        maxRowsPerPage={5}
                     />
                 </Stack>
             </Box>
