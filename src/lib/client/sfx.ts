@@ -25,12 +25,8 @@ function pickRandom(prefix: string): Howl {
     return matches[index];
 }
 
-export function playWin(): void {
-    pickRandom("win/").play();
-}
-
-export function playLose(): void {
-    pickRandom("lose/").play();
+export function playRandomSfxByPrefix(prefix: string): void {
+    pickRandom(prefix)?.play();
 }
 
 export function playSfx(id: string): void {
