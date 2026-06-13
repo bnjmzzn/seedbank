@@ -161,6 +161,7 @@ export default function CoinflipVisualizer({ handlePlay, handleFinish, result, i
     const [won, setWon] = useState<boolean | null>(null);
 
     const canPlay = !isLocked && amountValid;
+    const statusHint = canPlay ? "Choose a face to start ;)" : "";
 
     useEffect(() => {
         if (!wrapperRef.current) return;
@@ -240,6 +241,9 @@ export default function CoinflipVisualizer({ handlePlay, handleFinish, result, i
                 selectedChoice={selectedChoice}
                 won={won}
             />
+            <Typography variant="body1" sx={{ minHeight: "1.5em", color: "text.secondary" }}>
+                {statusHint}
+            </Typography>
         </Box>
     );
 }
