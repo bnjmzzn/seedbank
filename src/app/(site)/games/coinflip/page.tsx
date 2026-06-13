@@ -67,24 +67,25 @@ export default function CoinflipPage() {
     }
 
     return (
-        <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, gap: 2, p: 2 }}>
-            <Box sx={{ flex: 2 }}>
+        <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, gap: 4, p: 2 }}>
+            <Stack sx={{ flex: 2 }}>
                 <SectionHeader icon={game.icon} label={game.label} />
                 <Typography>
                     { game.desc }
                 </Typography>
-                <CoinflipVisualizer
-                    handlePlay={handlePlay}
-                    handleFinish={handleFinish}
-                    result={result}
-                    isLocked={isLocked}
-                    amountValid={amountValid}
-                />
-            </Box>
+            </Stack>
 
-            <Box sx={{ display: "flex", flexDirection: "column", gap: 4, flex: 1 }}>
-                <Stack>
-                    <SectionHeader icon="mdi:wallet" label="Amount Input" />
+            <CoinflipVisualizer
+                handlePlay={handlePlay}
+                handleFinish={handleFinish}
+                result={result}
+                isLocked={isLocked}
+                amountValid={amountValid}
+            />
+
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 2, flex: 1 }}>
+                <SectionHeader icon="mdi:table" label="Current Session" />
+                <Stack sx={{ gap: 2 }}>
                     <AmountInput
                         amount={amount}
                         setAmount={setAmount}
@@ -92,9 +93,6 @@ export default function CoinflipPage() {
                         isLocked={isLocked}
                         schema={playSchema.shape.amount}
                     />
-                </Stack>
-                <Stack>
-                    <SectionHeader icon="mdi:chart-bar" label="Results" />   
                     <GameStatusDisplay
                         isLocked={isLocked}
                         result={displayResult}
