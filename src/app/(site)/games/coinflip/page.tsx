@@ -9,6 +9,7 @@ import AmountInput from "@/components/shared/action/AmountInput";
 import CoinflipVisualizer from "./_components/CoinflipVisualizer";
 import { playSchema } from "@/lib/client/validation";
 import { playLoseConfetti, playWinConfetti } from "@/lib/client/confetti";
+import { playRandomSfxByPrefix } from "@/lib/client/sfx";
 
 type GamePhase = "idle" | "pending" | "animating";
 
@@ -47,8 +48,10 @@ export default function CoinflipPage() {
         if (result === null) return;
 
         if (result.delta > 0) {
+            playRandomSfxByPrefix("win")
             playWinConfetti()
         } else {
+            playRandomSfxByPrefix("lose")
             playLoseConfetti()
         }
         setPhase("idle");

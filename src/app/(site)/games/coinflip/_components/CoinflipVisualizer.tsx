@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Box, Paper, Typography } from "@mui/material";
 import { animate, utils, cubicBezier, random } from "animejs";
+import { playSfx } from "@/lib/client/sfx";
 import { ApiResult } from "../page";
 
 // --- Types ---
@@ -189,24 +190,36 @@ export default function CoinflipVisualizer({ handlePlay, handleFinish, result, i
 
     function animateCoin(landingFace: CoinFace) {
         if (!wrapperRef.current) return;
-
+    
         const current = currentRotationRef.current;
         const currentMod = ((current % 360) + 360) % 360;
-
+    
         const faceTargetMod = landingFace === "heads" ? 0 : 180;
         const extraSpins = random(SPIN_EXTRA_ROTATIONS_MIN, SPIN_EXTRA_ROTATIONS_MAX) * 360;
         const duration = random(SPIN_DURATION_MIN, SPIN_DURATION_MAX);
-
+    
         let delta = faceTargetMod - currentMod;
         if (delta <= 0) delta += 360;
-
+    
         const targetRotation = current + extraSpins + delta;
         currentRotationRef.current = targetRotation;
-
+    
+        let lastHalfTurn = Math.floor(current / 180);
+    
         animate(wrapperRef.current, {
             rotateY: targetRotation,
-            duration: duration,
+            duration,
             ease: SPIN_EASE,
+            onUpdate: (self) => {
+                if (!wrapperRef.current || self.progress >= 1) return;
+                const liveRotation = utils.get(wrapperRef.current, "rotateY", false) as number;
+                const currentHalfTurn = Math.floor(liveRotation / 180);
+                const crossedBoundary = currentHalfTurn !== lastHalfTurn;
+                if (crossedBoundary) {
+                    lastHalfTurn = currentHalfTurn;
+                    playSfx("shared/click");
+                }
+            },
             onComplete: () => {
                 setTimeout(() => {
                     setSelectedChoice(null);
