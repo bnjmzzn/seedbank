@@ -20,13 +20,12 @@ interface Validation {
 }
 
 const PRESETS = [
-    { label: "10%", factor: 0.1 },
-    { label: "50%", factor: 0.5 },
-    { label: "100%", factor: 1 },
+    { label: "×0.5", factor: 0.5 },
+    { label: "×2", factor: 2 },
 ];
 
 function validate(value: string, balance: number, schema: z.ZodNumber): Validation {
-    if (value === "") return { error: false, message: "" };
+    if (value === "") return { error: true, message: "Enter Amount" };
 
     const parsed = schema.safeParse(Number(value));
 
@@ -50,19 +49,36 @@ export default function AmountInput({ amount, setAmount, balance, isLocked, sche
     }
 
     function handlePreset(factor: number) {
-        const num = Math.floor(balance * factor);
+        const base = raw !== "" ? Number(raw) : balance;
+        const schema_result = schema.safeParse(base * factor);
+        const min = schema.minValue ?? 0;
+        const max = schema.maxValue ?? Infinity;
+        const num = Math.min(Math.max(Math.floor(base * factor), min), max, balance);
         const str = String(num);
         setRaw(str);
-
+    
+        const { error } = validate(str, balance, schema);
+        setAmount(error ? null : num);
+    }
+    
+    function handleMax() {
+        const max = schema.maxValue ?? Infinity;
+        const num = Math.min(balance, max);
+        const str = String(num);
+        setRaw(str);
+    
         const { error } = validate(str, balance, schema);
         setAmount(error ? null : num);
     }
 
     return (
         <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-            <Typography color="text.secondary">
-                Balance: {balance.toLocaleString()} {CURRENCY_TICKER}
-            </Typography>
+            <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <Typography variant="body2" color="text.secondary">Balance</Typography>
+                <Typography variant="body2" color="text.secondary">
+                    {balance.toLocaleString()} {CURRENCY_TICKER}
+                </Typography>
+            </Box>
             <TextField
                 label={isError ? errorMessage : "Amount"}
                 value={raw}
@@ -98,6 +114,14 @@ export default function AmountInput({ amount, setAmount, balance, isLocked, sche
                         {preset.label}
                     </Button>
                 ))}
+                <Button
+                    variant="contained"
+                    onClick={handleMax}
+                    disabled={isLocked || balance <= 0}
+                    sx={{ flex: 1, fontWeight: "bold" }}
+                >
+                    Max
+                </Button>
             </Box>
         </Box>
     );
