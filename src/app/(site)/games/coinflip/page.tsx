@@ -68,23 +68,21 @@ export default function CoinflipPage() {
 
     return (
         <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, gap: 4, p: 2 }}>
-            <Stack sx={{ flex: 2 }}>
+            <Stack sx={{ flex: 2, gap: 2 }}>
                 <SectionHeader icon={game.icon} label={game.label} />
                 <Typography>
                     { game.desc }
                 </Typography>
+                <CoinflipVisualizer
+                    handlePlay={handlePlay}
+                    handleFinish={handleFinish}
+                    result={result}
+                    isLocked={isLocked}
+                    amountValid={amountValid}
+                />
             </Stack>
 
-            <CoinflipVisualizer
-                handlePlay={handlePlay}
-                handleFinish={handleFinish}
-                result={result}
-                isLocked={isLocked}
-                amountValid={amountValid}
-            />
-
-            <Box sx={{ display: "flex", flexDirection: "column", gap: 2, flex: 1 }}>
-                <SectionHeader icon="mdi:table" label="Current Session" />
+            <Box sx={{ display: "flex", flexDirection: "column", marginTop:4,  gap: 2, flex: 1 }}>
                 <Stack sx={{ gap: 2 }}>
                     <AmountInput
                         amount={amount}
