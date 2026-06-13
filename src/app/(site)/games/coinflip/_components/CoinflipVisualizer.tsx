@@ -20,7 +20,7 @@ const SPIN_EXTRA_ROTATIONS_MIN = 6;
 const SPIN_EXTRA_ROTATIONS_MAX = 10;
 const SPIN_DURATION_MIN = 2000;
 const SPIN_DURATION_MAX = 4000;
-const SETTLE_DELAY = 900;
+const SETTLE_DELAY = 300;
 const SPIN_EASE = cubicBezier(0.004, 0.509,0.255,0.965);
 
 // --- Helpers ---

@@ -8,6 +8,7 @@ import { HistoryReason } from "@/types/models";
 import AmountInput from "@/components/shared/action/AmountInput";
 import CoinflipVisualizer from "./_components/CoinflipVisualizer";
 import { playSchema } from "@/lib/client/validation";
+import { playLoseConfetti, playWinConfetti } from "@/lib/client/confetti";
 
 type GamePhase = "idle" | "pending" | "animating";
 
@@ -43,6 +44,13 @@ export default function CoinflipPage() {
     }
 
     function handleFinish() {
+        if (result === null) return;
+
+        if (result.delta > 0) {
+            playWinConfetti()
+        } else {
+            playLoseConfetti()
+        }
         setPhase("idle");
         mutate();
     }
