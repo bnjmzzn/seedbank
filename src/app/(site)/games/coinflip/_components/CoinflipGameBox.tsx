@@ -142,9 +142,9 @@ function CoinflipCoin({ wrapperRef }: CoinProps) {
     );
 }
 
-// --- CoinflipVisualizer ---
+// --- CoinflipGameBox ---
 
-interface VisualizerProps {
+interface GameBoxProps {
     handlePlay: () => Promise<void>;
     handleFinish: () => void;
     result: ApiResult | null;
@@ -152,7 +152,7 @@ interface VisualizerProps {
     amountValid: boolean;
 }
 
-export default function CoinflipVisualizer({ handlePlay, handleFinish, result, isLocked, amountValid }: VisualizerProps) {
+export default function CoinflipGameBox({ handlePlay, handleFinish, result, isLocked, amountValid }: GameBoxProps) {
     const wrapperRef = useRef<HTMLDivElement>(null);
     const currentRotationRef = useRef(0);
     const selectedChoiceRef = useRef<CoinFace | null>(null);

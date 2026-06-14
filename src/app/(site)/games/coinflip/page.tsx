@@ -6,7 +6,7 @@ import { useHistory, useMe } from "@/lib/client/hooks/data";
 import { api } from "@/lib/client/api";
 import { HistoryReason } from "@/types/models";
 import AmountInput from "@/components/shared/action/AmountInput";
-import CoinflipVisualizer from "./_components/CoinflipVisualizer";
+import CoinflipVisualizer from "./_components/CoinflipGameBox";
 import { playSchema } from "@/lib/client/validation";
 import { playLoseConfetti, playWinConfetti } from "@/lib/client/confetti";
 import { playRandomSfxByPrefix } from "@/lib/client/sfx";
