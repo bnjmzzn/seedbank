@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Typography, Box, Paper } from "@mui/material";
+import { Typography, Box } from "@mui/material";
 import { CURRENCY_TICKER } from "@/lib/config";
 
-type ResultStatus = "won" | "lost" | "invalid" | "ready" | "busy";
+type ResultStatus = "won" | "lost" | "inactive" | "ready";
 
 interface Result {
     won: boolean;
@@ -15,8 +15,6 @@ interface Props {
     result: Result | null;
     amountValid: boolean;
     isLocked: boolean;
-    readyLabel?: string;
-    busyLabel?: string;
 }
 
 interface HistoryEntry {
@@ -24,25 +22,10 @@ interface HistoryEntry {
 }
 
 function resolveStatus(result: Result | null, amountValid: boolean, isLocked: boolean): ResultStatus {
-    if (!amountValid) return "invalid";
-    if (isLocked) return "busy";
+    if (isLocked) return "inactive";
+    if (!amountValid) return "inactive";
     if (result !== null) return result.won ? "won" : "lost";
     return "ready";
-}
-
-function resolveHelperText(status: ResultStatus, readyLabel: string, busyLabel: string): string {
-    if (status === "won") return "You won! Pick again";
-    if (status === "lost") return "You lost. Pick again";
-    if (status === "invalid") return "Enter a valid amount";
-    if (status === "busy") return busyLabel;
-    return readyLabel;
-}
-
-function resolveHelperColor(status: ResultStatus): string {
-    if (status === "won") return "success.main";
-    if (status === "lost") return "error.main";
-    if (status === "busy") return "text.disabled";
-    return "text.secondary";
 }
 
 function resolveAmountColor(status: ResultStatus): string {
@@ -57,13 +40,7 @@ function resolveAmountText(result: Result | null): string {
     return `-${Math.abs(result.delta).toLocaleString()}`;
 }
 
-export default function GameStatusDisplay({
-    result,
-    amountValid,
-    isLocked,
-    readyLabel = "Pick your choice",
-    busyLabel = "Loading",
-}: Props) {
+export default function GameStatusDisplay({ result, amountValid, isLocked }: Props) {
     const [history, setHistory] = useState<HistoryEntry[]>([]);
     const [lastResult, setLastResult] = useState<Result | null>(null);
 
@@ -74,6 +51,8 @@ export default function GameStatusDisplay({
 
     const displayResult = result ?? lastResult;
     const status = resolveStatus(displayResult, amountValid, isLocked);
+    const amountColor = resolveAmountColor(status);
+    const amountText = resolveAmountText(displayResult);
 
     const wins = history.filter((entry) => entry.won).length;
     const losses = history.filter((entry) => !entry.won).length;
@@ -81,22 +60,13 @@ export default function GameStatusDisplay({
     const winPct = total === 0 ? 0 : (wins / total) * 100;
     const lossPct = total === 0 ? 0 : (losses / total) * 100;
 
-    const helperText = resolveHelperText(status, readyLabel, busyLabel);
-    const helperColor = resolveHelperColor(status);
-    const amountColor = resolveAmountColor(status);
-    const amountText = resolveAmountText(displayResult);
-
     return (
-        <Paper elevation={0} sx={{ display: "flex", flexDirection: "column", gap: 1, p: 2, bgcolor: "grey.900", borderRadius: 2 }}>
-            <Typography variant="subtitle2" color={helperColor}>
-                {helperText}
-            </Typography>
-
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
             <Box sx={{ display: "flex", alignItems: "baseline", gap: 1 }}>
-                <Typography variant="h4" fontWeight="bold" color={amountColor}>
+                <Typography variant="h5" fontWeight="bold" color={amountColor}>
                     {amountText}
                 </Typography>
-                <Typography variant="h6" color="text.secondary" fontWeight="regular">
+                <Typography variant="body1" color="text.secondary" fontWeight="regular">
                     {CURRENCY_TICKER}
                 </Typography>
             </Box>
@@ -111,6 +81,6 @@ export default function GameStatusDisplay({
                     <Typography variant="body2" color="error.main">{losses}L</Typography>
                 </Box>
             </Box>
-        </Paper>
+        </Box>
     );
 }
