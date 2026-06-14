@@ -13,7 +13,7 @@ import { playRandomSfxByPrefix } from "@/lib/client/sfx";
 import SectionHeader from "@/components/shared/generic/SectionHeader";
 import { GAMES } from "@/lib/client/registry/games";
 import GameStatusDisplay from "@/components/shared/action/GameStatusDisplay";
-import HistoryTable from "@/components/shared/data/HistoryTable";
+import HistoryTable from "@/components/shared/data/HistoryList";
 
 const game = GAMES.find((game) => game.id === HistoryReason.Game.COINFLIP)!;
 

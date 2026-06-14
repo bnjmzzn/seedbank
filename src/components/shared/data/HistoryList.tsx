@@ -9,7 +9,7 @@ import { HISTORY_META } from "@/lib/client/registry/history";
 import { filterHistory } from "@/lib/client/utils";
 import Iconify from "@/components/shared/generic/Iconify";
 
-interface HistoryTableProps {
+interface HistoryListProps {
     rows: HistoryRow[];
     type?: string;
     limit?: number;
@@ -142,7 +142,7 @@ function Paginator({ page, pageCount, onChange }: PaginatorProps) {
     );
 }
 
-export default function HistoryTable({ rows, type, limit, maxRowsPerPage = 10, isLoading }: HistoryTableProps) {
+export default function HistoryList({ rows, type, limit, maxRowsPerPage = 10, isLoading }: HistoryListProps) {
     const router = useRouter();
     const [page, setPage] = useState(1);
 

@@ -2,7 +2,7 @@
 
 import { Paper } from "@mui/material";
 import type { HistoryRow } from "@/types/db";
-import HistoryTable from "@/components/shared/data/HistoryTable";
+import HistoryTable from "@/components/shared/data/HistoryList";
 
 interface Props {
     rows: HistoryRow[];
