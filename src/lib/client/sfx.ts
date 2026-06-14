@@ -1,21 +1,30 @@
 import { Howl } from "howler";
 
 const BASE = "/assets/sounds";
+const ids = [
+    "win/win1",
+    "win/win2",
+    "win/win3",
+    "win/win4",
+    "win/win5",
+    "lose/lose1",
+    "lose/lose2",
+    "lose/lose3",
+    "lose/lose4",
+    "lose/lose5",
+    "lose/lose6",
+    "shared/click",
+] as const;
 
-const SFX: Record<string, Howl> = {
-    "win/win1": new Howl({ src: [`${BASE}/win/win1.mp3`] }),
-    "win/win2": new Howl({ src: [`${BASE}/win/win2.mp3`] }),
-    "win/win3": new Howl({ src: [`${BASE}/win/win3.mp3`] }),
-    "win/win4": new Howl({ src: [`${BASE}/win/win4.mp3`] }),
-    "win/win5": new Howl({ src: [`${BASE}/win/win5.mp3`] }),
-    "lose/lose1": new Howl({ src: [`${BASE}/lose/lose1.mp3`] }),
-    "lose/lose2": new Howl({ src: [`${BASE}/lose/lose2.mp3`] }),
-    "lose/lose3": new Howl({ src: [`${BASE}/lose/lose3.mp3`] }),
-    "lose/lose4": new Howl({ src: [`${BASE}/lose/lose4.mp3`] }),
-    "lose/lose5": new Howl({ src: [`${BASE}/lose/lose5.mp3`] }),
-    "lose/lose6": new Howl({ src: [`${BASE}/lose/lose6.mp3`] }),
-    "shared/click": new Howl({ src: [`${BASE}/shared/click.mp3`] }),
-};
+type SfxId = (typeof ids)[number];
+
+const SFX = Object.fromEntries(
+    ids.map((id) => [id, new Howl({ src: [`${BASE}/${id}.mp3`] })])
+) as Record<SfxId, Howl>;
+
+function isSfxId(id: string): id is SfxId {
+    return (ids as readonly string[]).includes(id);
+}
 
 function pickRandom(prefix: string): Howl {
     const matches = Object.entries(SFX)
@@ -30,6 +39,7 @@ export function playRandomSfxByPrefix(prefix: string): void {
     pickRandom(prefix)?.play();
 }
 
-export function playSfx(id: string): void {
+export function playSfx(id: SfxId): void {
+    if (!isSfxId(id)) return;
     SFX[id]?.play();
 }
