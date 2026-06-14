@@ -70,23 +70,25 @@ export default function CoinflipPage() {
     }
 
     return (
-        <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, gap: 4, p: 2 }}>
-            <Stack sx={{ flex: 2, gap: 2 }}>
-                <SectionHeader icon={game.icon} label={game.label} />
-                <Typography>
-                    { game.desc }
-                </Typography>
-                <CoinflipVisualizer
-                    handlePlay={handlePlay}
-                    handleFinish={handleFinish}
-                    result={result}
-                    isLocked={isLocked}
-                    amountValid={amountValid}
-                />
-            </Stack>
-
-            <Box sx={{ display: "flex", flexDirection: "column", marginTop:4,  gap: 2, flex: 1 }}>
-                <Stack sx={{ gap: 2 }}>
+        <Stack gap={4} sx={{ minWidth: 0, overflow: "hidden", p: { sm: 1, md: 2 } }}>
+            <Stack direction="row" flexWrap="wrap" gap={4}>
+                <Stack flex={2}>
+                    <Stack>
+                        <SectionHeader icon={game.icon} label={game.label} />
+                        <Typography>{game.desc}</Typography>
+                    </Stack>
+                    <Stack marginY={4}>
+                        <CoinflipVisualizer
+                            handlePlay={handlePlay}
+                            handleFinish={handleFinish}
+                            result={result}
+                            isLocked={isLocked}
+                            amountValid={amountValid}
+                        />
+                    </Stack>
+                </Stack>
+                <Stack flex={1} gap={2}>
+                    <SectionHeader icon="mdi:input" label="Place bet" />
                     <AmountInput
                         amount={amount}
                         setAmount={setAmount}
@@ -98,10 +100,11 @@ export default function CoinflipPage() {
                         isLocked={isLocked}
                         result={displayResult}
                         amountValid={amountValid}
-                        readyLabel="Pick your choice"
                     />
                 </Stack>
-                <Stack>
+            </Stack>
+            <Stack direction="row" flexWrap="wrap" gap={4}>
+                <Stack flex={2} gap={1}>
                     <SectionHeader icon="mdi:history" label="Recent Activity" />
                     <HistoryTable
                         rows={rows}
@@ -110,7 +113,10 @@ export default function CoinflipPage() {
                         maxRowsPerPage={5}
                     />
                 </Stack>
-            </Box>
-        </Box>
+                <Stack flex={1} gap={1}>
+                    <Box />
+                </Stack>
+            </Stack>
+        </Stack>
     );
 }
