@@ -42,7 +42,7 @@ importers:
         specifier: 1.9.4
         version: 1.9.4
       howler:
-        specifier: ^2.2.4
+        specifier: 2.2.4
         version: 2.2.4
       jose:
         specifier: 6.2.2
@@ -79,7 +79,7 @@ importers:
         specifier: 1.9.0
         version: 1.9.0
       '@types/howler':
-        specifier: ^2.2.13
+        specifier: 2.2.13
         version: 2.2.13
       '@types/node':
         specifier: '24'
