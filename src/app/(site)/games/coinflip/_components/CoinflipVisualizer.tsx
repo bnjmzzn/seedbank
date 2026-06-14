@@ -161,7 +161,8 @@ export default function CoinflipVisualizer({ handlePlay, handleFinish, result, i
     const [won, setWon] = useState<boolean | null>(null);
 
     const canPlay = !isLocked && amountValid;
-    const statusHint = canPlay ? "Choose a face to start ;)" : "";
+    const hasPlayed = result !== null;
+    const statusHint = resolveHint(canPlay, result, hasPlayed);
 
     useEffect(() => {
         if (!wrapperRef.current) return;
@@ -178,6 +179,12 @@ export default function CoinflipVisualizer({ handlePlay, handleFinish, result, i
         setWon(resultWon);
         animateCoin(landingFace);
     }, [result]);
+
+    function resolveHint(canPlay: boolean, result: ApiResult | null, hasPlayed: boolean): string {
+        if (!canPlay) return "";
+        if (hasPlayed) return "Choose again to start";
+        return "Pick a face to start";
+    }
 
     async function handleChoice(value: CoinFace) {
         if (!canPlay) return;
