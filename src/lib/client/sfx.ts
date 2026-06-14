@@ -7,6 +7,7 @@ const ids = [
     "win/win3",
     "win/win4",
     "win/win5",
+    "win/win6",
     "lose/lose1",
     "lose/lose2",
     "lose/lose3",
