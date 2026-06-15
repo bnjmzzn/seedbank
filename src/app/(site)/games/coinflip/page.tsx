@@ -71,7 +71,7 @@ export default function CoinflipPage() {
 
     return (
         <Stack gap={4} sx={{ minWidth: 0, overflow: "hidden", p: { sm: 1, md: 2 } }}>
-            <Stack direction="row" flexWrap="wrap" gap={4}>
+            <Stack direction="row" flexWrap="wrap">
                 <Stack flex={2}>
                     <Stack>
                         <SectionHeader icon={game.icon} label={game.label} />
@@ -104,7 +104,7 @@ export default function CoinflipPage() {
                 </Stack>
             </Stack>
             <Stack direction="row" flexWrap="wrap" gap={4}>
-                <Stack flex={2} gap={1}>
+                <Stack flex={2} gap={1} minWidth={300}>
                     <SectionHeader icon="mdi:history" label="Recent Activity" />
                     <HistoryTable
                         rows={rows}
@@ -113,7 +113,7 @@ export default function CoinflipPage() {
                         maxRowsPerPage={5}
                     />
                 </Stack>
-                <Stack flex={1} gap={1}>
+                <Stack flex={1} gap={1} minWidth={200}>
                     <Box />
                 </Stack>
             </Stack>
