@@ -14,6 +14,8 @@ import SectionHeader from "@/components/shared/generic/SectionHeader";
 import { GAMES } from "@/lib/client/registry/games";
 import GameStatusDisplay from "@/components/shared/action/GameStatusDisplay";
 import HistoryTable from "@/components/shared/data/HistoryList";
+import { showSnackbar } from "@/components/shared/generic/SnackBar";
+import { CURRENCY_TICKER } from "@/lib/config";
 
 const game = GAMES.find((game) => game.id === HistoryReason.Game.COINFLIP)!;
 
@@ -56,9 +58,11 @@ export default function CoinflipPage() {
         if (result === null) return;
 
         if (result.delta > 0) {
+            showSnackbar(`+${result.delta.toLocaleString()} ${CURRENCY_TICKER}`, "win")
             playRandomSfxByPrefix("win")
             playWinConfetti()
         } else {
+            showSnackbar(`-${Math.abs(result.delta).toLocaleString()} ${CURRENCY_TICKER}`, "lose")
             playRandomSfxByPrefix("lose")
             playLoseConfetti()
         }
