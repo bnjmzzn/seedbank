@@ -1,30 +1,12 @@
 import { Howl } from "howler";
-
-const BASE = "/assets/sounds";
-const ids = [
-    "win/win1",
-    "win/win2",
-    "win/win3",
-    "win/win4",
-    "win/win5",
-    "win/win6",
-    "lose/lose1",
-    "lose/lose2",
-    "lose/lose3",
-    "lose/lose4",
-    "lose/lose5",
-    "lose/lose6",
-    "shared/click",
-] as const;
-
-type SfxId = (typeof ids)[number];
+import { SFX_BASE, SFX_IDS, type SfxId } from "@/lib/client/registry/sfx";
 
 const SFX = Object.fromEntries(
-    ids.map((id) => [id, new Howl({ src: [`${BASE}/${id}.mp3`] })])
+    SFX_IDS.map((id) => [id, new Howl({ src: [`${SFX_BASE}/${id}.mp3`] })])
 ) as Record<SfxId, Howl>;
 
 function isSfxId(id: string): id is SfxId {
-    return (ids as readonly string[]).includes(id);
+    return (SFX_IDS as readonly string[]).includes(id);
 }
 
 function pickRandom(prefix: string): Howl {
