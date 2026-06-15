@@ -74,8 +74,8 @@ export default function AmountInput({ amount, setAmount, balance, isLocked, sche
     return (
         <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
             <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <Typography variant="body2" color="text.secondary">Balance</Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="body1" color="text.secondary">Balance</Typography>
+                <Typography variant="h6" color="text.secondary">
                     {balance.toLocaleString()} {CURRENCY_TICKER}
                 </Typography>
             </Box>

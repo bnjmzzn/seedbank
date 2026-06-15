@@ -12,7 +12,7 @@ export default function SectionHeader({ icon, label }: Props) {
     return (
         <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
             <Iconify icon={icon} sx={{ color: "text.disabled" }} />
-            <Typography color="text.secondary">{label}</Typography>
+            <Typography variant="h6" color="text.secondary">{label}</Typography>
         </Box>
     );
 }

@@ -52,7 +52,7 @@ function ChartTooltip({ active, payload }: TooltipProps) {
             <Typography fontWeight="medium" sx={{ color: isPositive ? "success.main" : "error.main" }}>
                 {changeStr}
             </Typography>
-            <Typography variant="caption" color="text.secondary" display="block">
+            <Typography variant="body2" color="text.secondary" display="block">
                 {new Date(point.date).toLocaleDateString(undefined, {
                     month: "short",
                     day: "numeric",

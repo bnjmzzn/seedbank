@@ -77,13 +77,14 @@ function HistoryRowItem({ row, onClick }: HistoryRowItemProps) {
                 <Iconify icon={icon} sx={{ color: iconBg, flexShrink: 0, fontSize: 30 }} />
 
                 <Box sx={{ flex: 1, minWidth: 0, textAlign: "left" }}>
-                    <Typography fontWeight="medium" noWrap>{label}</Typography>
-                    <Typography variant="caption" color="text.secondary">{dateStr}</Typography>
+                    <Typography noWrap>{label}</Typography>
+                    <Typography variant="body2"  color="text.secondary">{dateStr}</Typography>
                 </Box>
 
                 <Typography
-                    fontWeight="medium"
-                    sx={{ flexShrink: 0, color: changeColor, fontFamily: "monospace"}}
+                    variant="body1"
+                    fontFamily="monospace"
+                    sx={{ flexShrink: 0, color: changeColor}}
                 >
                     {changeStr}
                 </Typography>
