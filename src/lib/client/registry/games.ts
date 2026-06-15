@@ -39,7 +39,7 @@ export const GAMES: GameEntry[] = [
         label: "Minesweeper",
         href: "/games/minesweeper",
         icon: "mdi:mine",
-        color: "dark",
+        color: "tertiary",
         desc: "Pick four tiles, avoid the bombs.",
     },
     {

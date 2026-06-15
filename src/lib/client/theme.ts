@@ -13,7 +13,11 @@ const theme = createTheme({
         error: {
             main: "#d32f2f",
         },
-    },
+        tertiary: {
+            main: "#303030",
+            contrastText: "#fff",
+        },
+    } as any,
     components: {
         MuiCssBaseline: {
             styleOverrides: {
