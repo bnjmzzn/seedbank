@@ -29,11 +29,12 @@ export enum HistoryReason {
 
 export namespace HistoryReason {
     export enum Game {
+        CARDS = "GAME:CARDS",
         COINFLIP = "GAME:COINFLIP",
-        COLOR = "GAME:COLOR",
-        BOMB = "GAME:BOMB",
+        COLOR_CUBE = "GAME:COLOR_CUBE",
+        MINESWEEPER = "GAME:MINESWEEPER",
         SLOTS = "GAME:SLOTS",
-        VAULT = "GAME:VAULT",
+        ROULETTE = "GAME:ROULETTE",
     }
     export enum Transfer {
         SENT = "TRANSFER:SENT",
