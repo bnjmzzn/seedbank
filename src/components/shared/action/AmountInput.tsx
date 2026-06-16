@@ -24,6 +24,9 @@ const PRESETS = [
     { label: "×2", factor: 2 },
 ];
 
+const buttonSx = { flex: 1, fontWeight: "bold", transition: "transform 0.15s ease", "&:hover:not(:disabled)": { transform: "scale(1.02)" } };
+
+
 function validate(value: string, balance: number, schema: z.ZodNumber): Validation {
     if (value === "") return { error: true, message: "Enter Amount" };
 
@@ -109,7 +112,7 @@ export default function AmountInput({ amount, setAmount, balance, isLocked, sche
                         variant="contained"
                         onClick={() => handlePreset(preset.factor)}
                         disabled={isLocked || balance <= 0}
-                        sx={{ flex: 1, fontWeight: "bold" }}
+                        sx={buttonSx}
                     >
                         {preset.label}
                     </Button>
@@ -118,7 +121,7 @@ export default function AmountInput({ amount, setAmount, balance, isLocked, sche
                     variant="contained"
                     onClick={handleMax}
                     disabled={isLocked || balance <= 0}
-                    sx={{ flex: 1, fontWeight: "bold" }}
+                    sx={buttonSx}
                 >
                     Max
                 </Button>
