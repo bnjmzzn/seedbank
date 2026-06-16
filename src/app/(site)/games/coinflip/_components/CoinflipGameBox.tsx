@@ -75,9 +75,9 @@ function CoinflipGame({ canPlay, onChoice, selectedChoice, won }: GameProps) {
                             border: "2px solid",
                             borderColor,
                             cursor: isSelectable ? "pointer" : "default",
-                            transition: "border-color 0.3s",
+                            transition: "border-color 0.3s, transform 0.15s ease",
                             bgcolor: "grey.900",
-                            "&:hover": isSelectable ? { bgcolor: "grey.800" } : {},
+                            "&:hover": isSelectable ? { bgcolor: "grey.800", transform: "scale(1.04)" } : {},
                         }}
                     >
                         <Box
