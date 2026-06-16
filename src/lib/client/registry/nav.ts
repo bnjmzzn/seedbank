@@ -12,15 +12,15 @@ export const NAV_ITEMS: NavEntry[] = [
     },
     {
         label: "Leaderboard",
-        icon: "mdi:trophy",
+        icon: "ion:podium",
         href: "/leaderboard" },
     {
         label: "Transfer",
-        icon: "mdi:swap-horizontal",
+        icon: "mdi:swap-horizontal-bold",
         href: "/transfer" },
     {
         label: "Steal",
-        icon: "mdi:scissors-cutting",
+        icon: "mdi:safe",
         href: "/steal"
     },
 ];
