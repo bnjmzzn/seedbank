@@ -58,11 +58,11 @@ export default function CoinflipPage() {
         if (result === null) return;
 
         if (result.delta > 0) {
-            showSnackbar(`+${result.delta.toLocaleString()} ${CURRENCY_TICKER}`, "win")
+            showSnackbar(`You Won +${result.delta.toLocaleString()} ${CURRENCY_TICKER}`!, "win")
             playRandomSfxByPrefix("win")
             playWinConfetti()
         } else {
-            showSnackbar(`-${Math.abs(result.delta).toLocaleString()} ${CURRENCY_TICKER}`, "lose")
+            showSnackbar(`You lost -${Math.abs(result.delta).toLocaleString()} ${CURRENCY_TICKER}!`, "lose")
             playRandomSfxByPrefix("lose")
             playLoseConfetti()
         }

@@ -37,7 +37,7 @@ export default function LoginForm({ onLoadingChange }: Props) {
             const res = await api.auth.login(data);
             const { token } = res.data.data;
             storage.setToken(token);
-            showSnackbar("Welcome back!", "success");
+            showSnackbar("Welcome!", "enter");
             router.push("/dashboard");
         } catch (error: any) {
             if (error.code === "INVALID_CREDENTIALS") {

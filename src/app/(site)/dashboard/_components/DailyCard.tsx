@@ -67,7 +67,7 @@ export default function DailyCard({ daily, isLoading, onClaimed }: Props) {
         try {
             const res = await api.user.daily.claim();
             onClaimed?.();
-            showSnackbar(`You claimed ${res.data.data.claimed.toLocaleString()} ${CURRENCY_TICKER}!`, "success");
+            showSnackbar(`You claimed ${res.data.data.claimed.toLocaleString()} ${CURRENCY_TICKER}!`, "daily");
         } finally {
             setClaiming(false);
         }
