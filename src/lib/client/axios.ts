@@ -1,12 +1,15 @@
-import axios from "axios";
+import axios, { AxiosRequestConfig } from "axios";
 import { storage } from "./storage";
 
-const instance = axios.create({
+const REQUEST_TIMEOUT_MS = 10000;
+
+const rawInstance = axios.create({
     baseURL: "/api",
+    timeout: REQUEST_TIMEOUT_MS,
     headers: { "Content-Type": "application/json" },
 });
 
-instance.interceptors.request.use((config) => {
+rawInstance.interceptors.request.use((config) => {
     const token = storage.getToken();
     if (token && config.headers) {
         config.headers.Authorization = `Bearer ${token}`;
@@ -14,19 +17,39 @@ instance.interceptors.request.use((config) => {
     return config;
 });
 
-instance.interceptors.response.use(
-    (response) => response,
+rawInstance.interceptors.response.use(
+    (response) => response.data.data,
     (error) => {
-        if (error.response?.status === 401 && !error.config?.url?.includes("/auth/")) {
+        const isUnauthorized = error.response?.status === 401;
+        const isAuthRoute = error.config?.url?.includes("/auth/") ?? false;
+
+        if (isUnauthorized && !isAuthRoute) {
             storage.clearAuth();
             if (typeof window !== "undefined") {
                 window.location.href = "/login";
             }
         }
-        const code = error.response?.data?.code ?? (error.response ? "SERVER_ERROR" : "NETWORK_ERROR");
-        const status = error.response?.status ?? 0;
-        return Promise.reject({ code, status });
+
+        const hasNoResponse = !error.response;
+        if (hasNoResponse) {
+            return Promise.reject({ code: "NETWORK_ERROR", status: 0 });
+        }
+
+        const isServerError = error.response.status >= 500;
+        if (isServerError) {
+            return Promise.reject({ code: "SERVER_ERROR", status: error.response.status });
+        }
+
+        const code = error.response.data?.code ?? "SERVER_ERROR";
+        return Promise.reject({ code, status: error.response.status });
     }
 );
+
+interface UnwrappedAxiosInstance {
+    get<T = any>(url: string, config?: AxiosRequestConfig): Promise<T>;
+    post<T = any>(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<T>;
+}
+
+const instance = rawInstance as unknown as UnwrappedAxiosInstance;
 
 export default instance;
