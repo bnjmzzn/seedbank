@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Box, Paper, Typography } from "@mui/material";
 import { animate, utils, cubicBezier, random } from "animejs";
 import { playSfx } from "@/lib/client/sfx";
-import { ApiResult } from "../page";
+import type { GameResult } from "@/types/api";
 
 // --- Types ---
 
@@ -147,7 +147,7 @@ function CoinflipCoin({ wrapperRef }: CoinProps) {
 interface GameBoxProps {
     handlePlay: () => Promise<void>;
     handleFinish: () => void;
-    result: ApiResult | null;
+    result: GameResult | null;
     isLocked: boolean;
     amountValid: boolean;
 }
@@ -180,7 +180,7 @@ export default function CoinflipGameBox({ handlePlay, handleFinish, result, isLo
         animateCoin(landingFace);
     }, [result]);
 
-    function resolveHint(canPlay: boolean, result: ApiResult | null, hasPlayed: boolean): string {
+    function resolveHint(canPlay: boolean, result: GameResult | null, hasPlayed: boolean): string {
         if (!canPlay) return "";
         if (hasPlayed) return "Choose again to start";
         return "Pick a face to start";

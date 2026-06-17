@@ -35,7 +35,7 @@ export default function LoginForm({ onLoadingChange }: Props) {
     async function onSubmit(data: LoginInput) {
         try {
             const res = await api.auth.login(data);
-            const { token } = res.data.data;
+            const { token } = res;
             storage.setToken(token);
             showSnackbar("Welcome!", "enter");
             router.push("/dashboard");

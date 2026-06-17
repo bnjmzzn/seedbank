@@ -16,16 +16,11 @@ import GameStatusDisplay from "@/components/shared/action/GameStatusDisplay";
 import HistoryTable from "@/components/shared/data/HistoryList";
 import { showSnackbar } from "@/components/shared/generic/SnackBar";
 import { CURRENCY_TICKER } from "@/lib/config";
+import type { GameResult } from "@/types/api";
 
 const game = GAMES.find((game) => game.id === HistoryReason.Game.COINFLIP)!;
 
 type GamePhase = "idle" | "pending" | "animating";
-
-export interface ApiResult {
-    won: boolean;
-    delta: number;
-    balance: number;
-}
 
 export default function CoinflipPage() {
     const { me, mutate } = useMe();
@@ -33,8 +28,8 @@ export default function CoinflipPage() {
 
     const [phase, setPhase] = useState<GamePhase>("idle");
     const [amount, setAmount] = useState<number | null>(null);
-    const [result, setResult] = useState<ApiResult | null>(null);
-    const [displayResult, setDisplayResult] = useState<ApiResult | null>(null);
+    const [result, setResult] = useState<GameResult | null>(null);
+    const [displayResult, setDisplayResult] = useState<GameResult | null>(null);
 
     const isLocked = phase !== "idle";
     const balance = me?.balance ?? 0;
@@ -47,7 +42,7 @@ export default function CoinflipPage() {
 
         try {
             const res = await api.user.play(game.id, amount);
-            setResult(res.data.data);
+            setResult(res);
             setPhase("animating");
         } catch {
             setPhase("idle");
