@@ -2,20 +2,24 @@
 
 import { useState } from "react";
 import { Box, Stack, Typography } from "@mui/material";
-import { useHistory, useMe } from "@/lib/client/hooks/data";
+
 import { api } from "@/lib/client/api";
-import { HistoryReason } from "@/types/models";
-import AmountInput from "@/components/shared/action/AmountInput";
-import CoinflipVisualizer from "./_components/CoinflipGameBox";
-import { playSchema } from "@/lib/client/validation";
 import { playLoseConfetti, playWinConfetti } from "@/lib/client/confetti";
-import { playRandomSfxByPrefix } from "@/lib/client/sfx";
-import SectionHeader from "@/components/shared/generic/SectionHeader";
+import { useHistory, useMe } from "@/lib/client/hooks/data";
 import { GAMES } from "@/lib/client/registry/games";
+import { playRandomSfxByPrefix } from "@/lib/client/sfx";
+import { playSchema } from "@/lib/client/validation";
+import { CURRENCY_TICKER } from "@/lib/config";
+
+import AmountInput from "@/components/shared/action/AmountInput";
 import GameStatusDisplay from "@/components/shared/action/GameStatusDisplay";
 import HistoryTable from "@/components/shared/data/HistoryList";
+import SectionHeader from "@/components/shared/generic/SectionHeader";
 import { showSnackbar } from "@/components/shared/generic/SnackBar";
-import { CURRENCY_TICKER } from "@/lib/config";
+
+import CoinflipGameBox from "./_components/CoinflipGameBox";
+
+import { HistoryReason } from "@/types/models";
 import type { GameResult } from "@/types/api";
 
 const game = GAMES.find((game) => game.id === HistoryReason.Game.COINFLIP)!;
@@ -77,7 +81,7 @@ export default function CoinflipPage() {
                         <Typography>{game.desc}</Typography>
                     </Stack>
                     <Stack marginY={4}>
-                        <CoinflipVisualizer
+                        <CoinflipGameBox
                             handlePlay={handlePlay}
                             handleFinish={handleFinish}
                             result={result}
