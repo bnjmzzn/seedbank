@@ -82,9 +82,9 @@ function GameRow({ game, onPlay }: { game: GameEntry; onPlay: (href: string) => 
                     <Iconify icon={game.icon} sx={{ color: palette.contrastText }} />
                 </Box>
 
-                <Box sx={{ flex: 1, textAlign: "left" }}>
-                    <Typography fontWeight="bold">{game.label}</Typography>
-                    <Typography variant="body2" color="text.secondary">{game.desc}</Typography>
+                <Box sx={{ flex: 1, textAlign: "left", minWidth: 0 }}>
+                    <Typography fontWeight="bold" noWrap>{game.label}</Typography>
+                    <Typography variant="body2" color="text.secondary" noWrap>{game.desc}</Typography>
                 </Box>
 
                 <Iconify icon="mdi:chevron-right" sx={{ color: "text.disabled" }} />
