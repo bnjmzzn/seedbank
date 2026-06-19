@@ -43,6 +43,8 @@ const ROLL_DURATION_MAX = 2200;
 const DIE_STAGGER = 150;
 const SETTLE_DELAY = 300;
 const ROLL_EASE = cubicBezier(0.22, 0.61, 0.36, 1);
+const TILT_MIN = 15;
+const TILT_MAX = 95;
 
 // --- Helpers ---
 
@@ -136,9 +138,10 @@ function ColorChoices({ canPlay, onChoice, selectedColor }: ChoicesProps) {
 
 interface DieProps {
     wrapperRef: React.RefObject<HTMLDivElement | null>;
+    outerRef: React.RefObject<HTMLDivElement | null>;
 }
 
-function ColorCubeDie({ wrapperRef }: DieProps) {
+function ColorCubeDie({ wrapperRef, outerRef }: DieProps) {
     const faceStyle = {
         width: "100%",
         height: "100%",
@@ -152,39 +155,41 @@ function ColorCubeDie({ wrapperRef }: DieProps) {
     };
 
     return (
-        <Box sx={{ perspective: "700px" }}>
-            <Box
-                ref={wrapperRef}
-                sx={{
-                    width: 80,
-                    height: 80,
-                    position: "relative",
-                    transformStyle: "preserve-3d",
-                }}
-            >
-                {FACE_ORDER.map((face, index) => (
-                    <Box
-                        key={face}
-                        sx={{
-                            ...faceStyle,
-                            bgcolor: getFaceBackground(COLORS[index]),
-                            transform: FACE_TRANSFORMS[face],
-                        }}
-                    >
+        <Box ref={outerRef} sx={{ display: "inline-flex" }}>
+            <Box sx={{ perspective: "700px" }}>
+                <Box
+                    ref={wrapperRef}
+                    sx={{
+                        width: 80,
+                        height: 80,
+                        position: "relative",
+                        transformStyle: "preserve-3d",
+                    }}
+                >
+                    {FACE_ORDER.map((face, index) => (
                         <Box
-                            component="svg"
-                            viewBox="0 0 24 24"
-                            sx={{ width: "100%", height: "100%", color: "rgba(0,0,0,0.75)" }}
+                            key={face}
+                            sx={{
+                                ...faceStyle,
+                                bgcolor: getFaceBackground(COLORS[index]),
+                                transform: FACE_TRANSFORMS[face],
+                            }}
                         >
-                            <g transform="translate(2,2) scale(0.83)">
-                                <path
-                                    fill="currentColor"
-                                    d="M5.998 3a7 7 0 0 1 6.913 5.895A6.48 6.48 0 0 1 17.498 7h4.5v2.5a6.5 6.5 0 0 1-6.5 6.5h-2.5v5h-2v-8h-2a7 7 0 0 1-7-7V3zm14 6h-2.5a4.5 4.5 0 0 0-4.5 4.5v.5h2.5a4.5 4.5 0 0 0 4.5-4.5zm-14-4h-2v1a5 5 0 0 0 5 5h2v-1a5 5 0 0 0-5-5"
-                                />
-                            </g>
+                            <Box
+                                component="svg"
+                                viewBox="0 0 24 24"
+                                sx={{ width: "100%", height: "100%", color: "rgba(0,0,0,0.75)" }}
+                            >
+                                <g transform="translate(2,2) scale(0.83)">
+                                    <path
+                                        fill="currentColor"
+                                        d="M5.998 3a7 7 0 0 1 6.913 5.895A6.48 6.48 0 0 1 17.498 7h4.5v2.5a6.5 6.5 0 0 1-6.5 6.5h-2.5v5h-2v-8h-2a7 7 0 0 1-7-7V3zm14 6h-2.5a4.5 4.5 0 0 0-4.5 4.5v.5h2.5a4.5 4.5 0 0 0 4.5-4.5zm-14-4h-2v1a5 5 0 0 0 5 5h2v-1a5 5 0 0 0-5-5"
+                                    />
+                                </g>
+                            </Box>
                         </Box>
-                    </Box>
-                ))}
+                    ))}
+                </Box>
             </Box>
         </Box>
     );
@@ -202,7 +207,9 @@ interface GameBoxProps {
 
 export default function ColorsGameBox({ handlePlay, handleFinish, result, isLocked, amountValid }: GameBoxProps) {
     const dieRefs = [useRef<HTMLDivElement>(null), useRef<HTMLDivElement>(null)];
+    const outerRefs = [useRef<HTMLDivElement>(null), useRef<HTMLDivElement>(null)];
     const rotationRefs = [useRef({ x: 0, y: 0 }), useRef({ x: 0, y: 0 })];
+    const tiltRefs = [useRef(0), useRef(0)];
     const selectedColorRef = useRef<CubeColor | null>(null);
 
     const [selectedColor, setSelectedColor] = useState<CubeColor | null>(null);
@@ -217,6 +224,10 @@ export default function ColorsGameBox({ handlePlay, handleFinish, result, isLock
         dieRefs.forEach((ref) => {
             if (!ref.current) return;
             utils.set(ref.current, { rotateX: 0, rotateY: 0 });
+        });
+        outerRefs.forEach((ref) => {
+            if (!ref.current) return;
+            utils.set(ref.current, { rotate: 0 });
         });
     }, []);
 
@@ -249,31 +260,32 @@ export default function ColorsGameBox({ handlePlay, handleFinish, result, isLock
 
     function rollDie(index: number, landingFace: FaceName, duration: number) {
         const dieRef = dieRefs[index].current;
-        if (!dieRef) return;
-    
+        const outerRef = outerRefs[index].current;
+        if (!dieRef || !outerRef) return;
+
         const current = rotationRefs[index].current;
         const currentXMod = normalizeAngle(current.x);
         const currentYMod = normalizeAngle(current.y);
-    
+
         const landing = FACE_LANDING_ROTATION[landingFace];
         const landingXMod = normalizeAngle(landing.x);
         const landingYMod = normalizeAngle(landing.y);
-    
+
         let deltaX = landingXMod - currentXMod;
         if (deltaX <= 0) deltaX += 360;
-    
+
         let deltaY = landingYMod - currentYMod;
         if (deltaY <= 0) deltaY += 360;
-    
+
         const extraSpins = random(ROLL_EXTRA_SPINS_MIN, ROLL_EXTRA_SPINS_MAX) * 360;
-    
+
         const targetX = current.x + extraSpins + deltaX;
         const targetY = current.y + extraSpins + deltaY;
-    
+
         rotationRefs[index].current = { x: targetX, y: targetY };
-    
+
         let lastQuarterTurn = Math.floor(current.x / 90) + Math.floor(current.y / 90);
-    
+
         animate(dieRef, {
             rotateX: targetX,
             rotateY: targetY,
@@ -291,20 +303,32 @@ export default function ColorsGameBox({ handlePlay, handleFinish, result, isLock
                 }
             },
         });
+
+        const tiltDirection = Math.random() < 0.5 ? -1 : 1;
+        const tiltAmount = random(TILT_MIN, TILT_MAX);
+        const targetTilt = tiltRefs[index].current + tiltDirection * tiltAmount;
+
+        tiltRefs[index].current = targetTilt;
+
+        animate(outerRef, {
+            rotate: targetTilt,
+            duration,
+            ease: ROLL_EASE,
+        });
     }
 
     function rollDice(faces: [FaceName, FaceName]) {
         const firstDuration = random(ROLL_DURATION_MIN, ROLL_DURATION_MAX);
         const secondDuration = random(ROLL_DURATION_MIN, ROLL_DURATION_MAX);
-    
+
         rollDie(0, faces[0], firstDuration);
-    
+
         setTimeout(() => {
             rollDie(1, faces[1], secondDuration);
         }, DIE_STAGGER);
-    
+
         const longestFinishTime = Math.max(firstDuration, DIE_STAGGER + secondDuration);
-    
+
         setTimeout(() => {
             setRolling(false);
             setRevealed(true);
@@ -316,8 +340,8 @@ export default function ColorsGameBox({ handlePlay, handleFinish, result, isLock
         <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4, marginY: 4 }}>
             <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
                 <Box sx={{ display: "flex", gap: 6 }}>
-                    <ColorCubeDie wrapperRef={dieRefs[0]} />
-                    <ColorCubeDie wrapperRef={dieRefs[1]} />
+                    <ColorCubeDie wrapperRef={dieRefs[0]} outerRef={outerRefs[0]} />
+                    <ColorCubeDie wrapperRef={dieRefs[1]} outerRef={outerRefs[1]} />
                 </Box>
 
                 <ColorChoices
