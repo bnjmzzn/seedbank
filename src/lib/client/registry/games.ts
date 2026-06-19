@@ -29,7 +29,7 @@ export const GAMES: GameEntry[] = [
     {
         id: HistoryReason.Game.COLOR_CUBE,
         label: "Color Cube",
-        href: "/games/color-cube",
+        href: "/games/colors",
         icon: "mdi:dice",
         color: "secondary",
         desc: "Pick a color, roll two dice.",
