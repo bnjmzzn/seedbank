@@ -5,6 +5,7 @@ import { Paper, Typography, Box, Button, Skeleton } from "@mui/material";
 import { api } from "@/lib/client/api";
 import { CURRENCY_TICKER, DAILY_AMOUNT } from "@/lib/config";
 import { showSnackbar } from "@/components/shared/generic/SnackBar";
+import { playWinConfetti } from "@/lib/client/confetti";
 
 interface DailyStatus {
     claimable: boolean;
@@ -68,6 +69,7 @@ export default function DailyCard({ daily, isLoading, onClaimed }: Props) {
             const res = await api.user.daily.claim();
             onClaimed?.();
             showSnackbar(`You claimed ${res.claimed.toLocaleString()} ${CURRENCY_TICKER}!`, "daily");
+            playWinConfetti();
         } finally {
             setClaiming(false);
         }
