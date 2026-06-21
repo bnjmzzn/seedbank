@@ -6,9 +6,9 @@ import { Stack } from "@mui/material";
 import { useHistory, useProfile } from "@/lib/client/hooks/data";
 import { HistoryReason } from "@/types/models";
 
-import ProfileCard from "./_components/ProfileCard";
-import RankStat from "./_components/RankStat";
-import BalanceStat from "./_components/BalanceStat";
+import ProfileCard from "./_components/stack1/ProfileCard";
+import RankStat from "./_components/stack1/RankStat";
+import BalanceStat from "./_components/stack1/BalanceStat";
 import TotalPlayedStat from "./_components/stack2/TotalPlayedStat";
 import WinRateStat from "./_components/stack2/WinRateStat";
 import TotalProfitStat from "./_components/stack2/TotalProfitStat";
