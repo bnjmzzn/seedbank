@@ -9,10 +9,10 @@ import { HistoryReason } from "@/types/models";
 import ProfileCard from "./_components/ProfileCard";
 import RankStat from "./_components/RankStat";
 import BalanceStat from "./_components/BalanceStat";
-import TotalPlayedStat from "./_components/TotalPlayedStat";
-import WinRateStat from "./_components/WinRateStat";
-import TotalProfitStat from "./_components/TotalProfitStat";
-import TotalLostStat from "./_components/TotalLostStat";
+import TotalPlayedStat from "./_components/stack2/TotalPlayedStat";
+import WinRateStat from "./_components/stack2/WinRateStat";
+import TotalProfitStat from "./_components/stack2/TotalProfitStat";
+import TotalLostStat from "./_components/stack2/TotalLostStat";
 import ProfileTabs from "./_components/ProfileTabs";
 
 interface UserPageProps {
