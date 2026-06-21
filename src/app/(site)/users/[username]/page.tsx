@@ -1,79 +1,74 @@
 "use client";
 
-import { Box, Typography, Tabs, Tab } from "@mui/material";
-import { useState } from "react";
+import { use, useMemo } from "react";
+import { Stack } from "@mui/material";
 
-const STAT_CARDS = [
-    "Total games played",
-    "Win rate",
-    "Total profit",
-    "Total lost",
-];
+import { useHistory, useProfile } from "@/lib/client/hooks/data";
+import { HistoryReason } from "@/types/models";
 
-export default function UserPage() {
-    const [tab, setTab] = useState(0);
+import ProfileCard from "./_components/ProfileCard";
+import RankStat from "./_components/RankStat";
+import BalanceStat from "./_components/BalanceStat";
+import TotalPlayedStat from "./_components/TotalPlayedStat";
+import WinRateStat from "./_components/WinRateStat";
+import TotalProfitStat from "./_components/TotalProfitStat";
+import TotalLostStat from "./_components/TotalLostStat";
+import ProfileTabs from "./_components/ProfileTabs";
+
+interface UserPageProps {
+    params: Promise<{
+        username: string;
+    }>;
+}
+
+export default function UserPage({ params }: UserPageProps) {
+    const { username } = use(params);
+
+    const { profile } = useProfile(username);
+    const { rows } = useHistory(username);
+
+    const gameRows = useMemo(
+        () => rows.filter((row) => Object.values(HistoryReason.Game).includes(row.reason as HistoryReason.Game)),
+        [rows]
+    );
+
+    const totalGames = gameRows.length;
+    const wins = gameRows.filter((row) => row.change > 0);
+    const losses = gameRows.filter((row) => row.change < 0);
+    const winRate = totalGames === 0 ? 0 : (wins.length / totalGames) * 100;
+    const totalProfit = wins.reduce((sum, row) => sum + row.change, 0);
+    const totalLost = losses.reduce((sum, row) => sum + Math.abs(row.change), 0);
 
     return (
-        <Box sx={{ p: 1, display: "flex", flexDirection: "column", gap: 1 }}>
+        <Stack gap={4} sx={{ minWidth: 0, overflow: "hidden", p: { sm: 1, md: 2 } }}>
+            <Stack direction="row" flexWrap="wrap" gap={2}>
+                <Stack flex={2} minWidth={280}>
+                    <ProfileCard username={profile?.username} createdAt={profile?.created_at} />
+                </Stack>
+                <Stack flex={1} minWidth={160}>
+                    <RankStat rank={profile?.rank} />
+                </Stack>
+                <Stack flex={1} minWidth={160}>
+                    <BalanceStat balance={profile?.balance} />
+                </Stack>
+            </Stack>
 
-            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
-                <Box sx={{ flex: 2, minWidth: 280, bgcolor: "background.paper", borderRadius: 1, border: "1px solid", borderColor: "divider", p: 2, display: "flex", alignItems: "center", justifyContent: "center", height: 120 }}>
-                    <Typography variant="body2" color="text.secondary">Profile card — username, avatar, joined date</Typography>
-                </Box>
-                <Box sx={{ flex: 1, minWidth: 160, bgcolor: "background.paper", borderRadius: 1, border: "1px solid", borderColor: "divider", p: 2, display: "flex", alignItems: "center", justifyContent: "center", height: 120 }}>
-                    <Typography variant="body2" color="text.secondary">Rank # (icon)</Typography>
-                </Box>
-                <Box sx={{ flex: 1, minWidth: 160, bgcolor: "background.paper", borderRadius: 1, border: "1px solid", borderColor: "divider", p: 2, display: "flex", alignItems: "center", justifyContent: "center", height: 120 }}>
-                    <Typography variant="body2" color="text.secondary">Balance (icon)</Typography>
-                </Box>
-            </Box>
+            <Stack direction="row" flexWrap="wrap" gap={2}>
+                <Stack flex={1} minWidth={140}>
+                    <TotalPlayedStat totalGames={totalGames} />
+                </Stack>
+                <Stack flex={1} minWidth={140}>
+                    <WinRateStat winRate={winRate} />
+                </Stack>
+                <Stack flex={1} minWidth={140}>
+                    <TotalProfitStat totalProfit={totalProfit} />
+                </Stack>
+                <Stack flex={1} minWidth={140}>
+                    <TotalLostStat totalLost={totalLost} />
+                </Stack>
+            </Stack>
 
-            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
-                {STAT_CARDS.map((stat) => (
-                    <Box key={stat} sx={{ flex: 1, minWidth: 140, bgcolor: "background.paper", borderRadius: 1, border: "1px solid", borderColor: "divider", p: 2, display: "flex", alignItems: "center", justifyContent: "center", height: 80 }}>
-                        <Typography variant="body2" color="text.secondary">{stat}</Typography>
-                    </Box>
-                ))}
-            </Box>
-
-            <Box sx={{ bgcolor: "background.paper", borderRadius: 1, border: "1px solid", borderColor: "divider" }}>
-                <Tabs value={tab} onChange={(_, v) => setTab(v)} sx={{ borderBottom: "1px solid", borderColor: "divider", px: 1 }}>
-                    <Tab label="Charts" />
-                    <Tab label="History" />
-                    <Tab label="Stats" />
-                </Tabs>
-
-                <Box sx={{ p: 1 }}>
-                    {tab === 0 && (
-                        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
-                            <Box sx={{ flex: 1, minWidth: 240, height: 300, border: "1px solid", borderColor: "divider", borderRadius: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                                <Typography variant="body2" color="text.secondary">Radar — game win counts</Typography>
-                            </Box>
-                            <Box sx={{ flex: 1, minWidth: 240, height: 300, border: "1px solid", borderColor: "divider", borderRadius: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                                <Typography variant="body2" color="text.secondary">Radar — most actions (games, transfers, steals, daily)</Typography>
-                            </Box>
-                        </Box>
-                    )}
-
-                    {tab === 1 && (
-                        <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-                            <Box sx={{ height: 200, border: "1px solid", borderColor: "divider", borderRadius: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                                <Typography variant="body2" color="text.secondary">Balance history graph</Typography>
-                            </Box>
-                            <Box sx={{ height: 400, border: "1px solid", borderColor: "divider", borderRadius: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                                <Typography variant="body2" color="text.secondary">Full history table</Typography>
-                            </Box>
-                        </Box>
-                    )}
-
-                    {tab === 2 && (
-                        <Box sx={{ height: 400, border: "1px solid", borderColor: "divider", borderRadius: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                            <Typography variant="body2" color="text.secondary">Comprehensive stats spreadsheet — games breakdown, transfer totals, steal totals, daily count, net balance change per category</Typography>
-                        </Box>
-                    )}
-                </Box>
-            </Box>
-
-        </Box>
+            <ProfileTabs />
+        </Stack>
     );
 }
