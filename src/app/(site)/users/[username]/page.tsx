@@ -18,6 +18,7 @@ import TotalLostStat from "./_components/stack2/TotalLostStat";
 import ActivityRadarChart from "@/components/shared/data/ActivityRadarChart";
 import BalanceTrendChart from "@/components/shared/data/BalanceTrendChart";
 import HistoryList from "@/components/shared/data/HistoryList";
+import SectionHeader from "@/components/shared/generic/SectionHeader";
 
 interface UserPageProps {
     params: Promise<{
@@ -88,8 +89,8 @@ export default function UserPage({ params }: UserPageProps) {
                 </Stack>
             </Stack>
 
-            <Box sx={{ bgcolor: "background.paper", borderRadius: 1, border: "1px solid", borderColor: "divider" }}>
-                <Tabs value={tab} onChange={handleTabChange} sx={{ borderBottom: "1px solid", borderColor: "divider", px: 1 }}>
+            <Box sx={{ bgcolor: "background.paper" }}>
+                <Tabs value={tab} onChange={handleTabChange} sx={{ borderBottom: "2px solid", borderColor: "divider" }}>
                     <Tab label="Actions" />
                     <Tab label="History" />
                     <Tab label="Stats" />
@@ -98,26 +99,30 @@ export default function UserPage({ params }: UserPageProps) {
                 <Box sx={{ p: 1 }}>
                     {tab === ProfileTab.Actions && (
                         <Stack direction="row" flexWrap="wrap" gap={1}>
-                            <Box sx={{ flex: 1, minWidth: 240, height: 300, border: "1px solid", borderColor: "divider", borderRadius: 1 }}>
+                            <Box sx={{ flex: 1, minWidth: 240, height: 300 }}>
+                                <SectionHeader icon="mdi:controller" label="Games Wins" />
                                 <ActivityRadarChart data={buildGamesRadarData(rows)} isLoading={isHistoryLoading} />
                             </Box>
-                            <Box sx={{ flex: 1, minWidth: 240, height: 300, border: "1px solid", borderColor: "divider", borderRadius: 1 }}>
+                            <Box sx={{ flex: 1, minWidth: 240, height: 300 }}>
+                                <SectionHeader icon="boxicons:thunder-filled" label="Top 5 Actions" />
                                 <ActivityRadarChart data={buildActionsRadarData(rows, ACTIONS_RADAR_LIMIT)} isLoading={isHistoryLoading} />
                             </Box>
                         </Stack>
                     )}
 
                     {tab === ProfileTab.History && (
-                        <Stack gap={1}>
-                            <Box sx={{ height: 200, border: "1px solid", borderColor: "divider", borderRadius: 1 }}>
+                        <Stack gap={2}>
+                            <Box sx={{ height: 200 }}>
+                                <SectionHeader icon="uil:chart-line" label="Balance History" />
                                 <BalanceTrendChart data={buildBalanceHistoryData(rows)} isLoading={isHistoryLoading} />
                             </Box>
+                            <SectionHeader icon="material-symbols:history" label="History" />
                             <HistoryList rows={rows} isLoading={isHistoryLoading} maxRowsPerPage={5} />
                         </Stack>
                     )}
 
                     {tab === ProfileTab.Stats && (
-                        <Box sx={{ height: 400, border: "1px solid", borderColor: "divider", borderRadius: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                        <Box sx={{ height: 400, display: "flex", alignItems: "center", justifyContent: "center" }}>
                             <Typography variant="body2" color="text.secondary">Comprehensive stats spreadsheet, games breakdown, transfer totals, steal totals, daily count, net balance change per category</Typography>
                         </Box>
                     )}
