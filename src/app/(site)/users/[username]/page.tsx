@@ -1,7 +1,7 @@
 "use client";
 
-import { use, useMemo } from "react";
-import { Stack } from "@mui/material";
+import { use, useMemo, useState } from "react";
+import { Stack, Box, Tabs, Tab, Typography } from "@mui/material";
 
 import { useHistory, useProfile } from "@/lib/client/hooks/data";
 import { HistoryReason } from "@/types/models";
@@ -13,7 +13,6 @@ import TotalPlayedStat from "./_components/stack2/TotalPlayedStat";
 import WinRateStat from "./_components/stack2/WinRateStat";
 import TotalProfitStat from "./_components/stack2/TotalProfitStat";
 import TotalLostStat from "./_components/stack2/TotalLostStat";
-import ProfileTabs from "./_components/ProfileTabs";
 
 interface UserPageProps {
     params: Promise<{
@@ -26,6 +25,8 @@ export default function UserPage({ params }: UserPageProps) {
 
     const { profile } = useProfile(username);
     const { rows } = useHistory(username);
+
+    const [tab, setTab] = useState(0);
 
     const gameRows = useMemo(
         () => rows.filter((row) => Object.values(HistoryReason.Game).includes(row.reason as HistoryReason.Game)),
@@ -68,7 +69,43 @@ export default function UserPage({ params }: UserPageProps) {
                 </Stack>
             </Stack>
 
-            <ProfileTabs />
+            <Box sx={{ bgcolor: "background.paper", borderRadius: 1, border: "1px solid", borderColor: "divider" }}>
+                <Tabs value={tab} onChange={(_, newValue) => setTab(newValue)} sx={{ borderBottom: "1px solid", borderColor: "divider", px: 1 }}>
+                    <Tab label="Charts" />
+                    <Tab label="History" />
+                    <Tab label="Stats" />
+                </Tabs>
+
+                <Box sx={{ p: 1 }}>
+                    {tab === 0 && (
+                        <Stack direction="row" flexWrap="wrap" gap={1}>
+                            <Box sx={{ flex: 1, minWidth: 240, height: 300, border: "1px solid", borderColor: "divider", borderRadius: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                <Typography variant="body2" color="text.secondary">Radar, game win counts</Typography>
+                            </Box>
+                            <Box sx={{ flex: 1, minWidth: 240, height: 300, border: "1px solid", borderColor: "divider", borderRadius: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                <Typography variant="body2" color="text.secondary">Radar, most actions (games, transfers, steals, daily)</Typography>
+                            </Box>
+                        </Stack>
+                    )}
+
+                    {tab === 1 && (
+                        <Stack gap={1}>
+                            <Box sx={{ height: 200, border: "1px solid", borderColor: "divider", borderRadius: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                <Typography variant="body2" color="text.secondary">Balance history graph</Typography>
+                            </Box>
+                            <Box sx={{ height: 400, border: "1px solid", borderColor: "divider", borderRadius: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                <Typography variant="body2" color="text.secondary">Full history table</Typography>
+                            </Box>
+                        </Stack>
+                    )}
+
+                    {tab === 2 && (
+                        <Box sx={{ height: 400, border: "1px solid", borderColor: "divider", borderRadius: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                            <Typography variant="body2" color="text.secondary">Comprehensive stats spreadsheet, games breakdown, transfer totals, steal totals, daily count, net balance change per category</Typography>
+                        </Box>
+                    )}
+                </Box>
+            </Box>
         </Stack>
     );
 }
