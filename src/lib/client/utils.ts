@@ -85,3 +85,32 @@ export function buildGamesRadarData(rows: HistoryRow[], limit?: number): RadarSe
 
     return sorted.slice(0, limit);
 }
+
+export interface LineSeriesPoint {
+    index: number;
+    value: number;
+    timestamp: number;
+}
+
+export function buildBalanceHistoryData(rows: HistoryRow[], startingBalance = 0): LineSeriesPoint[] {
+    const sorted = [...rows].sort((a, b) => {
+        const timeA = a.created_at ? new Date(a.created_at).getTime() : 0;
+        const timeB = b.created_at ? new Date(b.created_at).getTime() : 0;
+
+        return timeA - timeB;
+    });
+
+    let runningBalance = startingBalance;
+
+    const points = sorted.map((row, index) => {
+        runningBalance += row.change;
+
+        return {
+            index,
+            value: runningBalance,
+            timestamp: row.created_at ? new Date(row.created_at).getTime() : 0,
+        };
+    });
+
+    return points;
+}
