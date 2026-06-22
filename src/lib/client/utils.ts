@@ -1,7 +1,7 @@
 import { HistoryReason } from "@/types/models";
 import { storage } from "./storage";
 import { HistoryRow } from "@/types/db";
-import { RadarSeriesPoint } from "@/components/shared/charts/RadarChart";
+import { RadarSeriesPoint } from "@/components/shared/data/RadarChart";
 
 export interface BalancePoint {
     change: number;

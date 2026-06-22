@@ -13,9 +13,9 @@ import TotalPlayedStat from "./_components/stack2/TotalPlayedStat";
 import WinRateStat from "./_components/stack2/WinRateStat";
 import TotalProfitStat from "./_components/stack2/TotalProfitStat";
 import TotalLostStat from "./_components/stack2/TotalLostStat";
-import RadarComparisonChart from "@/components/shared/charts/RadarChart";
+import RadarComparisonChart from "@/components/shared/data/RadarChart";
 import { buildActionsRadarData, buildBalanceHistoryData, buildGamesRadarData } from "@/lib/client/utils";
-import LineComparisonChart from "@/components/shared/charts/LineChart";
+import LineComparisonChart from "@/components/shared/data/LineChart";
 import HistoryList from "@/components/shared/data/HistoryList";
 
 interface UserPageProps {
