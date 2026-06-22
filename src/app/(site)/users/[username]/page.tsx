@@ -13,6 +13,10 @@ import TotalPlayedStat from "./_components/stack2/TotalPlayedStat";
 import WinRateStat from "./_components/stack2/WinRateStat";
 import TotalProfitStat from "./_components/stack2/TotalProfitStat";
 import TotalLostStat from "./_components/stack2/TotalLostStat";
+import RadarComparisonChart from "@/components/shared/charts/RadarChart";
+import { buildActionsRadarData, buildBalanceHistoryData, buildGamesRadarData } from "@/lib/client/utils";
+import LineComparisonChart from "@/components/shared/charts/LineChart";
+import HistoryList from "@/components/shared/data/HistoryList";
 
 interface UserPageProps {
     params: Promise<{
@@ -24,7 +28,7 @@ export default function UserPage({ params }: UserPageProps) {
     const { username } = use(params);
 
     const { profile } = useProfile(username);
-    const { rows } = useHistory(username);
+    const { rows, isLoading } = useHistory(username);
 
     const [tab, setTab] = useState(0);
 
@@ -71,34 +75,32 @@ export default function UserPage({ params }: UserPageProps) {
 
             <Box sx={{ bgcolor: "background.paper", borderRadius: 1, border: "1px solid", borderColor: "divider" }}>
                 <Tabs value={tab} onChange={(_, newValue) => setTab(newValue)} sx={{ borderBottom: "1px solid", borderColor: "divider", px: 1 }}>
-                    <Tab label="Charts" />
+                    <Tab label="Actions" />
                     <Tab label="History" />
                     <Tab label="Stats" />
                 </Tabs>
 
                 <Box sx={{ p: 1 }}>
-                    {tab === 0 && (
-                        <Stack direction="row" flexWrap="wrap" gap={1}>
-                            <Box sx={{ flex: 1, minWidth: 240, height: 300, border: "1px solid", borderColor: "divider", borderRadius: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                                <Typography variant="body2" color="text.secondary">Radar, game win counts</Typography>
-                            </Box>
-                            <Box sx={{ flex: 1, minWidth: 240, height: 300, border: "1px solid", borderColor: "divider", borderRadius: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                                <Typography variant="body2" color="text.secondary">Radar, most actions (games, transfers, steals, daily)</Typography>
-                            </Box>
-                        </Stack>
-                    )}
+                {tab === 0 && (
+                    <Stack direction="row" flexWrap="wrap" gap={1}>
+                        <Box sx={{ flex: 1, minWidth: 240, height: 300, border: "1px solid", borderColor: "divider", borderRadius: 1 }}>
+                            <RadarComparisonChart data={buildGamesRadarData(rows)} />
+                        </Box>
+                        <Box sx={{ flex: 1, minWidth: 240, height: 300, border: "1px solid", borderColor: "divider", borderRadius: 1 }}>
+                            <RadarComparisonChart data={buildActionsRadarData(rows, 5)} />
+                        </Box>
+                    </Stack>
+                )}
 
                     {tab === 1 && (
                         <Stack gap={1}>
-                            <Box sx={{ height: 200, border: "1px solid", borderColor: "divider", borderRadius: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                                <Typography variant="body2" color="text.secondary">Balance history graph</Typography>
+                            <Box sx={{ height: 200, border: "1px solid", borderColor: "divider", borderRadius: 1 }}>
+                                <LineComparisonChart data={buildBalanceHistoryData(rows)} />
                             </Box>
-                            <Box sx={{ height: 400, border: "1px solid", borderColor: "divider", borderRadius: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                                <Typography variant="body2" color="text.secondary">Full history table</Typography>
-                            </Box>
+                            <HistoryList rows={rows} isLoading={isLoading} maxRowsPerPage={5} />
                         </Stack>
                     )}
-
+                    
                     {tab === 2 && (
                         <Box sx={{ height: 400, border: "1px solid", borderColor: "divider", borderRadius: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
                             <Typography variant="body2" color="text.secondary">Comprehensive stats spreadsheet, games breakdown, transfer totals, steal totals, daily count, net balance change per category</Typography>
