@@ -1,7 +1,7 @@
 "use client";
 
 import {
-    RadarChart as RechartsRadarChart,
+    RadarChart,
     PolarGrid,
     PolarAngleAxis,
     PolarRadiusAxis,
@@ -9,32 +9,33 @@ import {
     ResponsiveContainer,
     Tooltip,
 } from "recharts";
-import { Box, Typography } from "@mui/material";
+import { Box, Skeleton, Typography } from "@mui/material";
 import theme from "@/lib/client/theme";
 
-export interface RadarSeriesPoint {
+export interface ActivityRadarPoint {
     axis: string;
     value: number;
 }
 
-interface RadarComparisonChartProps {
-    data: RadarSeriesPoint[];
+interface ActivityRadarChartProps {
+    data: ActivityRadarPoint[];
     isLoading?: boolean;
 }
 
-// to remove on select highlight
+const MIN_AXES_TO_RENDER = 3;
+
 const noFocusOutlineSx = {
     "& *:focus": {
         outline: "none",
     },
 };
 
-interface RadarTooltipProps {
+interface ActivityRadarTooltipProps {
     active?: boolean;
-    payload?: { payload: RadarSeriesPoint }[];
+    payload?: { payload: ActivityRadarPoint }[];
 }
 
-function RadarTooltip({ active, payload }: RadarTooltipProps) {
+function ActivityRadarTooltip({ active, payload }: ActivityRadarTooltipProps) {
     if (!active || !payload?.length) {
         return null;
     }
@@ -56,28 +57,52 @@ function RadarTooltip({ active, payload }: RadarTooltipProps) {
     );
 }
 
-export default function RadarComparisonChart({ data, isLoading }: RadarComparisonChartProps) {
+function ActivityRadarSkeleton() {
+    return (
+        <Box sx={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <Skeleton variant="circular" width="70%" height="70%" />
+        </Box>
+    );
+}
+
+function ActivityRadarEmpty() {
+    return (
+        <Box sx={{
+            width: "100%",
+            height: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+        }}>
+            <Typography color="text.secondary" variant="body2">
+                Not enough data to show activity yet.
+            </Typography>
+        </Box>
+    );
+}
+
+export default function ActivityRadarChart({ data, isLoading }: ActivityRadarChartProps) {
     if (isLoading) {
-        return null;
+        return <ActivityRadarSkeleton />;
     }
 
-    if (data.length === 0) {
-        return null;
+    if (data.length < MIN_AXES_TO_RENDER) {
+        return <ActivityRadarEmpty />;
     }
 
     return (
         <Box sx={{ width: "100%", height: "100%", ...noFocusOutlineSx }}>
             <ResponsiveContainer width="100%" height="100%">
-            <RechartsRadarChart
-                data={data}
-                accessibilityLayer={false}
-                outerRadius="65%"
-                margin={{ top: 20, right: 40, bottom: 20, left: 40 }}
-            >
+                <RadarChart
+                    data={data}
+                    accessibilityLayer={false}
+                    outerRadius="65%"
+                    margin={{ top: 20, right: 40, bottom: 20, left: 40 }}
+                >
                     <PolarGrid />
                     <PolarAngleAxis dataKey="axis" />
                     <PolarRadiusAxis tick={false} axisLine={false} />
-                    <Tooltip content={<RadarTooltip />} />
+                    <Tooltip content={<ActivityRadarTooltip />} />
                     <Radar
                         dataKey="value"
                         stroke={theme.palette.primary.main}
@@ -85,7 +110,7 @@ export default function RadarComparisonChart({ data, isLoading }: RadarCompariso
                         fill={theme.palette.primary.main}
                         fillOpacity={0.4}
                     />
-                </RechartsRadarChart>
+                </RadarChart>
             </ResponsiveContainer>
         </Box>
     );

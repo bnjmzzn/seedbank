@@ -8,33 +8,34 @@ import {
     ResponsiveContainer,
     Tooltip,
 } from "recharts";
-import { Box, Typography } from "@mui/material";
+import { Box, Skeleton, Typography } from "@mui/material";
 import theme from "@/lib/client/theme";
 
-export interface LineSeriesPoint {
+export interface BalanceTrendPoint {
     index: number;
     value: number;
     timestamp: number;
 }
 
-interface LineComparisonChartProps {
-    data: LineSeriesPoint[];
+interface BalanceTrendChartProps {
+    data: BalanceTrendPoint[];
     isLoading?: boolean;
 }
 
-// to remove on select highlight
+const MIN_POINTS_TO_RENDER = 2;
+
 const noFocusOutlineSx = {
     "& *:focus": {
         outline: "none",
     },
 };
 
-interface LineTooltipProps {
+interface BalanceTrendTooltipProps {
     active?: boolean;
-    payload?: { payload: LineSeriesPoint }[];
+    payload?: { payload: BalanceTrendPoint }[];
 }
 
-function LineTooltip({ active, payload }: LineTooltipProps) {
+function BalanceTrendTooltip({ active, payload }: BalanceTrendTooltipProps) {
     if (!active || !payload?.length) {
         return null;
     }
@@ -65,18 +66,50 @@ function LineTooltip({ active, payload }: LineTooltipProps) {
     );
 }
 
-export default function LineComparisonChart({ data, isLoading }: LineComparisonChartProps) {
+function BalanceTrendSkeleton() {
+    return (
+        <Box sx={{ width: "100%", height: "100%", display: "flex", alignItems: "flex-end", gap: 0.5, p: 2 }}>
+            {Array.from({ length: 24 }).map((_, i) => (
+                <Skeleton
+                    key={i}
+                    variant="rectangular"
+                    width="100%"
+                    height={`${30 + Math.abs(Math.sin(i / 2)) * 60}%`}
+                    sx={{ borderRadius: 0.5 }}
+                />
+            ))}
+        </Box>
+    );
+}
+
+function BalanceTrendEmpty() {
+    return (
+        <Box sx={{
+            width: "100%",
+            height: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+        }}>
+            <Typography color="text.secondary" variant="body2">
+                Not enough data to show a trend yet.
+            </Typography>
+        </Box>
+    );
+}
+
+export default function BalanceTrendChart({ data, isLoading }: BalanceTrendChartProps) {
     if (isLoading) {
-        return null;
+        return <BalanceTrendSkeleton />;
     }
 
-    if (data.length === 0) {
-        return null;
+    if (data.length < MIN_POINTS_TO_RENDER) {
+        return <BalanceTrendEmpty />;
     }
 
     const isOverallNegative = data[data.length - 1].value < data[0].value;
     const lineColor = isOverallNegative ? theme.palette.error.main : theme.palette.primary.main;
-    const gradientId = isOverallNegative ? "lineComparisonGradientNegative" : "lineComparisonGradientPositive";
+    const gradientId = isOverallNegative ? "balanceTrendGradientNegative" : "balanceTrendGradientPositive";
 
     return (
         <Box sx={{ width: "100%", height: "100%", ...noFocusOutlineSx }}>
@@ -100,7 +133,7 @@ export default function LineComparisonChart({ data, isLoading }: LineComparisonC
                         axisLine={false}
                     />
                     <YAxis tick={false} axisLine={false} width={0} domain={["auto", "auto"]} />
-                    <Tooltip content={<LineTooltip />} />
+                    <Tooltip content={<BalanceTrendTooltip />} />
                     <Area
                         type="linear"
                         dataKey="value"
