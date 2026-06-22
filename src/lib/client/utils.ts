@@ -1,5 +1,7 @@
+import { HistoryReason } from "@/types/models";
 import { storage } from "./storage";
 import { HistoryRow } from "@/types/db";
+import { RadarSeriesPoint } from "@/components/shared/charts/RadarChart";
 
 export interface BalancePoint {
     change: number;
@@ -43,4 +45,43 @@ export function buildBalanceTimeline(rows: HistoryRow[], currentBalance: number)
         date: row.created_at ?? "",
         reason: row.reason,
     }));
+}
+
+export function buildActionsRadarData(rows: HistoryRow[], limit?: number): RadarSeriesPoint[] {
+    const counts = new Map<string, number>();
+
+    for (const row of rows) {
+        counts.set(row.reason, (counts.get(row.reason) ?? 0) + 1);
+    }
+
+    const sorted = Array.from(counts.entries())
+        .map(([axis, value]) => ({ axis, value }))
+        .sort((a, b) => b.value - a.value);
+
+    if (limit === undefined) {
+        return sorted;
+    }
+
+    return sorted.slice(0, limit);
+}
+
+export function buildGamesRadarData(rows: HistoryRow[], limit?: number): RadarSeriesPoint[] {
+    const gameRows = rows.filter((row) =>
+        Object.values(HistoryReason.Game).includes(row.reason as HistoryReason.Game)
+    );
+
+    const counts = new Map<string, number>();
+    for (const row of gameRows) {
+        counts.set(row.reason, (counts.get(row.reason) ?? 0) + 1);
+    }
+
+    const sorted = Array.from(counts.entries())
+        .map(([axis, value]) => ({ axis, value }))
+        .sort((a, b) => b.value - a.value);
+
+    if (limit === undefined) {
+        return sorted;
+    }
+
+    return sorted.slice(0, limit);
 }
