@@ -1,10 +1,11 @@
 "use client";
 
-import { Paper, Typography, Box } from "@mui/material";
+import { Paper, Typography, Box, Skeleton } from "@mui/material";
 import { useCountUp } from "@/lib/client/hooks/ui";
 
 interface TotalProfitStatProps {
     totalProfit: number;
+    isLoading?: boolean;
 }
 
 const paperSx = {
@@ -16,8 +17,17 @@ const paperSx = {
     p: 2,
 };
 
-export default function TotalProfitStat({ totalProfit }: TotalProfitStatProps) {
+export default function TotalProfitStat({ totalProfit, isLoading }: TotalProfitStatProps) {
     const animatedTotalProfit = useCountUp(totalProfit);
+
+    if (isLoading) {
+        return (
+            <Paper sx={paperSx} elevation={0}>
+                <Skeleton variant="text" width="40%" height={40} />
+                <Skeleton variant="text" width="80%" />
+            </Paper>
+        );
+    }
 
     return (
         <Paper sx={paperSx} elevation={0}>

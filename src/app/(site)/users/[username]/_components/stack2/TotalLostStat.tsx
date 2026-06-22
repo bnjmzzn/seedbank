@@ -1,10 +1,11 @@
 "use client";
 
-import { Paper, Typography, Box } from "@mui/material";
+import { Paper, Typography, Box, Skeleton } from "@mui/material";
 import { useCountUp } from "@/lib/client/hooks/ui";
 
 interface TotalLostStatProps {
     totalLost: number;
+    isLoading?: boolean;
 }
 
 const paperSx = {
@@ -16,8 +17,17 @@ const paperSx = {
     p: 2,
 };
 
-export default function TotalLostStat({ totalLost }: TotalLostStatProps) {
+export default function TotalLostStat({ totalLost, isLoading }: TotalLostStatProps) {
     const animatedTotalLost = useCountUp(totalLost);
+
+    if (isLoading) {
+        return (
+            <Paper sx={paperSx} elevation={0}>
+                <Skeleton variant="text" width="40%" height={40} />
+                <Skeleton variant="text" width="80%" />
+            </Paper>
+        );
+    }
 
     return (
         <Paper sx={paperSx} elevation={0}>

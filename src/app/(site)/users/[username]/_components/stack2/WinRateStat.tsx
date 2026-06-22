@@ -1,9 +1,10 @@
 "use client";
 
-import { Paper, Typography, Box } from "@mui/material";
+import { Paper, Typography, Box, Skeleton } from "@mui/material";
 
 interface WinRateStatProps {
     winRate: number;
+    isLoading?: boolean;
 }
 
 const paperSx = {
@@ -15,7 +16,16 @@ const paperSx = {
     p: 2,
 };
 
-export default function WinRateStat({ winRate }: WinRateStatProps) {
+export default function WinRateStat({ winRate, isLoading }: WinRateStatProps) {
+    if (isLoading) {
+        return (
+            <Paper sx={paperSx} elevation={0}>
+                <Skeleton variant="text" width="40%" height={40} />
+                <Skeleton variant="text" width="80%" />
+            </Paper>
+        );
+    }
+
     const isHealthy = winRate >= 50;
     const valueColor = isHealthy ? "primary.main" : "error.main";
 

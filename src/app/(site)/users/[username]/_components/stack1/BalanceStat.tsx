@@ -1,10 +1,12 @@
 "use client";
 
-import { Paper, Typography, Box } from "@mui/material";
+import { Paper, Typography, Box, Skeleton } from "@mui/material";
+import { useCountUp } from "@/lib/client/hooks/ui";
 import Iconify from "@/components/shared/generic/Iconify";
 
 interface BalanceStatProps {
     balance?: number;
+    isLoading?: boolean;
 }
 
 const paperSx = {
@@ -16,7 +18,21 @@ const paperSx = {
     p: 2,
 };
 
-export default function BalanceStat({ balance }: BalanceStatProps) {
+export default function BalanceStat({ balance, isLoading }: BalanceStatProps) {
+    const animatedBalance = useCountUp(balance ?? 0);
+
+    if (isLoading) {
+        return (
+            <Paper sx={paperSx} elevation={0}>
+                <Skeleton variant="rounded" width={44} height={44} sx={{ flexShrink: 0 }} />
+                <Box sx={{ flex: 1 }}>
+                    <Skeleton variant="text" width="50%" />
+                    <Skeleton variant="text" width="70%" height={32} />
+                </Box>
+            </Paper>
+        );
+    }
+
     return (
         <Paper sx={paperSx} elevation={0}>
             <Box sx={{
@@ -34,7 +50,7 @@ export default function BalanceStat({ balance }: BalanceStatProps) {
             <Box>
                 <Typography color="text.secondary">Balance</Typography>
                 <Typography variant="h5" fontWeight="bold">
-                    {balance !== undefined ? balance.toLocaleString() : "-"}
+                    {balance !== undefined ? animatedBalance.toLocaleString() : "-"}
                 </Typography>
             </Box>
         </Paper>
