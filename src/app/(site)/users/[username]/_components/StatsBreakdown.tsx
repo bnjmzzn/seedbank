@@ -61,11 +61,12 @@ function ReasonStatRow({ stat }: ReasonStatRowProps) {
             elevation={1}
             sx={{
                 display: "flex",
-                alignItems: "center",
+                flexDirection: { xs: "column", sm: "row" },
+                alignItems: { xs: "stretch", sm: "center" },
                 borderRadius: 2,
                 px: 2,
                 py: 1.5,
-                gap: 2,
+                gap: { xs: 1, sm: 2 },
             }}
         >
             <Box sx={{ flex: 1, minWidth: 0 }}>
@@ -75,23 +76,31 @@ function ReasonStatRow({ stat }: ReasonStatRowProps) {
                 </Typography>
             </Box>
 
-            <Box sx={{ textAlign: "right", minWidth: 90 }}>
-                <Typography variant="caption" color="text.secondary" display="block">Profit</Typography>
-                <Typography fontFamily="monospace" color="success.main">
-                    +{stat.totalProfit.toLocaleString()}
-                </Typography>
-            </Box>
+            <Box
+                sx={{
+                    display: "flex",
+                    justifyContent: { xs: "space-between", sm: "flex-end" },
+                    gap: { xs: 1, sm: 2 },
+                }}
+            >
+                <Box sx={{ textAlign: "right", minWidth: 70 }}>
+                    <Typography color="text.secondary" display="block">Profit</Typography>
+                    <Typography fontFamily="monospace" fontWeight="bold" color="success.main">
+                        +{stat.totalProfit.toLocaleString()}
+                    </Typography>
+                </Box>
 
-            <Box sx={{ textAlign: "right", minWidth: 90 }}>
-                <Typography variant="caption" color="text.secondary" display="block">Lost</Typography>
-                <Typography fontFamily="monospace" color="error.main">
-                    -{stat.totalLost.toLocaleString()}
-                </Typography>
-            </Box>
+                <Box sx={{ textAlign: "right", minWidth: 70 }}>
+                    <Typography color="text.secondary" display="block">Lost</Typography>
+                    <Typography fontFamily="monospace" fontWeight="bold" color="error.main">
+                        -{stat.totalLost.toLocaleString()}
+                    </Typography>
+                </Box>
 
-            <Box sx={{ textAlign: "right", minWidth: 70 }}>
-                <Typography variant="caption" color="text.secondary" display="block">Ratio</Typography>
-                <Typography fontFamily="monospace">{formatRatio(stat.ratio)}</Typography>
+                <Box sx={{ textAlign: "right", minWidth: 60 }}>
+                    <Typography color="text.secondary" display="block">Ratio</Typography>
+                    <Typography fontFamily="monospace" fontWeight="bold">{formatRatio(stat.ratio)}</Typography>
+                </Box>
             </Box>
         </Paper>
     );
@@ -103,20 +112,23 @@ function ReasonStatSkeleton() {
             elevation={1}
             sx={{
                 display: "flex",
-                alignItems: "center",
+                flexDirection: { xs: "column", sm: "row" },
+                alignItems: { xs: "stretch", sm: "center" },
                 borderRadius: 2,
                 px: 2,
                 py: 1.5,
-                gap: 2,
+                gap: { xs: 1, sm: 2 },
             }}
         >
             <Box sx={{ flex: 1, minWidth: 0 }}>
                 <Skeleton variant="text" width="40%" />
                 <Skeleton variant="text" width="25%" />
             </Box>
-            <Skeleton variant="text" width={70} />
-            <Skeleton variant="text" width={70} />
-            <Skeleton variant="text" width={50} />
+            <Box sx={{ display: "flex", justifyContent: { xs: "space-between", sm: "flex-end" }, gap: { xs: 1, sm: 2 } }}>
+                <Skeleton variant="text" width={60} />
+                <Skeleton variant="text" width={60} />
+                <Skeleton variant="text" width={50} />
+            </Box>
         </Paper>
     );
 }
