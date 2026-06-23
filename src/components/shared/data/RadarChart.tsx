@@ -12,14 +12,16 @@ import {
 import { Box, Skeleton, Typography } from "@mui/material";
 import theme from "@/lib/client/theme";
 
-export interface ActivityRadarPoint {
+export interface RadarPoint {
     axis: string;
     value: number;
 }
 
-interface ActivityRadarChartProps {
-    data: ActivityRadarPoint[];
+interface RadarChartProps {
+    data: RadarPoint[];
     isLoading?: boolean;
+    color?: string;
+    emptyText?: string;
 }
 
 const MIN_AXES_TO_RENDER = 3;
@@ -30,12 +32,12 @@ const noFocusOutlineSx = {
     },
 };
 
-interface ActivityRadarTooltipProps {
+interface RadarTooltipProps {
     active?: boolean;
-    payload?: { payload: ActivityRadarPoint }[];
+    payload?: { payload: RadarPoint }[];
 }
 
-function ActivityRadarTooltip({ active, payload }: ActivityRadarTooltipProps) {
+function RadarTooltip({ active, payload }: RadarTooltipProps) {
     if (!active || !payload?.length) {
         return null;
     }
@@ -57,7 +59,7 @@ function ActivityRadarTooltip({ active, payload }: ActivityRadarTooltipProps) {
     );
 }
 
-function ActivityRadarSkeleton() {
+function RadarChartSkeleton() {
     return (
         <Box sx={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
             <Skeleton variant="circular" width="70%" height="70%" />
@@ -65,7 +67,11 @@ function ActivityRadarSkeleton() {
     );
 }
 
-function ActivityRadarEmpty() {
+interface RadarChartEmptyProps {
+    text: string;
+}
+
+function RadarChartEmpty({ text }: RadarChartEmptyProps) {
     return (
         <Box sx={{
             width: "100%",
@@ -75,19 +81,24 @@ function ActivityRadarEmpty() {
             justifyContent: "center",
         }}>
             <Typography color="text.secondary" variant="body2">
-                Not enough data to show activity yet.
+                {text}
             </Typography>
         </Box>
     );
 }
 
-export default function ActivityRadarChart({ data, isLoading }: ActivityRadarChartProps) {
+export default function RadarChartWidget({
+    data,
+    isLoading,
+    color = theme.palette.primary.main,
+    emptyText = "Not enough data to show activity yet.",
+}: RadarChartProps) {
     if (isLoading) {
-        return <ActivityRadarSkeleton />;
+        return <RadarChartSkeleton />;
     }
 
     if (data.length < MIN_AXES_TO_RENDER) {
-        return <ActivityRadarEmpty />;
+        return <RadarChartEmpty text={emptyText} />;
     }
 
     return (
@@ -102,12 +113,12 @@ export default function ActivityRadarChart({ data, isLoading }: ActivityRadarCha
                     <PolarGrid />
                     <PolarAngleAxis dataKey="axis" />
                     <PolarRadiusAxis tick={false} axisLine={false} />
-                    <Tooltip content={<ActivityRadarTooltip />} />
+                    <Tooltip content={<RadarTooltip />} />
                     <Radar
                         dataKey="value"
-                        stroke={theme.palette.primary.main}
+                        stroke={color}
                         strokeWidth={2}
-                        fill={theme.palette.primary.main}
+                        fill={color}
                         fillOpacity={0.4}
                     />
                 </RadarChart>

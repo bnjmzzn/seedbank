@@ -5,24 +5,26 @@ import {
     Area,
     XAxis,
     YAxis,
+    ReferenceLine,
     ResponsiveContainer,
     Tooltip,
 } from "recharts";
 import { Box, Skeleton, Typography } from "@mui/material";
 import theme from "@/lib/client/theme";
 
-export interface BalanceTrendPoint {
+export interface TrendPoint {
     index: number;
     value: number;
     timestamp: number;
 }
 
-interface BalanceTrendChartProps {
-    data: BalanceTrendPoint[];
+interface TrendChartProps {
+    data: TrendPoint[];
     isLoading?: boolean;
+    emptyText?: string;
 }
 
-const MIN_POINTS_TO_RENDER = 2;
+const MIN_POINTS_TO_RENDER = 5;
 
 const noFocusOutlineSx = {
     "& *:focus": {
@@ -30,12 +32,12 @@ const noFocusOutlineSx = {
     },
 };
 
-interface BalanceTrendTooltipProps {
+interface TrendTooltipProps {
     active?: boolean;
-    payload?: { payload: BalanceTrendPoint }[];
+    payload?: { payload: TrendPoint }[];
 }
 
-function BalanceTrendTooltip({ active, payload }: BalanceTrendTooltipProps) {
+function TrendTooltip({ active, payload }: TrendTooltipProps) {
     if (!active || !payload?.length) {
         return null;
     }
@@ -66,7 +68,7 @@ function BalanceTrendTooltip({ active, payload }: BalanceTrendTooltipProps) {
     );
 }
 
-function BalanceTrendSkeleton() {
+function TrendChartSkeleton() {
     return (
         <Box sx={{ width: "100%", height: "100%", display: "flex", alignItems: "flex-end", gap: 0.5, p: 2 }}>
             {Array.from({ length: 24 }).map((_, i) => (
@@ -82,7 +84,11 @@ function BalanceTrendSkeleton() {
     );
 }
 
-function BalanceTrendEmpty() {
+interface TrendChartEmptyProps {
+    text: string;
+}
+
+function TrendChartEmpty({ text }: TrendChartEmptyProps) {
     return (
         <Box sx={{
             width: "100%",
@@ -92,24 +98,28 @@ function BalanceTrendEmpty() {
             justifyContent: "center",
         }}>
             <Typography color="text.secondary" variant="body2">
-                Not enough data to show a trend yet.
+                {text}
             </Typography>
         </Box>
     );
 }
 
-export default function BalanceTrendChart({ data, isLoading }: BalanceTrendChartProps) {
+export default function TrendChartWidget({
+    data,
+    isLoading,
+    emptyText = "Not enough data to show a trend yet.",
+}: TrendChartProps) {
     if (isLoading) {
-        return <BalanceTrendSkeleton />;
+        return <TrendChartSkeleton />;
     }
 
     if (data.length < MIN_POINTS_TO_RENDER) {
-        return <BalanceTrendEmpty />;
+        return <TrendChartEmpty text={emptyText} />;
     }
 
     const isOverallNegative = data[data.length - 1].value < data[0].value;
     const lineColor = isOverallNegative ? theme.palette.error.main : theme.palette.primary.main;
-    const gradientId = isOverallNegative ? "balanceTrendGradientNegative" : "balanceTrendGradientPositive";
+    const gradientId = isOverallNegative ? "trendGradientNegative" : "trendGradientPositive";
 
     return (
         <Box sx={{ width: "100%", height: "100%", ...noFocusOutlineSx }}>
@@ -133,7 +143,8 @@ export default function BalanceTrendChart({ data, isLoading }: BalanceTrendChart
                         axisLine={false}
                     />
                     <YAxis tick={false} axisLine={false} width={0} domain={["auto", "auto"]} />
-                    <Tooltip content={<BalanceTrendTooltip />} />
+                    <ReferenceLine y={0} stroke={theme.palette.divider} strokeWidth={1} />
+                    <Tooltip content={<TrendTooltip />} />
                     <Area
                         type="linear"
                         dataKey="value"
