@@ -13,6 +13,11 @@ const gameEntries = Object.fromEntries(
 
 export const HISTORY_META: Record<string, HistoryEntry> = {
     ...gameEntries, // add games reason here
+    [HistoryReason.ADMIN]: {
+        label: "Admin",
+        icon: "eos-icons:admin",
+        color: "primary",
+    },
     [HistoryReason.DAILY]: {
         label: "Daily Reward",
         icon: "mdi:calendar-star",

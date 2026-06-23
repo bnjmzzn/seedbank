@@ -25,6 +25,7 @@ export interface LeaderboardEntry {
 
 export enum HistoryReason {
     DAILY = "DAILY",
+    ADMIN = "ADMIN",
 }
 
 export namespace HistoryReason {
