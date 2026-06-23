@@ -16,6 +16,7 @@ import TotalPlayedStat from "./_components/stack2/TotalPlayedStat";
 import WinRateStat from "./_components/stack2/WinRateStat";
 import TotalProfitStat from "./_components/stack2/TotalProfitStat";
 import TotalLostStat from "./_components/stack2/TotalLostStat";
+import StatsBreakdown from "./_components/StatsBreakdown";
 
 import RadarChart from "@/components/shared/data/RadarChart";
 import TrendChart from "@/components/shared/data/TrendChart";
@@ -102,11 +103,7 @@ export default function UserPage({ params }: UserPageProps) {
         {
             label: "Stats",
             content: (
-                <Box sx={{ height: 400, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                    <Typography variant="body2" color="text.secondary">
-                        Comprehensive stats spreadsheet, games breakdown, transfer totals, steal totals, daily count, net balance change per category
-                    </Typography>
-                </Box>
+                <StatsBreakdown rows={rows} isLoading={isPageLoading} />
             ),
         },
     ];
