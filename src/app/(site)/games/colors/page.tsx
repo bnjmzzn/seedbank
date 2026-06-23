@@ -22,7 +22,7 @@ import ColorsGameBox from "./_components/ColorsGameBox";
 import { HistoryReason } from "@/types/models";
 import type { GameResult } from "@/types/api";
 
-const game = GAMES.find((game) => game.id === HistoryReason.Game.COLOR_CUBE)!;
+const game = GAMES.find((game) => game.id === HistoryReason.Game.COLORCUBE)!;
 
 type GamePhase = "idle" | "pending" | "animating";
 

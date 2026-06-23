@@ -27,7 +27,7 @@ export const GAMES: GameEntry[] = [
         desc: "Heads or tails, 50/50.",
     },
     {
-        id: HistoryReason.Game.COLOR_CUBE,
+        id: HistoryReason.Game.COLORCUBE,
         label: "Color Cube",
         href: "/games/colors",
         icon: "mdi:dice",
