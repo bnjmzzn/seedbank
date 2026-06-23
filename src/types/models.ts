@@ -31,8 +31,8 @@ export namespace HistoryReason {
     export enum Game {
         CARDS = "GAME:CARDS",
         COINFLIP = "GAME:COINFLIP",
-        COLORCUBE = "GAME:COLORCUBE",
-        MINESWEEPER = "GAME:MINESWEEPER",
+        COLORS = "GAME:COLORS",
+        MINES = "GAME:MINES",
         SLOTS = "GAME:SLOTS",
         ROULETTE = "GAME:ROULETTE",
     }

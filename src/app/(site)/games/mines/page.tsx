@@ -22,7 +22,7 @@ import MinesweeperGameBox from "./_components/MinesweeperGameBox";
 import { HistoryReason } from "@/types/models";
 import type { GameResult } from "@/types/api";
 
-const game = GAMES.find((game) => game.id === HistoryReason.Game.MINESWEEPER)!;
+const game = GAMES.find((game) => game.id === HistoryReason.Game.MINES)!;
 
 type GamePhase = "idle" | "pending" | "animating";
 

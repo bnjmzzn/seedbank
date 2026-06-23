@@ -27,7 +27,7 @@ export const GAMES: GameEntry[] = [
         desc: "Heads or tails, 50/50.",
     },
     {
-        id: HistoryReason.Game.COLORCUBE,
+        id: HistoryReason.Game.COLORS,
         label: "Color Cube",
         href: "/games/colors",
         icon: "mdi:dice",
@@ -35,9 +35,9 @@ export const GAMES: GameEntry[] = [
         desc: "Pick a color, roll two dice.",
     },
     {
-        id: HistoryReason.Game.MINESWEEPER,
-        label: "Minesweeper",
-        href: "/games/minesweeper",
+        id: HistoryReason.Game.MINES,
+        label: "Mines",
+        href: "/games/mines",
         icon: "mdi:mine",
         color: "tertiary",
         desc: "Pick four tiles, avoid the bombs.",
