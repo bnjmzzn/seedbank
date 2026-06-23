@@ -19,36 +19,6 @@ export function filterHistory(rows: HistoryRow[], type?: string): HistoryRow[] {
     return rows.filter((row) => row.reason === type || row.reason.startsWith(type + ":"));
 }
 
-export interface BalancePoint {
-    change: number;
-    balanceBefore: number;
-    balanceAfter: number;
-    date: string;
-    reason: string;
-}
-
-export function buildBalanceTimeline(rows: HistoryRow[], currentBalance: number): BalancePoint[] {
-    const sorted = [...rows].sort(
-        (a, b) => new Date(a.created_at ?? 0).getTime() - new Date(b.created_at ?? 0).getTime()
-    );
-
-    let running = currentBalance;
-    const reversed = [...sorted].reverse().map((row) => {
-        const balanceAfter = running;
-        const balanceBefore = running - row.change;
-        running = balanceBefore;
-        return { row, balanceBefore, balanceAfter };
-    });
-
-    return reversed.reverse().map(({ row, balanceBefore, balanceAfter }) => ({
-        change: row.change,
-        balanceBefore,
-        balanceAfter,
-        date: row.created_at ?? "",
-        reason: row.reason,
-    }));
-}
-
 function buildRadarCounts(rows: HistoryRow[], limit?: number): ActivityRadarPoint[] {
     const counts = new Map<string, number>();
 
