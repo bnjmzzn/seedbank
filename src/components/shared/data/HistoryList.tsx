@@ -42,7 +42,7 @@ interface HistoryRowItemProps {
 function HistoryRowItem({ row, onClick }: HistoryRowItemProps) {
     const theme = useTheme();
     const meta = HISTORY_META[row.reason];
-    const { label, icon } = meta ?? { label: row.reason, icon: "mdi:help-circle" };
+    const { label, icon } = meta ?? { label: row.reason, icon: "fa:question" };
 
     const isPositive = row.change > 0;
     const iconBg = isPositive ? theme.palette.success.main : theme.palette.error.main;
@@ -78,7 +78,7 @@ function HistoryRowItem({ row, onClick }: HistoryRowItemProps) {
 
                 <Box sx={{ flex: 1, minWidth: 0, textAlign: "left" }}>
                     <Typography noWrap>{label}</Typography>
-                    <Typography variant="body2"  color="text.secondary">{dateStr}</Typography>
+                    <Typography noWrap variant="body2"  color="text.secondary">{dateStr}</Typography>
                 </Box>
 
                 <Typography
