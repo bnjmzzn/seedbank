@@ -1,12 +1,14 @@
 "use client";
-import { Box, Stack } from "@mui/material";
+
+import { Stack } from "@mui/material";
 import BalanceCard from "./_components/BalanceCard";
 import DailyCard from "./_components/DailyCard";
 import GameList from "./_components/GameList";
 import TransactionFeed from "./_components/HistoryFeed";
 import { useHistory, useMe } from "@/lib/client/hooks/data";
-import BalanceChart from "./_components/BalanceChart";
+import BalanceTrendChart from "@/components/shared/data/BalanceTrendChart";
 import SectionHeader from "@/components/shared/generic/SectionHeader";
+import { buildBalanceHistoryData } from "@/lib/client/utils";
 
 export default function DashboardPage() {
     const { me, isLoading, mutate: mutateMe } = useMe();
@@ -50,12 +52,8 @@ export default function DashboardPage() {
                     <TransactionFeed rows={rows} isLoading={loading} />
                 </Stack>
                 <Stack flex={1} gap={1}>
-                    <SectionHeader icon="mdi:chart-bar" label="Balance Chart" />
-                    <BalanceChart
-                        balance={me?.balance ?? 0}
-                        rows={rows}
-                        isLoading={loading}
-                    />
+                    <SectionHeader icon="mdi:chart-line" label="Balance History" />
+                    <BalanceTrendChart data={buildBalanceHistoryData(rows)} isLoading={loading} />
                 </Stack>
             </Stack>
         </Stack>
