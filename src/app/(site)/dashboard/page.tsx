@@ -6,9 +6,9 @@ import DailyCard from "./_components/DailyCard";
 import GameList from "./_components/GameList";
 import TransactionFeed from "./_components/HistoryFeed";
 import { useHistory, useMe } from "@/lib/client/hooks/data";
-import BalanceTrendChart from "@/components/shared/data/BalanceTrendChart";
+import TrendChart from "@/components/shared/data/TrendChart";
 import SectionHeader from "@/components/shared/generic/SectionHeader";
-import { buildBalanceHistoryData } from "@/lib/client/utils";
+import { buildBalanceHistoryData } from "@/lib/client/charts/trend";
 
 export default function DashboardPage() {
     const { me, isLoading, mutate: mutateMe } = useMe();
@@ -53,7 +53,7 @@ export default function DashboardPage() {
                 </Stack>
                 <Stack flex={1} gap={1}>
                     <SectionHeader icon="mdi:chart-line" label="Balance History" />
-                    <BalanceTrendChart data={buildBalanceHistoryData(rows)} isLoading={loading} />
+                    <TrendChart data={buildBalanceHistoryData(rows)} isLoading={loading} />
                 </Stack>
             </Stack>
         </Stack>

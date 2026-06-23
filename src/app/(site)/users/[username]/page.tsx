@@ -2,9 +2,11 @@
 
 import { use, useState } from "react";
 import { Stack, Box, Tabs, Tab, Typography } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 
 import { useHistory, useProfile } from "@/lib/client/hooks/data";
-import { buildActionsRadarData, buildBalanceHistoryData, buildGamesRadarData } from "@/lib/client/utils";
+import { buildBalanceHistoryData, buildActivityTrendData } from "@/lib/client/charts/trend";
+import { buildGamesWonRadarData, buildGamesLostRadarData } from "@/lib/client/charts/radar";
 import { HistoryReason } from "@/types/models";
 
 import ProfileCard from "./_components/stack1/ProfileCard";
@@ -15,8 +17,8 @@ import WinRateStat from "./_components/stack2/WinRateStat";
 import TotalProfitStat from "./_components/stack2/TotalProfitStat";
 import TotalLostStat from "./_components/stack2/TotalLostStat";
 
-import ActivityRadarChart from "@/components/shared/data/ActivityRadarChart";
-import BalanceTrendChart from "@/components/shared/data/BalanceTrendChart";
+import RadarChart from "@/components/shared/data/RadarChart";
+import TrendChart from "@/components/shared/data/TrendChart";
 import HistoryList from "@/components/shared/data/HistoryList";
 import SectionHeader from "@/components/shared/generic/SectionHeader";
 
@@ -25,8 +27,6 @@ interface UserPageProps {
         username: string;
     }>;
 }
-
-const ACTIONS_RADAR_LIMIT = 5;
 
 export default function UserPage({ params }: UserPageProps) {
     const { username } = use(params);
@@ -52,6 +52,8 @@ export default function UserPage({ params }: UserPageProps) {
     const totalProfit = wins.reduce((sum, row) => sum + row.change, 0);
     const totalLost = losses.reduce((sum, row) => sum + Math.abs(row.change), 0);
 
+    const theme = useTheme();
+
     const profileTabs = [
         {
             label: "History",
@@ -59,7 +61,7 @@ export default function UserPage({ params }: UserPageProps) {
                 <Stack gap={2}>
                     <Box sx={{ height: 200 }}>
                         <SectionHeader icon="uil:chart-line" label="Balance History" />
-                        <BalanceTrendChart data={buildBalanceHistoryData(rows)} isLoading={isPageLoading} />
+                        <TrendChart data={buildBalanceHistoryData(rows)} isLoading={isPageLoading} />
                     </Box>
                     <SectionHeader icon="material-symbols:history" label="History" />
                     <HistoryList rows={rows} isLoading={isPageLoading} maxRowsPerPage={5} />
@@ -69,14 +71,30 @@ export default function UserPage({ params }: UserPageProps) {
         {
             label: "Actions",
             content: (
-                <Stack direction="row" flexWrap="wrap" gap={1}>
-                    <Box sx={{ flex: 1, minWidth: 240, height: 300 }}>
-                        <SectionHeader icon="mdi:controller" label="Games Wins" />
-                        <ActivityRadarChart data={buildGamesRadarData(rows)} isLoading={isPageLoading} />
-                    </Box>
-                    <Box sx={{ flex: 1, minWidth: 240, height: 300 }}>
-                        <SectionHeader icon="boxicons:thunder-filled" label="Top 5 Actions" />
-                        <ActivityRadarChart data={buildActionsRadarData(rows, ACTIONS_RADAR_LIMIT)} isLoading={isPageLoading} />
+                <Stack gap={2}>
+                    <Stack direction="row" flexWrap="wrap" gap={1}>
+                        <Box sx={{ flex: 1, minWidth: 240, height: 300 }}>
+                            <SectionHeader icon="mdi:controller" label="Games Won" />
+                            <RadarChart
+                                data={buildGamesWonRadarData(rows)}
+                                isLoading={isPageLoading}
+                                color={theme.palette.primary.main}
+                                emptyText="Not enough wins to show yet."
+                            />
+                        </Box>
+                        <Box sx={{ flex: 1, minWidth: 240, height: 300 }}>
+                            <SectionHeader icon="mdi:controller-off" label="Games Lost" />
+                            <RadarChart
+                                data={buildGamesLostRadarData(rows)}
+                                isLoading={isPageLoading}
+                                color={theme.palette.error.main}
+                                emptyText="Not enough losses to show yet."
+                            />
+                        </Box>
+                    </Stack>
+                    <Box sx={{ height: 200 }}>
+                        <SectionHeader icon="mdi:calendar-month" label="Activity Graph" />
+                        <TrendChart data={buildActivityTrendData(rows)} isLoading={isPageLoading} />
                     </Box>
                 </Stack>
             ),
