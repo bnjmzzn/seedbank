@@ -57,7 +57,17 @@ export async function getUserProfile(username: string): Promise<UserProfile> {
 }
 
 export async function getMe(userId: string): Promise<UserMe> {
-    const user = await dbGetUser("id", userId);
+    let user: UserRow;
+
+    try {
+        user = await dbGetUser("id", userId);
+    } catch (error) {
+        if (error instanceof AppError && error.code === Errors.USER_NOT_FOUND.code) {
+            throw new AppError(Errors.UNAUTHORIZED);
+        }
+        throw error;
+    }
+
     const [daily, rank] = await Promise.all([
         getDailyStatus(userId),
         dbGetUserRank(user.balance ?? 0),
