@@ -1,6 +1,6 @@
 "use client";
 
-import { Stack } from "@mui/material";
+import { Box, Stack } from "@mui/material";
 import BalanceCard from "./_components/BalanceCard";
 import DailyCard from "./_components/DailyCard";
 import GameList from "./_components/GameList";
@@ -53,7 +53,9 @@ export default function DashboardPage() {
                 </Stack>
                 <Stack flex={1} gap={1}>
                     <SectionHeader icon="mdi:chart-line" label="Balance History" />
-                    <TrendChart data={buildBalanceHistoryData(rows)} isLoading={loading} />
+                    <Box sx={{ height: 200 }}>
+                        <TrendChart data={buildBalanceHistoryData(rows)} isLoading={loading} />
+                    </Box>
                 </Stack>
             </Stack>
         </Stack>
