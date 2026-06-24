@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { TextField, Box, Button, Typography } from "@mui/material";
 import { CURRENCY_TICKER } from "@/lib/config";
 import { getErrorMessage } from "@/lib/client/errors";
@@ -41,8 +41,14 @@ function validate(value: string, balance: number, schema: z.ZodNumber): Validati
 export default function AmountInput({ amount, setAmount, balance, isLocked, schema }: Props) {
     const [raw, setRaw] = useState(amount !== null ? String(amount) : "");
 
-    const { error: isError, message: errorMessage } = validate(raw, balance, schema);
+    useEffect(() => {
+        if (amount === null && raw !== "") {
+            setRaw("");
+        }
+    }, [amount]);
 
+    const { error: isError, message: errorMessage } = validate(raw, balance, schema);
+    
     function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
         const str = e.target.value.replace(/[^0-9]/g, "");
         setRaw(str);
