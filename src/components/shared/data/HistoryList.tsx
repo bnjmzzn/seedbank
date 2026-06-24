@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Box, ButtonBase, IconButton, Paper, Skeleton, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
@@ -16,6 +16,13 @@ interface HistoryListProps {
     maxRowsPerPage?: number;
     isLoading?: boolean;
 }
+
+const slideInKeyframes = {
+    "@keyframes historyRowSlideIn": {
+        from: { opacity: 0, transform: "translateY(-8px)" },
+        to: { opacity: 1, transform: "translateY(0)" },
+    },
+};
 
 function formatChange(change: number): string {
     return change > 0
@@ -37,9 +44,10 @@ function formatDate(dateStr?: string): string {
 interface HistoryRowItemProps {
     row: HistoryRow;
     onClick: () => void;
+    isNew?: boolean;
 }
 
-function HistoryRowItem({ row, onClick }: HistoryRowItemProps) {
+function HistoryRowItem({ row, onClick, isNew }: HistoryRowItemProps) {
     const theme = useTheme();
     const meta = HISTORY_META[row.reason];
     const { label, icon } = meta ?? { label: row.reason, icon: "fa:question" };
@@ -72,19 +80,21 @@ function HistoryRowItem({ row, onClick }: HistoryRowItemProps) {
                     px: 2,
                     py: 1.5,
                     gap: 2,
+                    ...slideInKeyframes,
+                    ...(isNew && { animation: "historyRowSlideIn 0.3s ease-out" }),
                 }}
             >
                 <Iconify icon={icon} sx={{ color: iconBg, flexShrink: 0, fontSize: 30 }} />
 
                 <Box sx={{ flex: 1, minWidth: 0, textAlign: "left" }}>
                     <Typography noWrap>{label}</Typography>
-                    <Typography noWrap variant="body2"  color="text.secondary">{dateStr}</Typography>
+                    <Typography noWrap variant="body2" color="text.secondary">{dateStr}</Typography>
                 </Box>
 
                 <Typography
                     variant="body1"
                     fontFamily="monospace"
-                    sx={{ flexShrink: 0, color: changeColor}}
+                    sx={{ flexShrink: 0, color: changeColor }}
                 >
                     {changeStr}
                 </Typography>
@@ -146,6 +156,8 @@ function Paginator({ page, pageCount, onChange }: PaginatorProps) {
 export default function HistoryList({ rows, type, limit, maxRowsPerPage = 10, isLoading }: HistoryListProps) {
     const router = useRouter();
     const [page, setPage] = useState(1);
+    const seenIdsRef = useRef<Set<string>>(new Set());
+    const hasMountedRef = useRef(false);
 
     const filtered = useMemo(() => {
         const result = filterHistory(rows, type);
@@ -155,6 +167,30 @@ export default function HistoryList({ rows, type, limit, maxRowsPerPage = 10, is
     const pageCount = Math.ceil(filtered.length / maxRowsPerPage);
     const paginated = filtered.slice((page - 1) * maxRowsPerPage, page * maxRowsPerPage);
     const isEmpty = !isLoading && filtered.length === 0;
+
+    const newIds = useMemo(() => {
+        const result = new Set<string>();
+
+        if (hasMountedRef.current) {
+            for (const row of paginated) {
+                if (row.id && !seenIdsRef.current.has(row.id)) {
+                    result.add(row.id);
+                }
+            }
+        }
+
+        return result;
+    }, [paginated]);
+
+    useEffect(() => {
+        for (const row of paginated) {
+            if (row.id) {
+                seenIdsRef.current.add(row.id);
+            }
+        }
+
+        hasMountedRef.current = true;
+    }, [paginated]);
 
     function handleRowClick(id?: string) {
         if (!id) return;
@@ -178,6 +214,7 @@ export default function HistoryList({ rows, type, limit, maxRowsPerPage = 10, is
                             key={row.id ?? i}
                             row={row}
                             onClick={() => handleRowClick(row.id)}
+                            isNew={row.id ? newIds.has(row.id) : false}
                         />
                     ))}
                     {pageCount > 1 && (
