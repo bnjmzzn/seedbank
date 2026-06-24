@@ -8,7 +8,7 @@ import type { GameResult } from "@/types/api";
 
 // --- Types ---
 
-type SlotSymbol = "bomb" | "safe" | "star" | "idk";
+type SlotSymbol = "bomb" | "safe" | "star";
 
 interface ReelItem {
     id: number;
@@ -17,25 +17,26 @@ interface ReelItem {
 
 // --- Constants ---
 
-const SYMBOLS: SlotSymbol[] = ["bomb", "safe", "star", "idk"];
+const SYMBOLS: SlotSymbol[] = ["bomb", "safe", "star"];
 
 const CHOICES: { value: SlotSymbol; label: string }[] = [
     { value: "bomb", label: "Bomb" },
     { value: "safe", label: "Safe" },
     { value: "star", label: "Star" },
-    { value: "idk", label: "Idk" },
 ];
 
 const SYMBOL_ICONS: Record<SlotSymbol, string> = {
     bomb: "/assets/svgs/tile-bomb.svg",
     safe: "/assets/svgs/tile-safe.svg",
     star: "/assets/svgs/tile-star.svg",
-    idk: "/assets/svgs/tile-idk.svg",
 };
 
-const REEL_COUNT = 4;
+const REEL_COUNT = 3;
 const REEL_LENGTH = 60;
 const ITEM_HEIGHT = 88;
+const REEL_ITEM_SIZE = "clamp(64px, 26vw, 88px)";
+const CHOICE_ICON_SIZE = "clamp(40px, 14vw, 56px)";
+const LAST_PICK_ICON_SIZE = "clamp(24px, 8vw, 28px)";
 const REEL_BASE_DURATION = 1800;
 const REEL_STAGGER_DELAY = 1000;
 const SPIN_EASE = cubicBezier(0.25, 0.1, 0.1, 1);
@@ -47,8 +48,9 @@ function getOtherSymbol(exclude: SlotSymbol): SlotSymbol {
     return pool[Math.floor(Math.random() * pool.length)];
 }
 
-function buildReel(landingSymbol: SlotSymbol, landingIndex: number): ReelItem[] {
+function buildReel(landingSymbol: SlotSymbol, landingIndex: number, restingSymbol: SlotSymbol): ReelItem[] {
     return Array.from({ length: REEL_LENGTH }, (_, index) => {
+        if (index === 0) return { id: index, symbol: restingSymbol };
         if (index === landingIndex) return { id: index, symbol: landingSymbol };
         return { id: index, symbol: getOtherSymbol(landingSymbol) };
     });
@@ -65,7 +67,7 @@ function resolveMatchCount(won: boolean): number {
 }
 
 function buildMatchPattern(matchCount: number): boolean[] {
-    const positions = [0, 1, 2, 3];
+    const positions = [0, 1, 2];
 
     for (let i = positions.length - 1; i > 0; i -= 1) {
         const swapIndex = Math.floor(Math.random() * (i + 1));
@@ -102,7 +104,7 @@ interface ChoicesProps {
 
 function SlotsChoices({ canPlay, onChoice, selectedChoice }: ChoicesProps) {
     return (
-        <Box sx={{ display: "flex", gap: 2 }}>
+        <Box sx={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 2 }}>
             {CHOICES.map((choice) => {
                 const borderColor = getChoiceBorderColor(choice.value, selectedChoice, canPlay);
                 const isSelectable = canPlay;
@@ -131,7 +133,7 @@ function SlotsChoices({ canPlay, onChoice, selectedChoice }: ChoicesProps) {
                             component="img"
                             src={SYMBOL_ICONS[choice.value]}
                             alt={choice.label}
-                            sx={{ width: 56, height: 56 }}
+                            sx={{ width: CHOICE_ICON_SIZE, height: CHOICE_ICON_SIZE }}
                         />
                         <Typography variant="body2">{choice.label}</Typography>
                     </Paper>
@@ -161,7 +163,7 @@ function SlotsLastPick({ lastChoice }: LastPickProps) {
                         component="img"
                         src={SYMBOL_ICONS[lastChoice]}
                         alt={lastChoice}
-                        sx={{ width: 28, height: 28 }}
+                        sx={{ width: LAST_PICK_ICON_SIZE, height: LAST_PICK_ICON_SIZE }}
                     />
                 </>
             )}
@@ -174,20 +176,20 @@ function SlotsLastPick({ lastChoice }: LastPickProps) {
 interface ReelProps {
     reel: ReelItem[];
     reelRef: React.RefObject<HTMLDivElement | null>;
+    isLastReel: boolean;
 }
 
-function SlotsReel({ reel, reelRef }: ReelProps) {
+function SlotsReel({ reel, reelRef, isLastReel }: ReelProps) {
     return (
         <Box
             sx={{
-                width: ITEM_HEIGHT,
-                height: ITEM_HEIGHT,
+                width: REEL_ITEM_SIZE,
+                height: REEL_ITEM_SIZE,
                 overflow: "hidden",
                 position: "relative",
-                border: "1px solid",
+                flexShrink: 0,
+                borderRight: isLastReel ? "none" : "1px solid",
                 borderColor: "divider",
-                borderRadius: 2,
-                bgcolor: "background.paper",
             }}
         >
             <Box ref={reelRef} sx={{ display: "flex", flexDirection: "column", willChange: "transform" }}>
@@ -195,8 +197,8 @@ function SlotsReel({ reel, reelRef }: ReelProps) {
                     <Box
                         key={item.id}
                         sx={{
-                            width: ITEM_HEIGHT,
-                            height: ITEM_HEIGHT,
+                            width: REEL_ITEM_SIZE,
+                            height: REEL_ITEM_SIZE,
                             flexShrink: 0,
                             display: "flex",
                             alignItems: "center",
@@ -208,7 +210,7 @@ function SlotsReel({ reel, reelRef }: ReelProps) {
                             component="img"
                             src={SYMBOL_ICONS[item.symbol]}
                             alt={item.symbol}
-                            sx={{ width: 56, height: 56 }}
+                            sx={{ width: "60%", height: "60%" }}
                         />
                     </Box>
                 ))}
@@ -228,20 +230,16 @@ interface GameBoxProps {
 }
 
 export default function SlotsGameBox({ handlePlay, handleFinish, result, isLocked, amountValid }: GameBoxProps) {
-    const reelRefs = [
-        useRef<HTMLDivElement>(null),
-        useRef<HTMLDivElement>(null),
-        useRef<HTMLDivElement>(null),
-        useRef<HTMLDivElement>(null),
-    ];
-    const positionRefs = useRef([{ y: 0 }, { y: 0 }, { y: 0 }, { y: 0 }]);
+    const reelRefs = [useRef<HTMLDivElement>(null), useRef<HTMLDivElement>(null), useRef<HTMLDivElement>(null)];
+    const positionRefs = useRef([{ y: 0 }, { y: 0 }, { y: 0 }]);
     const selectedChoiceRef = useRef<SlotSymbol | null>(null);
     const finishedReelsRef = useRef(0);
+    const restingSymbolRefs = useRef<SlotSymbol[]>(["bomb", "safe", "star"]);
 
     const [selectedChoice, setSelectedChoice] = useState<SlotSymbol | null>(null);
     const [lastChoice, setLastChoice] = useState<SlotSymbol | null>(null);
     const [reels, setReels] = useState<ReelItem[][]>(() =>
-        Array.from({ length: REEL_COUNT }, () => buildReel(getOtherSymbol("idk"), 0)),
+        restingSymbolRefs.current.map((symbol) => buildReel(symbol, 0, symbol)),
     );
 
     const canPlay = !isLocked && amountValid;
@@ -278,9 +276,10 @@ export default function SlotsGameBox({ handlePlay, handleFinish, result, isLocke
 
         const landingIndex = REEL_LENGTH - 5;
 
-        const nextReels = matchPattern.map((shouldMatch) => {
+        const nextReels = matchPattern.map((shouldMatch, reelIndex) => {
             const landingSymbol = shouldMatch ? choice : getOtherSymbol(choice);
-            return buildReel(landingSymbol, landingIndex);
+            const restingSymbol = restingSymbolRefs.current[reelIndex];
+            return buildReel(landingSymbol, landingIndex, restingSymbol);
         });
 
         setReels(nextReels);
@@ -288,6 +287,8 @@ export default function SlotsGameBox({ handlePlay, handleFinish, result, isLocke
         nextReels.forEach((reel, reelIndex) => {
             const reelEl = reelRefs[reelIndex].current;
             if (!reelEl) return;
+
+            const landingSymbol = reel[landingIndex].symbol;
 
             positionRefs.current[reelIndex].y = 0;
             applyTransform(reelIndex);
@@ -313,6 +314,7 @@ export default function SlotsGameBox({ handlePlay, handleFinish, result, isLocke
                     }
                 },
                 onComplete: () => {
+                    restingSymbolRefs.current[reelIndex] = landingSymbol;
                     finishedReelsRef.current += 1;
 
                     const allReelsFinished = finishedReelsRef.current === REEL_COUNT;
@@ -331,9 +333,25 @@ export default function SlotsGameBox({ handlePlay, handleFinish, result, isLocke
     return (
         <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
             <SlotsLastPick lastChoice={lastChoice} />
-            <Box sx={{ display: "flex", gap: 1.5 }}>
+            <Box
+                sx={{
+                    display: "flex",
+                    width: "100%",
+                    maxWidth: REEL_COUNT * ITEM_HEIGHT,
+                    border: "1px solid",
+                    borderColor: "divider",
+                    borderRadius: 2,
+                    bgcolor: "background.paper",
+                    overflow: "hidden",
+                }}
+            >
                 {reels.map((reel, index) => (
-                    <SlotsReel key={index} reel={reel} reelRef={reelRefs[index]} />
+                    <SlotsReel
+                        key={index}
+                        reel={reel}
+                        reelRef={reelRefs[index]}
+                        isLastReel={index === reels.length - 1}
+                    />
                 ))}
             </Box>
             <SlotsChoices canPlay={canPlay} onChoice={handleChoice} selectedChoice={selectedChoice} />
