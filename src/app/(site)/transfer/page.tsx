@@ -13,6 +13,9 @@ import HistoryTable from "@/components/shared/data/HistoryList";
 import AmountInput from "@/components/shared/action/AmountInput";
 import UsernameInput from "@/components/shared/action/UsernameInput";
 import { CURRENCY_TICKER } from "@/lib/config";
+import { NAV_ITEMS } from "@/lib/client/registry/nav";
+
+const navEntry = NAV_ITEMS.find((item) => item.href === "/transfer")!;
 
 interface ApiError {
     code: string;
@@ -66,7 +69,7 @@ export default function TransferPage() {
             if (code === "USER_NOT_FOUND") {
                 setUsernameError(getErrorMessage(code));
             }
-            showSnackbar(getErrorMessage(code), "lose");
+            showSnackbar(getErrorMessage(code), "error");
         } finally {
             setIsSubmitting(false);
         }
@@ -76,7 +79,7 @@ export default function TransferPage() {
         <Stack gap={4} sx={{ minWidth: 0, overflow: "hidden", p: { sm: 1, md: 2 } }}>
             <Stack direction="row" flexWrap="wrap" gap={4}>
                 <Stack flex={1} gap={1} minWidth={280}>
-                    <SectionHeader icon="mdi:send-outline" label={`Send ${CURRENCY_TICKER}s`} />
+                    <SectionHeader icon={navEntry.icon} label={`Send ${CURRENCY_TICKER}s`} />
                     <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
                         <UsernameInput
                             username={username}
