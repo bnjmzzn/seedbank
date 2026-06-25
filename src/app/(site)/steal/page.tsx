@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Box, Button, Stack } from "@mui/material";
+import { Alert, Box, Button, Stack } from "@mui/material";
 
 import { api } from "@/lib/client/api";
 import { getErrorMessage } from "@/lib/client/errors";
@@ -87,7 +87,10 @@ export default function StealPage() {
         <Stack gap={4} sx={{ minWidth: 0, overflow: "hidden", p: { sm: 1, md: 2 } }}>
             <Stack direction="row" flexWrap="wrap" gap={4}>
                 <Stack flex={1} gap={1} minWidth={280}>
-                    <SectionHeader icon={navEntry.icon} label={`Steal ${CURRENCY_TICKER}s`} />
+                <SectionHeader icon={navEntry.icon} label={`Steal ${CURRENCY_TICKER}s`} />
+                    <Alert severity="error" variant="filled">
+                        You are about to steal someone's hard earned {CURRENCY_TICKER}s. If the robbery fails, you lose the amount instead ;)
+                    </Alert>
                     <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
                         <UsernameInput
                             username={username}
