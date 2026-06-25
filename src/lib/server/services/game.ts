@@ -3,12 +3,7 @@ import { dbInsertHistory } from "@/lib/server/db/history";
 import { AppError, Errors } from "@/lib/server/error";
 import { GUARANTEED_LOSS_BET, WIN_RATE_PERCENT, BET_MIN } from "@/lib/config";
 import { HistoryReason } from "@/types/models";
-
-interface GameResult {
-    won: boolean;
-    delta: number;
-    balance: number;
-}
+import { GameResult } from "@/types/api";
 
 function getWinRate(bet: number): number {
     return Math.max(0, (WIN_RATE_PERCENT / 100) * (1 - bet / GUARANTEED_LOSS_BET));

@@ -3,11 +3,7 @@ import { dbInsertHistory } from "@/lib/server/db/history";
 import { AppError, Errors } from "@/lib/server/error";
 import { TRANSFER_MIN, TRANSFER_MAX } from "@/lib/config";
 import { HistoryReason } from "@/types/models";
-
-interface TransferResult {
-    transferred: number;
-    balance: number;
-}
+import { TransferResult } from "@/types/api";
 
 export async function transferBalance(
     senderId: string,

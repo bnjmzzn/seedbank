@@ -3,12 +3,7 @@ import { dbInsertHistory, dbGetHistory } from "@/lib/server/db/history";
 import { AppError, Errors } from "@/lib/server/error";
 import { DAILY_AMOUNT, DAILY_COOLDOWN_MS } from "@/lib/config";
 import { DailyStatus, HistoryReason } from "@/types/models";
-
-
-interface DailyClaimResult {
-    claimed: number;
-    balance: number;
-}
+import { DailyClaimResult } from "@/types/api";
 
 export async function getDailyStatus(userId: string): Promise<DailyStatus> {
     const [lastClaim] = await dbGetHistory({

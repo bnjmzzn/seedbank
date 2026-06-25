@@ -3,12 +3,7 @@ import { dbInsertHistory } from "@/lib/server/db/history";
 import { AppError, Errors } from "@/lib/server/error";
 import { STEAL_SUCCESS_PERCENT, STEAL_MIN, STEAL_MAX } from "@/lib/config";
 import { HistoryReason } from "@/types/models";
-
-interface StealResult {
-    success: boolean;
-    delta: number;
-    balance: number;
-}
+import { StealResult } from "@/types/api";
 
 export async function stealBalance(
     stealerId: string,

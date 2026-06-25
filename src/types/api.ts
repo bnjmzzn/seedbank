@@ -12,6 +12,17 @@ export interface GameResult {
     balance: number;
 }
 
+export interface StealResult {
+    success: boolean;
+    delta: number;
+    balance: number;
+}
+
+export interface TransferResult {
+    transferred: number;
+    balance: number;
+}
+
 export interface DailyClaimResult {
     claimed: number;
     balance: number;
