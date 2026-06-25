@@ -12,6 +12,7 @@ interface Props {
     balance: number;
     isLocked?: boolean;
     schema: z.ZodNumber;
+    resetSignal?: number;
 }
 
 interface Validation {
@@ -38,44 +39,41 @@ function validate(value: string, balance: number, schema: z.ZodNumber): Validati
     return { error: false, message: "" };
 }
 
-export default function AmountInput({ amount, setAmount, balance, isLocked, schema }: Props) {
+export default function AmountInput({ amount, setAmount, balance, isLocked, schema, resetSignal }: Props) {
     const [raw, setRaw] = useState(amount !== null ? String(amount) : "");
 
     useEffect(() => {
-        if (amount === null && raw !== "") {
-            setRaw("");
-        }
-    }, [amount]);
+        setRaw("");
+    }, [resetSignal]);
 
     const { error: isError, message: errorMessage } = validate(raw, balance, schema);
-    
+
     function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
         const str = e.target.value.replace(/[^0-9]/g, "");
         setRaw(str);
-    
+
         const { error } = validate(str, balance, schema);
         setAmount(error || str === "" ? null : Number(str));
     }
 
     function handlePreset(factor: number) {
         const base = raw !== "" ? Number(raw) : balance;
-        const schema_result = schema.safeParse(base * factor);
         const min = schema.minValue ?? 0;
         const max = schema.maxValue ?? Infinity;
         const num = Math.min(Math.max(Math.floor(base * factor), min), max, balance);
         const str = String(num);
         setRaw(str);
-    
+
         const { error } = validate(str, balance, schema);
         setAmount(error ? null : num);
     }
-    
+
     function handleMax() {
         const max = schema.maxValue ?? Infinity;
         const num = Math.min(balance, max);
         const str = String(num);
         setRaw(str);
-    
+
         const { error } = validate(str, balance, schema);
         setAmount(error ? null : num);
     }
