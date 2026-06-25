@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { TextField } from "@mui/material";
 import { getErrorMessage } from "@/lib/client/errors";
 import { z } from "zod";
@@ -12,6 +12,9 @@ interface Props {
     selfErrorCode: string;
     isLocked?: boolean;
     schema: z.ZodString;
+    externalError?: string | null;
+    onExternalErrorClear?: () => void;
+    resetSignal?: number;
 }
 
 interface Validation {
@@ -31,14 +34,34 @@ function validate(value: string, currentUsername: string | null, selfErrorCode: 
     return { error: false, message: "" };
 }
 
-export default function UsernameInput({ username, setUsername, currentUsername, selfErrorCode, isLocked, schema }: Props) {
+export default function UsernameInput({
+    username,
+    setUsername,
+    currentUsername,
+    selfErrorCode,
+    isLocked,
+    schema,
+    externalError,
+    onExternalErrorClear,
+    resetSignal,
+}: Props) {
     const [raw, setRaw] = useState(username);
 
-    const { error: isError, message: errorMessage } = validate(raw, currentUsername, selfErrorCode, schema);
+    useEffect(() => {
+        setRaw("");
+    }, [resetSignal]);
+
+    const internal = validate(raw, currentUsername, selfErrorCode, schema);
+    const isError = externalError ? true : internal.error;
+    const errorMessage = externalError ? externalError : internal.message;
 
     function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
         const value = event.target.value;
         setRaw(value);
+
+        if (externalError && onExternalErrorClear) {
+            onExternalErrorClear();
+        }
 
         const { error } = validate(value, currentUsername, selfErrorCode, schema);
         setUsername(error ? "" : value);
