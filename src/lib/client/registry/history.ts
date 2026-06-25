@@ -34,13 +34,13 @@ export const HISTORY_META: Record<string, HistoryEntry> = {
         color: "success",
     },
     [HistoryReason.Steal.ROBBER]: {
-        label: "Stole from",
-        icon: "mdi:robber",
+        label: "Steal (Attacker)",
+        icon: "ri:spy-line",
         color: "success",
     },
     [HistoryReason.Steal.VICTIM]: {
-        label: "Stolen by",
-        icon: "mdi:knife",
+        label: "Steal (Victim)",
+        icon: "emojione-monotone:police-car-light",
         color: "error",
     },
 };
