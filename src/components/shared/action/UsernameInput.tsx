@@ -76,11 +76,6 @@ export default function UsernameInput({
             fullWidth
             error={isError}
             disabled={isLocked}
-            slotProps={{
-                inputLabel: {
-                    shrink: isError ? true : undefined,
-                },
-            }}
         />
     );
 }
