@@ -35,6 +35,8 @@ export default function TransferPage() {
     const [username, setUsername] = useState("");
     const [amount, setAmount] = useState<number | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [usernameError, setUsernameError] = useState<string | null>(null);
+    const [resetSignal, setResetSignal] = useState(0);
 
     const balance = me?.balance ?? 0;
     const canSend = username !== "" && amount !== null && !isSubmitting && balance > 0;
@@ -57,9 +59,13 @@ export default function TransferPage() {
             showSnackbar(`Sent ${sentAmount.toLocaleString()} to ${username}`, "win");
             setUsername("");
             setAmount(null);
+            setResetSignal((current) => current + 1);
             handleSuccess();
         } catch (error) {
             const code = isApiError(error) ? error.code : "INTERNAL_ERROR";
+            if (code === "USER_NOT_FOUND") {
+                setUsernameError(getErrorMessage(code));
+            }
             showSnackbar(getErrorMessage(code), "lose");
         } finally {
             setIsSubmitting(false);
@@ -79,6 +85,9 @@ export default function TransferPage() {
                             selfErrorCode="SELF_TRANSFER"
                             isLocked={isSubmitting}
                             schema={transferSchema.shape.username}
+                            externalError={usernameError}
+                            onExternalErrorClear={() => setUsernameError(null)}
+                            resetSignal={resetSignal}
                         />
                         <AmountInput
                             amount={amount}
@@ -86,6 +95,7 @@ export default function TransferPage() {
                             balance={balance}
                             isLocked={isSubmitting}
                             schema={transferSchema.shape.amount}
+                            resetSignal={resetSignal}
                         />
                         <Button
                             variant="contained"
