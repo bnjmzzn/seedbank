@@ -14,23 +14,18 @@ interface Props {
     onSuccess: () => void;
 }
 
-function getErrorCode(error: unknown): string {
-    if (
+interface ApiError {
+    code: string;
+    status: number;
+}
+
+function isApiError(error: unknown): error is ApiError {
+    return (
         typeof error === "object" &&
         error !== null &&
-        "response" in error &&
-        typeof error.response === "object" &&
-        error.response !== null &&
-        "data" in error.response &&
-        typeof error.response.data === "object" &&
-        error.response.data !== null &&
-        "code" in error.response.data &&
-        typeof error.response.data.code === "string"
-    ) {
-        return error.response.data.code;
-    }
-
-    return "SERVER_ERROR";
+        "code" in error &&
+        typeof (error as ApiError).code === "string"
+    );
 }
 
 export default function TransferForm({ balance, onSuccess }: Props) {
@@ -49,17 +44,20 @@ export default function TransferForm({ balance, onSuccess }: Props) {
 
     async function handleSend() {
         if (!canSend) return;
-    
+
+        const sentAmount = amount;
+        if (sentAmount === null) return;
+
         setIsSubmitting(true);
-    
+
         try {
-            await api.user.transfer(username, amount);
-            showSnackbar(`Sent ${amount.toLocaleString()} to ${username}`, "win");
+            await api.user.transfer(username, sentAmount);
+            showSnackbar(`Sent ${sentAmount.toLocaleString()} to ${username}`, "win");
             setUsername("");
             setAmount(null);
             onSuccess();
         } catch (error) {
-            const code = error instanceof Object && "code" in error ? String(error.code) : "INTERNAL_ERROR";
+            const code = isApiError(error) ? error.code : "INTERNAL_ERROR";
             showSnackbar(getErrorMessage(code), "lose");
         } finally {
             setIsSubmitting(false);
