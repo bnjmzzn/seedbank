@@ -105,6 +105,35 @@ function HistoryRowItem({ row, onClick, isNew }: HistoryRowItemProps) {
     );
 }
 
+function HistoryRowPlaceholder() {
+    return (
+        <Paper
+            aria-hidden="true"
+            elevation={0}
+            sx={{
+                display: "flex",
+                alignItems: "center",
+                borderRadius: 2,
+                px: 2,
+                py: 1.5,
+                gap: 2,
+                visibility: "hidden",
+                pointerEvents: "none",
+            }}
+        >
+            <Iconify icon="mdi:chevron-right" sx={{ fontSize: 30, flexShrink: 0 }} />
+            <Box sx={{ flex: 1, minWidth: 0 }}>
+                <Typography noWrap>&nbsp;</Typography>
+                <Typography noWrap variant="body2">&nbsp;</Typography>
+            </Box>
+            <Typography variant="body1" fontFamily="monospace" sx={{ flexShrink: 0 }}>
+                &nbsp;
+            </Typography>
+            <Iconify icon="mdi:chevron-right" sx={{ flexShrink: 0 }} />
+        </Paper>
+    );
+}
+
 function HistoryRowSkeleton() {
     return (
         <Paper
@@ -153,7 +182,7 @@ function Paginator({ page, pageCount, onChange }: PaginatorProps) {
     );
 }
 
-export default function HistoryList({ rows, type, limit, maxRowsPerPage = 10, isLoading }: HistoryListProps) {
+export default function HistoryList({ rows, type, limit = 10, maxRowsPerPage = 10, isLoading }: HistoryListProps) {
     const router = useRouter();
     const [page, setPage] = useState(1);
     const seenIdsRef = useRef<Set<string>>(new Set());
@@ -166,6 +195,7 @@ export default function HistoryList({ rows, type, limit, maxRowsPerPage = 10, is
 
     const pageCount = Math.ceil(filtered.length / maxRowsPerPage);
     const paginated = filtered.slice((page - 1) * maxRowsPerPage, page * maxRowsPerPage);
+    const placeholderCount = paginated.length > 0 ? maxRowsPerPage - paginated.length : 0;
     const isEmpty = !isLoading && filtered.length === 0;
 
     const newIds = useMemo(() => {
@@ -216,6 +246,9 @@ export default function HistoryList({ rows, type, limit, maxRowsPerPage = 10, is
                             onClick={() => handleRowClick(row.id)}
                             isNew={row.id ? newIds.has(row.id) : false}
                         />
+                    ))}
+                    {Array.from({ length: placeholderCount }).map((_, i) => (
+                        <HistoryRowPlaceholder key={`placeholder-${i}`} />
                     ))}
                     {pageCount > 1 && (
                         <Paginator page={page} pageCount={pageCount} onChange={setPage} />
