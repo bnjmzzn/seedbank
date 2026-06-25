@@ -24,6 +24,11 @@ export const transferSchema = z.object({
     amount: amountRule(CONFIG.TRANSFER_MIN, CONFIG.TRANSFER_MAX),
 });
 
+export const stealSchema = z.object({
+    username: usernameRule,
+    amount: amountRule(CONFIG.STEAL_MIN, CONFIG.STEAL_MAX),
+});
+
 export const playSchema = z.object({
     amount: amountRule(CONFIG.BET_MIN, CONFIG.BET_MAX),
 });
@@ -31,4 +36,5 @@ export const playSchema = z.object({
 export type LoginInput = z.infer<typeof loginSchema>;
 export type RegisterInput = z.infer<typeof registerSchema>;
 export type TransferInput = z.infer<typeof transferSchema>;
+export type StealInput = z.infer<typeof stealSchema>;
 export type PlayInput = z.infer<typeof playSchema>;
