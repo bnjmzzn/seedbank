@@ -2,13 +2,26 @@
 
 import { Stack } from "@mui/material";
 import type { LeaderboardEntry } from "@/types/models";
-import PlayerRow from "./PlayerRow";
+import PlayerRow, { PlayerRowSkeleton } from "./PlayerRow";
 
 interface RestListProps {
     entries: LeaderboardEntry[];
+    isLoading?: boolean;
 }
 
-export default function RestList({ entries }: RestListProps) {
+const REST_SKELETON_COUNT = 7;
+
+export default function RestList({ entries, isLoading }: RestListProps) {
+    if (isLoading) {
+        return (
+            <Stack gap={1}>
+                {Array.from({ length: REST_SKELETON_COUNT }).map((_, i) => (
+                    <PlayerRowSkeleton key={i} />
+                ))}
+            </Stack>
+        );
+    }
+
     return (
         <Stack gap={1}>
             {entries.map((entry) => (
