@@ -1,7 +1,7 @@
 import useSWR from "swr";
 import { api } from "@/lib/client/api";
 import type { HistoryRow } from "@/types/db";
-import type { UserProfile, UserMe } from "@/types/models";
+import type { UserProfile, UserMe, LeaderboardEntry } from "@/types/models";
 
 interface UseHistoryParams {
     type?: string;
@@ -49,6 +49,21 @@ export function useMe() {
 
     return {
         me: data ?? null,
+        isLoading,
+        error,
+        mutate,
+    };
+}
+
+export function useLeaderboard() {
+    const { data, error, isLoading, mutate } = useSWR<LeaderboardEntry[]>(
+        "leaderboard",
+        () => api.public.leaderboard(),
+        { revalidateOnFocus: false }
+    );
+
+    return {
+        entries: data ?? [],
         isLoading,
         error,
         mutate,
