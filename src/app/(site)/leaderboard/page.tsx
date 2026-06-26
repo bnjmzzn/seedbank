@@ -23,7 +23,12 @@ export default function LeaderboardPage() {
         <Stack gap={4} sx={{ minWidth: 0, overflow: "hidden", p: { sm: 1, md: 2 } }}>
             <Stack direction="row" flexWrap="wrap" gap={4}>
                 <Stack flex={1} minWidth={240}>
-                    <RankCard username={me?.username} rank={me?.rank} isLoading={loading} />
+                    <RankCard
+                        username={me?.username}
+                        rank={me?.rank}
+                        balance={me?.balance}
+                        isLoading={loading}
+                    />
                 </Stack>
                 <Stack flex={1} minWidth={240}>
                     <GapDisplay
@@ -38,11 +43,11 @@ export default function LeaderboardPage() {
             <Stack direction="row" flexWrap="wrap" gap={4}>
                 <Stack flex={1} minWidth={240} gap={1}>
                     <SectionHeader icon="mdi:podium-gold" label="Top 3" />
-                    <TopPodium entries={podiumEntries} />
+                    <TopPodium entries={podiumEntries} isLoading={loading} />
                 </Stack>
                 <Stack flex={1} minWidth={280} gap={1}>
                     <SectionHeader icon="mdi:format-list-numbered" label="Rankings" />
-                    <RestList entries={restEntries} />
+                    <RestList entries={restEntries} isLoading={loading} />
                 </Stack>
             </Stack>
 
