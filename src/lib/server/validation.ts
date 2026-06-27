@@ -7,11 +7,13 @@ import * as CONFIG from "@/lib/config";
 export const loginBodySchema = z.object({
     username: usernameRule,
     password: passwordRule,
+    captchaToken: z.string().min(1, { message: "Captcha is required" }),
 });
 
 export const registerBodySchema = z.object({
     username: usernameRule,
     password: passwordRule,
+    captchaToken: z.string().min(1, { message: "Captcha is required" }),
 });
 
 export const transferBodySchema = z.object({
