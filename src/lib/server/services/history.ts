@@ -1,7 +1,7 @@
 import { dbGetUser } from "@/lib/server/db/users";
-import { dbGetHistory } from "@/lib/server/db/history";
+import { dbGetHistory, dbGetHistoryById } from "@/lib/server/db/history";
 import { HISTORY_DEFAULT_LIMIT, HISTORY_MAX_LIMIT } from "@/lib/config";
-import { HistoryReason } from "@/types/models";
+import { HistoryDetail, HistoryReason } from "@/types/models";
 import type { HistoryRow } from "@/types/db";
 
 const VALID_TYPES = new Set<string>([
@@ -35,4 +35,18 @@ export async function getUserHistory(
         reasonLike: isPrefixFilter ? filters.type : undefined,
         limit: safeLimit,
     });
+}
+
+export async function getHistoryById(id: string): Promise<HistoryDetail> {
+    const row = await dbGetHistoryById(id);
+    const user = await dbGetUser("id", row.user_id!);
+
+    return {
+        id: row.id!,
+        username: user.username,
+        change: row.change,
+        reason: row.reason,
+        meta: row.meta,
+        created_at: row.created_at,
+    };
 }
