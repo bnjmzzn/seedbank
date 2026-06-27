@@ -1,7 +1,7 @@
 import useSWR from "swr";
 import { api } from "@/lib/client/api";
 import type { HistoryRow } from "@/types/db";
-import type { UserProfile, UserMe, LeaderboardEntry } from "@/types/models";
+import type { UserProfile, UserMe, LeaderboardEntry, HistoryDetail } from "@/types/models";
 
 interface UseHistoryParams {
     type?: string;
@@ -64,6 +64,20 @@ export function useLeaderboard() {
 
     return {
         entries: data ?? [],
+        isLoading,
+        error,
+        mutate,
+    };
+}
+
+export function useHistoryDetail(id: string) {
+    const { data, error, isLoading, mutate } = useSWR<HistoryDetail>(
+        ["history-detail", id],
+        () => api.public.history(id),
+        { revalidateOnFocus: false, revalidateOnReconnect: false, revalidateIfStale: false }
+    );
+    return {
+        transaction: data ?? null,
         isLoading,
         error,
         mutate,
