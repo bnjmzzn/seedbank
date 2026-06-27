@@ -7,7 +7,7 @@ export function logout() {
     window.location.href = "/login";
 }
 
-export function getAvatarUrl(username: string): string {
+export function getAvatarUrl(username: string | null): string {
     return `https://api.dicebear.com/10.x/glyphs/svg?seed=${CURRENCY_TICKER}_${username}`;
 }
 
