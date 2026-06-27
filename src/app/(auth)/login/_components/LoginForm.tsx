@@ -1,12 +1,11 @@
 "use client";
 
-import { useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Stack, TextField, Button } from "@mui/material";
+import { useEffect, useState } from "react";
+import { Stack, Button } from "@mui/material";
 import { useRouter } from "next/navigation";
+import LabeledField from "./shared/LabeledField";
 import PasswordField from "./shared/PasswordField";
-import { loginSchema, type LoginInput } from "@/lib/client/validation";
+import { loginSchema } from "@/lib/client/validation";
 import { showSnackbar } from "@/components/shared/generic/SnackBar";
 import { api } from "@/lib/client/api";
 import { storage } from "@/lib/client/storage";
@@ -16,54 +15,83 @@ interface Props {
     onLoadingChange?: (loading: boolean) => void;
 }
 
+type Status = "idle" | "submitting";
+
 export default function LoginForm({ onLoadingChange }: Props) {
     const router = useRouter();
 
-    const {
-        register,
-        handleSubmit,
-        setError,
-        formState: { errors, isSubmitting },
-    } = useForm<LoginInput>({
-        resolver: zodResolver(loginSchema),
-    });
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const [usernameError, setUsernameError] = useState("");
+    const [passwordError, setPasswordError] = useState("");
+    const [status, setStatus] = useState<Status>("idle");
+
+    const isSubmitting = status === "submitting";
 
     useEffect(() => {
         onLoadingChange?.(isSubmitting);
     }, [isSubmitting]);
 
-    async function onSubmit(data: LoginInput) {
+    function handleUsernameChange(e: React.ChangeEvent<HTMLInputElement>) {
+        setUsername(e.target.value);
+        setUsernameError("");
+    }
+
+    function handlePasswordChange(e: React.ChangeEvent<HTMLInputElement>) {
+        setPassword(e.target.value);
+        setPasswordError("");
+    }
+
+    async function handleSubmit(e: React.FormEvent) {
+        e.preventDefault();
+
+        if (isSubmitting) return;
+
+        const parsed = loginSchema.safeParse({ username, password });
+
+        if (!parsed.success) {
+            for (const issue of parsed.error.issues) {
+                if (issue.path[0] === "username") setUsernameError(issue.message);
+                if (issue.path[0] === "password") setPasswordError(issue.message);
+            }
+            return;
+        }
+
+        setStatus("submitting");
+
         try {
-            const res = await api.auth.login(data);
+            const res = await api.auth.login(parsed.data);
             const { token } = res;
             storage.setToken(token);
             showSnackbar("Welcome!", "enter");
             router.push("/dashboard");
         } catch (error: any) {
             if (error.code === "INVALID_CREDENTIALS") {
-                setError("username", { message: "" });
-                setError("password", { message: "" });
+                const message = getErrorMessage(error.code);
+                setUsernameError(message);
+                setPasswordError(message);
+            } else {
                 showSnackbar(getErrorMessage(error.code), "error");
             }
+
+            setStatus("idle");
         }
     }
 
     return (
-        <Stack component="form" onSubmit={handleSubmit(onSubmit)} spacing={2} noValidate>
-            <TextField
-                {...register("username")}
+        <Stack component="form" onSubmit={handleSubmit} spacing={2} noValidate>
+            <LabeledField
                 label="Username"
-                size="small"
-                fullWidth
-                error={!!errors.username}
-                helperText={errors.username?.message}
+                errorMessage={usernameError}
+                value={username}
+                onChange={handleUsernameChange}
                 disabled={isSubmitting}
             />
             <PasswordField
-                {...register("password")}
                 label="Password"
-                error={!!errors.password}
-                helperText={errors.password?.message}
+                errorMessage={passwordError}
+                value={password}
+                onChange={handlePasswordChange}
                 disabled={isSubmitting}
             />
             <Button

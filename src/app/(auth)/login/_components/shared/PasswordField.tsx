@@ -4,22 +4,26 @@ import { useState } from "react";
 import { TextField, InputAdornment, IconButton, TextFieldProps } from "@mui/material";
 import Iconify from "@/components/shared/generic/Iconify";
 
-interface Props extends Omit<TextFieldProps, "type"> {
+interface Props extends Omit<TextFieldProps, "type" | "label" | "error"> {
+    label: string;
+    errorMessage: string;
     showToggle?: boolean;
 }
 
-export default function PasswordField({ showToggle = true, ...props }: Props) {
+export default function PasswordField({ label, errorMessage, showToggle = true, ...props }: Props) {
     const [show, setShow] = useState(false);
+    const hasError = errorMessage !== "";
 
     return (
         <TextField
             {...props}
+            label={hasError ? errorMessage : label}
+            error={hasError}
             size="small"
             fullWidth
             type="text"
             slotProps={{
                 htmlInput: {
-                    autoComplete: "new-password",
                     style: !show ? { WebkitTextSecurity: "disc" } : {},
                 },
                 input: {

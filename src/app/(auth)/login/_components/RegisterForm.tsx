@@ -1,9 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Stack, TextField, Button } from "@mui/material";
+import { Stack, Button } from "@mui/material";
+import LabeledField from "./shared/LabeledField";
 import PasswordField from "./shared/PasswordField";
 import TosDialog from "./TosDialog";
 import { registerSchema, type RegisterInput } from "@/lib/client/validation";
@@ -17,89 +16,117 @@ interface Props {
 }
 
 export default function RegisterForm({ onLoadingChange, onSuccess }: Props) {
-    const [tosOpen, setTosOpen] = useState(false);
-    const [pendingData, setPendingData] = useState<RegisterInput | null>(null);
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
 
-    const {
-        register,
-        handleSubmit,
-        reset,
-        setError,
-        formState: { errors, isSubmitting },
-    } = useForm<RegisterInput>({
-        resolver: zodResolver(registerSchema),
-        defaultValues: {
-            username: "",
-            password: "",
-            confirmPassword: "",
-        },
-    });
+    const [usernameError, setUsernameError] = useState("");
+    const [passwordError, setPasswordError] = useState("");
+    const [confirmPasswordError, setConfirmPasswordError] = useState("");
+
+    const [pendingSubmit, setPendingSubmit] = useState(false);
+    const [pendingData, setPendingData] = useState<RegisterInput | null>(null);
+    const [tosOpen, setTosOpen] = useState(false);
 
     useEffect(() => {
-        onLoadingChange?.(isSubmitting);
-    }, [isSubmitting]);
+        onLoadingChange?.(pendingSubmit);
+    }, [pendingSubmit]);
 
-    const submitRegistration = async (data: RegisterInput) => {
+    function handleUsernameChange(e: React.ChangeEvent<HTMLInputElement>) {
+        setUsername(e.target.value);
+        setUsernameError("");
+    }
+
+    function handlePasswordChange(e: React.ChangeEvent<HTMLInputElement>) {
+        setPassword(e.target.value);
+        setPasswordError("");
+    }
+
+    function handleConfirmPasswordChange(e: React.ChangeEvent<HTMLInputElement>) {
+        setConfirmPassword(e.target.value);
+        setConfirmPasswordError("");
+    }
+
+    function handleSubmit(e: React.FormEvent) {
+        e.preventDefault();
+
+        if (pendingSubmit) return;
+
+        const parsed = registerSchema.safeParse({ username, password, confirmPassword });
+
+        if (!parsed.success) {
+            for (const issue of parsed.error.issues) {
+                if (issue.path[0] === "username") setUsernameError(issue.message);
+                if (issue.path[0] === "password") setPasswordError(issue.message);
+                if (issue.path[0] === "confirmPassword") setConfirmPasswordError(issue.message);
+            }
+            return;
+        }
+
+        setPendingData(parsed.data);
+        setPendingSubmit(true);
+        setTosOpen(true);
+    }
+
+    async function handleTosAccept() {
+        setTosOpen(false);
+
+        if (!pendingData) {
+            setPendingSubmit(false);
+            return;
+        }
+
         try {
-            await api.auth.register(data);
+            await api.auth.register(pendingData);
             showSnackbar("Account created! Please login.", "success");
-            reset();
+            setUsername("");
+            setPassword("");
+            setConfirmPassword("");
             onSuccess?.();
         } catch (error: any) {
             if (error.code === "USERNAME_TAKEN") {
-                setError("username", { message: "That username is already taken." });
+                setUsernameError("That username is already taken.");
             } else {
                 showSnackbar(getErrorMessage(error.code), "error");
             }
+        } finally {
+            setPendingData(null);
+            setPendingSubmit(false);
         }
-    };
-
-    const onValidated = (data: RegisterInput) => {
-        setPendingData(data);
-        setTosOpen(true);
-    };
-
-    const handleTosAccept = () => {
-        setTosOpen(false);
-
-        if (pendingData) {
-            submitRegistration(pendingData);
-        }
-    };
+    }
 
     return (
         <>
-            <Stack component="form" onSubmit={handleSubmit(onValidated)} spacing={2} noValidate>
-                <TextField
-                    {...register("username")}
+            <Stack component="form" onSubmit={handleSubmit} spacing={2} noValidate>
+                <LabeledField
                     label="Username"
-                    size="small"
-                    fullWidth
-                    error={!!errors.username}
-                    helperText={errors.username?.message}
-                    disabled={isSubmitting}
+                    errorMessage={usernameError}
+                    value={username}
+                    onChange={handleUsernameChange}
+                    disabled={pendingSubmit}
                 />
                 <PasswordField
-                    {...register("password")}
                     label="Password"
-                    error={!!errors.password}
-                    helperText={errors.password?.message}
-                    disabled={isSubmitting}
+                    errorMessage={passwordError}
+                    value={password}
+                    onChange={handlePasswordChange}
+                    disabled={pendingSubmit}
                 />
                 <PasswordField
-                    {...register("confirmPassword")}
                     label="Confirm Password"
+                    errorMessage={confirmPasswordError}
                     showToggle={false}
-                    error={!!errors.confirmPassword}
-                    helperText={errors.confirmPassword?.message}
-                    disabled={isSubmitting}
+                    value={confirmPassword}
+                    onChange={handleConfirmPasswordChange}
+                    disabled={pendingSubmit}
                 />
                 <Button
                     type="submit"
                     variant="contained"
                     fullWidth
                     size="large"
-                    disabled={isSubmitting}
+                    loading={pendingSubmit}
+                    disabled={pendingSubmit}
                 >
                     Create Account
                 </Button>
