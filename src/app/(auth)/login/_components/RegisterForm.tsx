@@ -1,14 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-    Stack, TextField, Button, Checkbox, FormControlLabel,
-    FormHelperText, Dialog, DialogTitle, DialogContent,
-    DialogActions, Box, Typography, CircularProgress,
-} from "@mui/material";
+import { Stack, TextField, Button } from "@mui/material";
 import PasswordField from "./shared/PasswordField";
+import TosDialog from "./TosDialog";
 import { registerSchema, type RegisterInput } from "@/lib/client/validation";
 import { showSnackbar } from "@/components/shared/generic/SnackBar";
 import { api } from "@/lib/client/api";
@@ -21,14 +18,12 @@ interface Props {
 
 export default function RegisterForm({ onLoadingChange, onSuccess }: Props) {
     const [tosOpen, setTosOpen] = useState(false);
-    const [tosText, setTosText] = useState<string | null>(null);
-    const [tosLoading, setTosLoading] = useState(false);
+    const [pendingData, setPendingData] = useState<RegisterInput | null>(null);
 
     const {
         register,
         handleSubmit,
         reset,
-        control,
         setError,
         formState: { errors, isSubmitting },
     } = useForm<RegisterInput>({
@@ -37,7 +32,6 @@ export default function RegisterForm({ onLoadingChange, onSuccess }: Props) {
             username: "",
             password: "",
             confirmPassword: "",
-            tosAccepted: false as unknown as true,
         },
     });
 
@@ -45,16 +39,7 @@ export default function RegisterForm({ onLoadingChange, onSuccess }: Props) {
         onLoadingChange?.(isSubmitting);
     }, [isSubmitting]);
 
-    const openTos = async () => {
-        setTosOpen(true);
-        if (tosText !== null) return;
-        setTosLoading(true);
-        const res = await fetch("/tos.txt");
-        setTosText(await res.text());
-        setTosLoading(false);
-    };
-
-    const onSubmit = async (data: RegisterInput) => {
+    const submitRegistration = async (data: RegisterInput) => {
         try {
             await api.auth.register(data);
             showSnackbar("Account created! Please login.", "success");
@@ -69,9 +54,22 @@ export default function RegisterForm({ onLoadingChange, onSuccess }: Props) {
         }
     };
 
+    const onValidated = (data: RegisterInput) => {
+        setPendingData(data);
+        setTosOpen(true);
+    };
+
+    const handleTosAccept = () => {
+        setTosOpen(false);
+
+        if (pendingData) {
+            submitRegistration(pendingData);
+        }
+    };
+
     return (
         <>
-            <Stack component="form" onSubmit={handleSubmit(onSubmit)} spacing={2} noValidate>
+            <Stack component="form" onSubmit={handleSubmit(onValidated)} spacing={2} noValidate>
                 <TextField
                     {...register("username")}
                     label="Username"
@@ -96,45 +94,6 @@ export default function RegisterForm({ onLoadingChange, onSuccess }: Props) {
                     helperText={errors.confirmPassword?.message}
                     disabled={isSubmitting}
                 />
-                <Box>
-                    <FormControlLabel
-                        control={
-                            <Controller
-                                name="tosAccepted"
-                                control={control}
-                                render={({ field }) => (
-                                    <Checkbox
-                                        {...field}
-                                        checked={field.value}
-                                        size="small"
-                                        disabled={isSubmitting}
-                                    />
-                                )}
-                            />
-                        }
-                        label={
-                            <Typography variant="body2">
-                                I agree to the{" "}
-                                <Box
-                                    component="span"
-                                    onClick={openTos}
-                                    sx={{
-                                        color: "primary.main",
-                                        cursor: "pointer",
-                                        textDecoration: "underline",
-                                    }}
-                                >
-                                    Terms of Service
-                                </Box>
-                            </Typography>
-                        }
-                    />
-                    {errors.tosAccepted && (
-                        <FormHelperText error sx={{ mx: "14px" }}>
-                            {errors.tosAccepted.message}
-                        </FormHelperText>
-                    )}
-                </Box>
                 <Button
                     type="submit"
                     variant="contained"
@@ -146,27 +105,7 @@ export default function RegisterForm({ onLoadingChange, onSuccess }: Props) {
                 </Button>
             </Stack>
 
-            <Dialog open={tosOpen} onClose={() => setTosOpen(false)} maxWidth="sm" fullWidth>
-                <DialogTitle>Terms of Service</DialogTitle>
-                <DialogContent dividers>
-                    {tosLoading ? (
-                        <Box sx={{ display: "flex", justifyContent: "center", py: 4 }}>
-                            <CircularProgress size={24} />
-                        </Box>
-                    ) : (
-                        <Typography
-                            variant="body2"
-                            color="text.secondary"
-                            sx={{ whiteSpace: "pre-wrap" }}
-                        >
-                            {tosText}
-                        </Typography>
-                    )}
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={() => setTosOpen(false)} variant="outlined">Close</Button>
-                </DialogActions>
-            </Dialog>
+            <TosDialog open={tosOpen} onAccept={handleTosAccept} />
         </>
     );
 }
