@@ -3,9 +3,9 @@ import type { LoginInput, RegisterInput } from "@/lib/client/validation";
 
 export const api = {
     auth: {
-        login: (data: LoginInput) =>
+        login: (data: LoginInput & { captchaToken: string }) =>
             axios.post("/auth/login", data),
-        register: (data: RegisterInput) =>
+        register: (data: RegisterInput & { captchaToken: string }) =>
             axios.post("/auth/register", data),
     },
     user: {

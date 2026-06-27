@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Stack, Button } from "@mui/material";
+import HCaptcha from "@hcaptcha/react-hcaptcha";
 import LabeledField from "./shared/LabeledField";
 import PasswordField from "./shared/PasswordField";
 import TosDialog from "./TosDialog";
@@ -9,6 +10,8 @@ import { registerSchema, type RegisterInput } from "@/lib/client/validation";
 import { showSnackbar } from "@/components/shared/generic/SnackBar";
 import { api } from "@/lib/client/api";
 import { getErrorMessage } from "@/lib/client/errors";
+import { useInvisibleCaptcha } from "@/lib/client/hooks/ui";
+import { HCAPTCHA_SITE_KEY } from "@/lib/config";
 
 interface Props {
     onLoadingChange?: (loading: boolean) => void;
@@ -16,6 +19,8 @@ interface Props {
 }
 
 export default function RegisterForm({ onLoadingChange, onSuccess }: Props) {
+    const { captchaRef, requestToken, handleVerify, handleError, resetCaptcha } = useInvisibleCaptcha();
+
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
@@ -77,13 +82,16 @@ export default function RegisterForm({ onLoadingChange, onSuccess }: Props) {
         }
 
         try {
-            await api.auth.register(pendingData);
+            const captchaToken = await requestToken();
+            await api.auth.register({ ...pendingData, captchaToken });
             showSnackbar("Account created! Please login.", "success");
             setUsername("");
             setPassword("");
             setConfirmPassword("");
             onSuccess?.();
         } catch (error: any) {
+            resetCaptcha();
+
             if (error.code === "USERNAME_TAKEN") {
                 setUsernameError("That username is already taken.");
             } else {
@@ -133,6 +141,15 @@ export default function RegisterForm({ onLoadingChange, onSuccess }: Props) {
             </Stack>
 
             <TosDialog open={tosOpen} onAccept={handleTosAccept} />
+
+            <HCaptcha
+                ref={captchaRef}
+                sitekey={HCAPTCHA_SITE_KEY}
+                size="invisible"
+                onVerify={handleVerify}
+                onError={handleError}
+                onChalExpired={handleError}
+            />
         </>
     );
 }
