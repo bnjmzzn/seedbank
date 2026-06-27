@@ -10,6 +10,7 @@ const ERROR_MESSAGES: Record<string, string> = {
     TRANSFER_LIMIT: "Amount is outside the allowed transfer range",
     STEAL_LIMIT: "Amount is outside the allowed steal range",
     USER_NOT_FOUND: "User not found",
+    HISTORY_NOT_FOUND: "Transaction not found",
     INVALID_BODY: "Invalid input",
     UNAUTHORIZED: "You are not logged in",
     SERVER_ERROR: "Something went wrong on the server",

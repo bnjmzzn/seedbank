@@ -29,5 +29,7 @@ export const api = {
     public: {
         leaderboard: () =>
             axios.get("/leaderboard"),
+        history: (id: string) =>
+            axios.get(`/history/${id}`),
     }
 };
