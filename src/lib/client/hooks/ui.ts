@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
+import HCaptcha from "@hcaptcha/react-hcaptcha";
 
 export function useCountUp(target: number, duration = 1000, enabled = true) {
     const [display, setDisplay] = useState(target);
@@ -38,4 +39,36 @@ export function useCountUp(target: number, duration = 1000, enabled = true) {
     }, [target, duration, enabled]);
 
     return display;
+}
+
+export function useInvisibleCaptcha() {
+    const captchaRef = useRef<HCaptcha>(null);
+    const resolveRef = useRef<((token: string) => void) | null>(null);
+    const rejectRef = useRef<((reason: Error) => void) | null>(null);
+
+    const requestToken = useCallback(() => {
+        return new Promise<string>((resolve, reject) => {
+            resolveRef.current = resolve;
+            rejectRef.current = reject;
+            captchaRef.current?.execute();
+        });
+    }, []);
+
+    const handleVerify = useCallback((token: string) => {
+        resolveRef.current?.(token);
+        resolveRef.current = null;
+        rejectRef.current = null;
+    }, []);
+
+    const handleError = useCallback(() => {
+        rejectRef.current?.(new Error("CAPTCHA_FAILED"));
+        resolveRef.current = null;
+        rejectRef.current = null;
+    }, []);
+
+    const resetCaptcha = useCallback(() => {
+        captchaRef.current?.resetCaptcha();
+    }, []);
+
+    return { captchaRef, requestToken, handleVerify, handleError, resetCaptcha };
 }
