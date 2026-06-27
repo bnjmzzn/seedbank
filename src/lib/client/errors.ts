@@ -13,6 +13,7 @@ const ERROR_MESSAGES: Record<string, string> = {
     HISTORY_NOT_FOUND: "Transaction not found",
     INVALID_BODY: "Invalid input",
     UNAUTHORIZED: "You are not logged in",
+    CAPTCHA_FAILED: "Captcha verification failed, please try again.",
     SERVER_ERROR: "Something went wrong on the server",
     NETWORK_ERROR: "Could not reach the server",
 };

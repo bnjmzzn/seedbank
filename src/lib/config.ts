@@ -1,3 +1,4 @@
+export const HCAPTCHA_SITE_KEY = process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY!;
 export const CURRENCY_NAME = "Seeds";
 export const CURRENCY_TICKER = "SEED";
 
