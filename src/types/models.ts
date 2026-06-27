@@ -23,6 +23,15 @@ export interface LeaderboardEntry {
     balance: number;
 }
 
+export interface HistoryDetail {
+    id: string;
+    username: string;
+    change: number;
+    reason: string;
+    meta?: Record<string, unknown> | null;
+    created_at?: string;
+}
+
 export enum HistoryReason {
     DAILY = "DAILY",
     ADMIN = "ADMIN",

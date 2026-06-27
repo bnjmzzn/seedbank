@@ -8,6 +8,8 @@ export const Errors = {
     USERNAME_TAKEN: { code: "USERNAME_TAKEN", status: 409 },
     INVALID_CREDENTIALS: { code: "INVALID_CREDENTIALS", status: 401 },
 
+    HISTORY_NOT_FOUND: { code: "HISTORY_NOT_FOUND", status: 404 },
+
     INSUFFICIENT_BALANCE: { code: "INSUFFICIENT_BALANCE", status: 400 },
     COOLDOWN_ACTIVE: { code: "COOLDOWN_ACTIVE", status: 429 },
 

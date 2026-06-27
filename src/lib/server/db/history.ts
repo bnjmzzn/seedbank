@@ -1,3 +1,4 @@
+import { AppError, Errors } from "../error";
 import { supabase } from "./client";
 import type { HistoryRow } from "@/types/db";
 
@@ -34,4 +35,19 @@ export async function dbGetHistory(filters: {
     const { data, error } = await query;
     if (error) throw error;
     return data ?? [];
+}
+
+export async function dbGetHistoryById(id: string): Promise<HistoryRow> {
+    const { data, error } = await supabase
+        .from("history")
+        .select("*")
+        .eq("id", id)
+        .single();
+
+    if (error) {
+        if (error.code === "PGRST116" || error.code === "22P02")
+            throw new AppError(Errors.HISTORY_NOT_FOUND);
+        throw error;
+    }
+    return data;
 }
