@@ -22,6 +22,7 @@ import RadarChart from "@/components/shared/data/RadarChart";
 import TrendChart from "@/components/shared/data/TrendChart";
 import HistoryList from "@/components/shared/data/HistoryList";
 import SectionHeader from "@/components/shared/generic/SectionHeader";
+import Iconify from "@/components/shared/generic/Iconify";
 
 interface UserPageProps {
     params: Promise<{
@@ -32,12 +33,27 @@ interface UserPageProps {
 export default function UserPage({ params }: UserPageProps) {
     const { username } = use(params);
 
-    const { profile, isLoading: isProfileLoading } = useProfile(username);
+    const { profile, isLoading: isProfileLoading, error: profileError } = useProfile(username);
     const { rows, isLoading: isHistoryLoading } = useHistory(username);
 
     const isPageLoading = isProfileLoading || isHistoryLoading;
+    const hasError = !!profileError || !profile;
 
     const [tab, setTab] = useState(0);
+
+    if (!isPageLoading && hasError) {
+        return (
+            <Stack
+                gap={2}
+                alignItems="center"
+                justifyContent="center"
+                sx={{ minHeight: 240, p: { sm: 1, md: 2 } }}
+            >
+                <Iconify icon="mdi:account-off" sx={{ fontSize: 40, color: "text.disabled" }} />
+                <Typography color="text.secondary">User not found</Typography>
+            </Stack>
+        );
+    }
 
     function handleTabChange(_: React.SyntheticEvent, newValue: number) {
         setTab(newValue);
