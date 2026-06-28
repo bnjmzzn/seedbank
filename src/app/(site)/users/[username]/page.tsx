@@ -59,13 +59,15 @@ export default function UserPage({ params }: UserPageProps) {
         {
             label: "History",
             content: (
-                <Stack gap={2}>
+                <Stack gap={4}>
                     <Box sx={{ height: 200 }}>
                         <SectionHeader icon="uil:chart-line" label="Balance History" />
                         <TrendChart data={buildBalanceHistoryData(rows)} isLoading={isPageLoading} />
                     </Box>
-                    <SectionHeader icon="material-symbols:history" label="History" />
-                    <HistoryList rows={rows} isLoading={isPageLoading} maxRowsPerPage={5} />
+                    <Box>
+                        <SectionHeader icon="material-symbols:history" label="History" />
+                        <HistoryList rows={rows} isLoading={isPageLoading} maxRowsPerPage={5} />
+                    </Box>
                 </Stack>
             ),
         },
