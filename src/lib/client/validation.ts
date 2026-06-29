@@ -34,6 +34,3 @@ export const playSchema = z.object({
 
 export type LoginInput = z.infer<typeof loginSchema>;
 export type RegisterInput = z.infer<typeof registerSchema>;
-export type TransferInput = z.infer<typeof transferSchema>;
-export type StealInput = z.infer<typeof stealSchema>;
-export type PlayInput = z.infer<typeof playSchema>;
