@@ -8,10 +8,12 @@ import type { UserRow } from "@/types/db";
 import type { UserProfile, UserMe } from "@/types/models";
 import { getDailyStatus } from "@/lib/server/services/daily";
 import { LoginResult } from "@/types/api";
+import { containsProfanity } from "@/lib/server/filter";
 
 export async function registerUser(username: string, password: string): Promise<void> {
     if (username.length > USERNAME_MAX) throw new AppError(Errors.INVALID_BODY);
     if (password.length > PASSWORD_MAX) throw new AppError(Errors.INVALID_BODY);
+    if (containsProfanity(username)) throw new AppError(Errors.INVALID_USERNAME);
 
     const hashedPassword = await bcrypt.hash(password, HASH_ROUNDS);
     await dbInsertUser(username, hashedPassword);

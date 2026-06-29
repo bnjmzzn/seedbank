@@ -6,6 +6,7 @@ export const Errors = {
 
     USER_NOT_FOUND: { code: "USER_NOT_FOUND", status: 404 },
     USERNAME_TAKEN: { code: "USERNAME_TAKEN", status: 409 },
+    INVALID_USERNAME: { code: "INVALID_USERNAME", status: 400 },
     INVALID_CREDENTIALS: { code: "INVALID_CREDENTIALS", status: 401 },
     CAPTCHA_FAILED: { code: "CAPTCHA_FAILED", status: 400 },
 
