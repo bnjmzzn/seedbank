@@ -54,10 +54,6 @@ function buildGamesOutcomeRadarData(rows: HistoryRow[], wins: boolean): RadarPoi
     return points.sort((a, b) => a.axis.localeCompare(b.axis));
 }
 
-export function buildActionsRadarData(rows: HistoryRow[], limit?: number): RadarPoint[] {
-    return buildRadarCounts(rows, limit);
-}
-
 export function buildGamesWonRadarData(rows: HistoryRow[]): RadarPoint[] {
     return buildGamesOutcomeRadarData(rows, true);
 }
