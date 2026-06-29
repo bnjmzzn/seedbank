@@ -8,9 +8,11 @@ const PHRASES = [
     "Grow your seeds.",
     "Steal from other players.",
     "Play intense games.",
-    "Undefined error obj...",
+    "' OR 1=1 --",
     "Climb the Leaderboard.",
-    "its not gambling bro"
+    "its not gambling",
+    "'><script>alert(1)</script>",
+    "asdjskgadkfjghdaskfjagsnfceaisgodfglasnd",
 ];
 
 export default function Hero() {
@@ -76,7 +78,7 @@ export default function Hero() {
                 />
             </Typography>
             <Typography variant="body1" color="text.secondary">
-                Claim, play, steal, repeat. It's all just numbers on a database anyway.
+                Claim. Play. Steal. Give. Compare.
             </Typography>
         </Stack>
     );

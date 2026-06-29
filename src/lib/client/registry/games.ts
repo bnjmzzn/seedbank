@@ -16,7 +16,7 @@ export const GAMES: GameEntry[] = [
         href: "/games/cards",
         icon: "mdi:cards",
         color: "error",
-        desc: "Three cards, one might be a bomb.",
+        desc: "Three cards, pick the safest ones.",
     },
     {
         id: HistoryReason.Game.COINFLIP,
@@ -32,7 +32,7 @@ export const GAMES: GameEntry[] = [
         href: "/games/colors",
         icon: "mdi:dice",
         color: "secondary",
-        desc: "Pick a color, roll two dice.",
+        desc: "Pick a color, match it on either die.",
     },
     {
         id: HistoryReason.Game.MINES,
@@ -48,7 +48,7 @@ export const GAMES: GameEntry[] = [
         href: "/games/roulette",
         icon: "pepicons-pop:arrows-spin",
         color: "info",
-        desc: "Spin the wheel, land on green.",
+        desc: "Spin the reel, land on green.",
     },
     {
         id: HistoryReason.Game.SLOTS,
@@ -56,6 +56,6 @@ export const GAMES: GameEntry[] = [
         href: "/games/slots",
         icon: "grommet-icons:multiple",
         color: "primary",
-        desc: "Pick a symbol, spin four reels.",
+        desc: "Pick a symbol, match two of three reels.",
     },
 ];
