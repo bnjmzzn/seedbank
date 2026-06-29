@@ -94,6 +94,10 @@ export default function RegisterForm({ onLoadingChange, onSuccess }: Props) {
 
             if (error.code === "USERNAME_TAKEN") {
                 setUsernameError("That username is already taken.");
+                showSnackbar(getErrorMessage(error.code), "error");
+            } else if (error.code === "INVALID_USERNAME") {
+                setUsernameError("That username isn't allowed.");
+                showSnackbar(getErrorMessage(error.code), "error");
             } else {
                 showSnackbar(getErrorMessage(error.code), "error");
             }

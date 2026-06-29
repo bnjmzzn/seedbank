@@ -3,6 +3,7 @@ import { CURRENCY_TICKER } from "@/lib/config";
 const ERROR_MESSAGES: Record<string, string> = {
     INVALID_CREDENTIALS: "Invalid username or password",
     USERNAME_TAKEN: "That username is already taken",
+    INVALID_USERNAME: "That username isn't allowed",
     COOLDOWN_ACTIVE: "You already claimed your daily reward",
     INSUFFICIENT_BALANCE: `You don't have enough ${CURRENCY_TICKER}`,
     SELF_TRANSFER: "You can't transfer to yourself",
