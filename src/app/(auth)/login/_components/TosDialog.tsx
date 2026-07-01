@@ -12,7 +12,8 @@ type TosFetchState =
     | { status: "error" }
     | { status: "success"; paragraphs: string[] };
 
-const SECRET_API_SUPABASE_KEY_DO_NOT_COMMIT = "aHR0cHM6Ly93d3cueW91dHViZS5jb20vd2F0Y2g/dj1kUXc0dzlXZ1hjUQ==";
+const SECRET_API_KEY = "aHR0cHM6Ly93d3cueW91dHViZS5jb20vd2F0Y2g/dj1kUXc0dzlXZ1hjUQ==";
+const TOS_PATH = "/TOS.txt"
 
 interface Props {
     open: boolean;
@@ -28,7 +29,7 @@ export default function TosDialog({ open, onAccept }: Props) {
         setTosState({ status: "loading" });
 
         try {
-            const res = await fetch("/tos.txt");
+            const res = await fetch(TOS_PATH);
 
             if (!res.ok) {
                 setTosState({ status: "error" });
@@ -70,7 +71,7 @@ export default function TosDialog({ open, onAccept }: Props) {
     };
 
     const handleDecline = () => {
-        window.location.href = atob(SECRET_API_SUPABASE_KEY_DO_NOT_COMMIT);
+        window.location.href = atob(SECRET_API_KEY);
     };
 
     return (
