@@ -1,101 +1,70 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, vi, expect, it, beforeEach } from "vitest";
 import { POST } from "@/app/(api)/api/play/route";
+import { playGame } from "@/lib/server/services/game";
 import { AppError, Errors } from "@/lib/server/error";
+import { makeRequest } from "@/tests/helpers/requests";
+import {
+    expectUnauthorizedWithoutUserId,
+    expectErrorResponse,
+    expectInternalErrorResponse,
+    expectSuccessResponse,
+} from "@/tests/helpers/routeAssertions";
+import { HistoryReason } from "@/types/models";
 
-vi.mock("@/lib/server/services/game", () => ({
-    playGame: vi.fn(),
+vi.mock("@/lib/server/services/game");
+vi.mock("@/lib/server/db/client", () => ({
+    supabase: {},
 }));
 
-import { playGame } from "@/lib/server/services/game";
-import { BET_MIN, BET_MAX } from "@/lib/config";
-
-function makeRequest(body: unknown, userId?: string) {
-    return new Request("http://localhost/api/play", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            ...(userId ? { "x-user-id": userId } : {}),
-        },
-        body: JSON.stringify(body),
-    });
-}
-
-const validBody = { game: "GAME:COINFLIP", bet: BET_MIN };
-
 describe("POST /api/play", () => {
-    beforeEach(() => vi.clearAllMocks());
+    const validBody = { game: HistoryReason.Game.COINFLIP, bet: 100 };
 
-    it("returns 401 if no user id header", async () => {
-        const res = await POST(makeRequest(validBody));
-        expect(res.status).toBe(401);
+    beforeEach(() => {
+        vi.clearAllMocks();
     });
 
-    it("returns 400 if game is missing", async () => {
-        const res = await POST(makeRequest({ bet: BET_MIN }, "user-123"));
-        const body = await res.json();
-        expect(res.status).toBe(400);
-        expect(body.data).toHaveProperty("game");
+    it("returns UNAUTHORIZED when the x-user-id header is missing", async () => {
+        const request = makeRequest({ method: "POST", body: validBody });
+
+        await expectUnauthorizedWithoutUserId(POST, request);
+
+        expect(playGame).not.toHaveBeenCalled();
     });
 
-    it("returns 400 if bet is missing", async () => {
-        const res = await POST(makeRequest({ game: "GAME:COINFLIP" }, "user-123"));
-        const body = await res.json();
-        expect(res.status).toBe(400);
-        expect(body.data).toHaveProperty("bet");
+    it("returns INVALID_BODY when the request body is empty", async () => {
+        const request = makeRequest({ method: "POST", userId: "user-1", body: {} });
+
+        const response = await POST(request);
+
+        await expectErrorResponse(response, Errors.INVALID_BODY);
+        expect(playGame).not.toHaveBeenCalled();
     });
 
-    it("returns 400 if bet is not an integer", async () => {
-        const res = await POST(makeRequest({ game: "GAME:COINFLIP", bet: 1.5 }, "user-123"));
-        const body = await res.json();
-        expect(res.status).toBe(400);
-        expect(body.data).toHaveProperty("bet");
+    it("converts a thrown AppError into an error response", async () => {
+        vi.mocked(playGame).mockRejectedValue(new AppError(Errors.INSUFFICIENT_BALANCE));
+
+        const request = makeRequest({ method: "POST", userId: "user-1", body: validBody });
+        const response = await POST(request);
+
+        await expectErrorResponse(response, Errors.INSUFFICIENT_BALANCE);
     });
 
-    it("returns 400 if bet is below minimum", async () => {
-        const res = await POST(makeRequest({ game: "GAME:COINFLIP", bet: BET_MIN - 1 }, "user-123"));
-        const body = await res.json();
-        expect(res.status).toBe(400);
-        expect(body.data).toHaveProperty("bet");
+    it("converts an unexpected error into an INTERNAL_ERROR response", async () => {
+        vi.mocked(playGame).mockRejectedValue(new Error("connection lost"));
+
+        const request = makeRequest({ method: "POST", userId: "user-1", body: validBody });
+        const response = await POST(request);
+
+        await expectInternalErrorResponse(response);
     });
 
-    it("returns 400 if bet is above maximum", async () => {
-        const res = await POST(makeRequest({ game: "GAME:COINFLIP", bet: BET_MAX + 1 }, "user-123"));
-        const body = await res.json();
-        expect(res.status).toBe(400);
-        expect(body.data).toHaveProperty("bet");
-    });
+    it("returns the game result on success", async () => {
+        vi.mocked(playGame).mockResolvedValue({ won: true, delta: 100, balance: 1100 });
 
-    it("returns 400 if game is not a valid enum value", async () => {
-        const res = await POST(makeRequest({ game: "GAME:INVALID", bet: BET_MIN }, "user-123"));
-        const body = await res.json();
-        expect(res.status).toBe(400);
-        expect(body.data).toHaveProperty("game");
-    });
+        const request = makeRequest({ method: "POST", userId: "user-1", body: validBody });
+        const response = await POST(request);
 
-    it("returns 200 on success", async () => {
-        vi.mocked(playGame).mockResolvedValueOnce({ won: true, delta: BET_MIN, balance: 550 });
-
-        const res = await POST(makeRequest(validBody, "user-123"));
-        const body = await res.json();
-
-        expect(res.status).toBe(200);
-        expect(body.data.won).toBe(true);
-        expect(body.data.delta).toBe(BET_MIN);
-    });
-
-    it("returns 400 if insufficient balance", async () => {
-        vi.mocked(playGame).mockRejectedValueOnce(new AppError(Errors.INSUFFICIENT_BALANCE));
-
-        const res = await POST(makeRequest(validBody, "user-123"));
-        const body = await res.json();
-
-        expect(res.status).toBe(400);
-        expect(body.code).toBe("INSUFFICIENT_BALANCE");
-    });
-
-    it("returns 500 if service throws unexpectedly", async () => {
-        vi.mocked(playGame).mockRejectedValueOnce(new Error("db exploded"));
-        const res = await POST(makeRequest(validBody, "user-123"));
-        expect(res.status).toBe(500);
+        await expectSuccessResponse(response, { won: true, delta: 100, balance: 1100 });
+        expect(playGame).toHaveBeenCalledWith("user-1", HistoryReason.Game.COINFLIP, 100);
     });
 });

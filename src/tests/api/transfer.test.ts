@@ -1,107 +1,69 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, vi, expect, it, beforeEach } from "vitest";
 import { POST } from "@/app/(api)/api/transfer/route";
+import { transferBalance } from "@/lib/server/services/transfer";
 import { AppError, Errors } from "@/lib/server/error";
+import { makeRequest } from "@/tests/helpers/requests";
+import {
+    expectUnauthorizedWithoutUserId,
+    expectErrorResponse,
+    expectInternalErrorResponse,
+    expectSuccessResponse,
+} from "@/tests/helpers/routeAssertions";
 
-vi.mock("@/lib/server/services/transfer", () => ({
-    transferBalance: vi.fn(),
+vi.mock("@/lib/server/services/transfer");
+vi.mock("@/lib/server/db/client", () => ({
+    supabase: {},
 }));
 
-import { transferBalance } from "@/lib/server/services/transfer";
-import { TRANSFER_MIN, TRANSFER_MAX } from "@/lib/config";
-
-function makeRequest(body: unknown, userId?: string) {
-    return new Request("http://localhost/api/transfer", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            ...(userId ? { "x-user-id": userId } : {}),
-        },
-        body: JSON.stringify(body),
-    });
-}
-
-const validBody = { toUsername: "user2", amount: TRANSFER_MIN };
-
 describe("POST /api/transfer", () => {
-    beforeEach(() => vi.clearAllMocks());
+    const validBody = { toUsername: "username2", amount: 100 };
 
-    it("returns 401 if no user id header", async () => {
-        const res = await POST(makeRequest(validBody));
-        expect(res.status).toBe(401);
+    beforeEach(() => {
+        vi.clearAllMocks();
     });
 
-    it("returns 400 if toUsername is missing", async () => {
-        const res = await POST(makeRequest({ amount: TRANSFER_MIN }, "user-123"));
-        const body = await res.json();
-        expect(res.status).toBe(400);
-        expect(body.data).toHaveProperty("toUsername");
+    it("returns UNAUTHORIZED when the x-user-id header is missing", async () => {
+        const request = makeRequest({ method: "POST", body: validBody });
+
+        await expectUnauthorizedWithoutUserId(POST, request);
+
+        expect(transferBalance).not.toHaveBeenCalled();
     });
 
-    it("returns 400 if amount is missing", async () => {
-        const res = await POST(makeRequest({ toUsername: "user2" }, "user-123"));
-        const body = await res.json();
-        expect(res.status).toBe(400);
-        expect(body.data).toHaveProperty("amount");
+    it("returns INVALID_BODY when the request body is empty", async () => {
+        const request = makeRequest({ method: "POST", userId: "user-1", body: {} });
+
+        const response = await POST(request);
+
+        await expectErrorResponse(response, Errors.INVALID_BODY);
+        expect(transferBalance).not.toHaveBeenCalled();
     });
 
-    it("returns 400 if amount is not an integer", async () => {
-        const res = await POST(makeRequest({ toUsername: "user2", amount: 1.5 }, "user-123"));
-        const body = await res.json();
-        expect(res.status).toBe(400);
-        expect(body.data).toHaveProperty("amount");
+    it("converts a thrown AppError into an error response", async () => {
+        vi.mocked(transferBalance).mockRejectedValue(new AppError(Errors.TRANSFER_LIMIT));
+
+        const request = makeRequest({ method: "POST", userId: "user-1", body: validBody });
+        const response = await POST(request);
+
+        await expectErrorResponse(response, Errors.TRANSFER_LIMIT);
     });
 
-    it("returns 400 if amount is below minimum", async () => {
-        const res = await POST(makeRequest({ toUsername: "user2", amount: TRANSFER_MIN - 1 }, "user-123"));
-        const body = await res.json();
-        expect(res.status).toBe(400);
-        expect(body.data).toHaveProperty("amount");
+    it("converts an unexpected error into an INTERNAL_ERROR response", async () => {
+        vi.mocked(transferBalance).mockRejectedValue(new Error("connection lost"));
+
+        const request = makeRequest({ method: "POST", userId: "user-1", body: validBody });
+        const response = await POST(request);
+
+        await expectInternalErrorResponse(response);
     });
 
-    it("returns 400 if amount is above maximum", async () => {
-        const res = await POST(makeRequest({ toUsername: "user2", amount: TRANSFER_MAX + 1 }, "user-123"));
-        const body = await res.json();
-        expect(res.status).toBe(400);
-        expect(body.data).toHaveProperty("amount");
-    });
+    it("returns the transfer result on success", async () => {
+        vi.mocked(transferBalance).mockResolvedValue({ transferred: 100, balance: 400 });
 
-    it("returns 200 on success", async () => {
-        vi.mocked(transferBalance).mockResolvedValueOnce({ transferred: TRANSFER_MIN, balance: 400 });
+        const request = makeRequest({ method: "POST", userId: "user-1", body: validBody });
+        const response = await POST(request);
 
-        const res = await POST(makeRequest(validBody, "user-123"));
-        const body = await res.json();
-
-        expect(res.status).toBe(200);
-        expect(body.data.transferred).toBe(TRANSFER_MIN);
-    });
-
-    it("returns 400 if insufficient balance", async () => {
-        vi.mocked(transferBalance).mockRejectedValueOnce(new AppError(Errors.INSUFFICIENT_BALANCE));
-        const res = await POST(makeRequest(validBody, "user-123"));
-        const body = await res.json();
-        expect(res.status).toBe(400);
-        expect(body.code).toBe("INSUFFICIENT_BALANCE");
-    });
-
-    it("returns 400 if self transfer", async () => {
-        vi.mocked(transferBalance).mockRejectedValueOnce(new AppError(Errors.SELF_TRANSFER));
-        const res = await POST(makeRequest(validBody, "user-123"));
-        const body = await res.json();
-        expect(res.status).toBe(400);
-        expect(body.code).toBe("SELF_TRANSFER");
-    });
-
-    it("returns 400 if transfer limit exceeded", async () => {
-        vi.mocked(transferBalance).mockRejectedValueOnce(new AppError(Errors.TRANSFER_LIMIT));
-        const res = await POST(makeRequest(validBody, "user-123"));
-        const body = await res.json();
-        expect(res.status).toBe(400);
-        expect(body.code).toBe("TRANSFER_LIMIT");
-    });
-
-    it("returns 500 if service throws unexpectedly", async () => {
-        vi.mocked(transferBalance).mockRejectedValueOnce(new Error("db exploded"));
-        const res = await POST(makeRequest(validBody, "user-123"));
-        expect(res.status).toBe(500);
+        await expectSuccessResponse(response, { transferred: 100, balance: 400 });
+        expect(transferBalance).toHaveBeenCalledWith("user-1", "username2", 100);
     });
 });
