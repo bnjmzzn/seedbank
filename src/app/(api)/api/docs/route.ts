@@ -8,6 +8,17 @@ export const GET = ApiReference({
         targetKey: "js",
         clientKey: "fetch"
     },
-    layout: "classic",
-    theme: "moon",
+    layout: "modern",
+    theme: "fastify",
+    defaultOpenAllTags: true,
+    hideTestRequestButton: true,
+    hideDarkModeToggle: true,
+    favicon: "/icon.svg",
+    metaData: {
+        title: "Seedbank API",
+    },
+    agent: {
+        disabled: true,
+    },
+    hideModels: true,
 });
