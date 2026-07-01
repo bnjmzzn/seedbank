@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "biome check",
     "format": "biome format --write",
-    "test": "vitest",
+    "test": "vitest --reporter=tree --watch=false",
     "check": "tsc --noEmit --skipLibCheck"
   },
   "packageManager": "pnpm@11.6.0",
