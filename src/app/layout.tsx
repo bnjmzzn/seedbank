@@ -7,15 +7,18 @@ const geist = Geist({ subsets: ["latin"] });
 
 const siteConfig = {
     title: "SeedBank",
-    description: "Gambling Simulator 🤑",
-    banner: "/images/banner.png",
+    description: "plz try this app i made",
+    banner: "/assets/images/banner.png",
 };
 
 export const metadata: Metadata = {
     title: siteConfig.title,
     description: siteConfig.description,
     icons: {
-        icon: "/icon.svg",
+        icon: [
+            { url: "/icon.svg", type: "image/svg+xml" },
+            { url: "/favicon.ico", sizes: "any" },
+        ],
     },
     openGraph: {
         title: siteConfig.title,
