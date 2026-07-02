@@ -12,7 +12,7 @@ const PHRASES = [
     "Climb the Leaderboard.",
     "its not gambling",
     "'><script>alert(1)</script>",
-    "asdjskgadkfjghdaskfjagsnfceaisgodfglasnd",
+    "asdjskgadkfjghdaskfjagsn",
 ];
 
 export default function Hero() {
