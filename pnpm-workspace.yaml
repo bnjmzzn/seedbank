@@ -1,6 +1,7 @@
 allowBuilds:
   msw: true
   sharp: true
+  esbuild: true
 saveExact: true
 minimumReleaseAge: 1440
 trustPolicy: no-downgrade
