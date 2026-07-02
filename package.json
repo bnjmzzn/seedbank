@@ -9,7 +9,7 @@
     "lint": "biome check",
     "format": "biome format --write",
     "test": "vitest --reporter=tree --watch=false",
-    "check": "tsc --noEmit --skipLibCheck"
+    "check": "tsc --noEmit --skipLibCheck && knip"
   },
   "packageManager": "pnpm@11.6.0",
   "engines": {
