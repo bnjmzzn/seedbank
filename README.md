@@ -23,6 +23,9 @@ A fullstack web app where players earn, play minigames, and steal from each othe
   <img src="./public/assets/images/banner.png" alt="Seedbank preview" width="700">
 </p>
 
+> [!NOTE]
+> Seedbank uses a virtual currency with no real world value. It cannot be bought, cashed out, or exchanged for money. This is a learning project built to practice fullstack development, not a gambling product; see [Terms of Service](/public/TOS.txt) or the [FAQ](./docs/faq.md) for more.
+
 > [!WARNING]
 > The database may be paused, see [Supabase free tier limits](https://supabase.com/docs/guides/deployment/going-into-prod#availability)) 
 
