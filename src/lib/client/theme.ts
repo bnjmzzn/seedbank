@@ -28,6 +28,12 @@ const theme = createTheme({
                 "*::-webkit-scrollbar": {
                     display: "none",
                 },
+                body: {
+                    userSelect: "none",
+                },
+                "input, textarea, [contenteditable=\"true\"]": {
+                    userSelect: "text",
+                },
             },
         },
     },
