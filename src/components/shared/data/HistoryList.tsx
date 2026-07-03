@@ -1,0 +1,260 @@
+"use client";
+
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { Box, ButtonBase, IconButton, Paper, Skeleton, Typography } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
+import { HistoryRow } from "@/types/db";
+import { HISTORY_META } from "@/lib/client/registry/history";
+import { filterHistory } from "@/lib/client/utils";
+import Iconify from "@/components/shared/generic/Iconify";
+
+interface HistoryListProps {
+    rows: HistoryRow[];
+    type?: string;
+    limit?: number;
+    maxRowsPerPage?: number;
+    isLoading?: boolean;
+}
+
+const slideInKeyframes = {
+    "@keyframes historyRowSlideIn": {
+        from: { opacity: 0, transform: "translateY(-8px)" },
+        to: { opacity: 1, transform: "translateY(0)" },
+    },
+};
+
+function formatChange(change: number): string {
+    return change > 0
+        ? `+${change.toLocaleString()}`
+        : change.toLocaleString();
+}
+
+function formatDate(dateStr?: string): string {
+    if (!dateStr) return "—";
+    return new Date(dateStr).toLocaleDateString(undefined, {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+    });
+}
+
+interface HistoryRowItemProps {
+    row: HistoryRow;
+    onClick: () => void;
+    isNew?: boolean;
+}
+
+function HistoryRowItem({ row, onClick, isNew }: HistoryRowItemProps) {
+    const theme = useTheme();
+    const meta = HISTORY_META[row.reason];
+    const { label, icon } = meta ?? { label: row.reason, icon: "fa:question" };
+
+    const isPositive = row.change > 0;
+    const iconBg = isPositive ? theme.palette.success.main : theme.palette.error.main;
+    const changeColor = isPositive ? theme.palette.success.light : theme.palette.error.light;
+    const changeStr = formatChange(row.change);
+    const dateStr = formatDate(row.created_at);
+
+    return (
+        <ButtonBase
+            onClick={onClick}
+            sx={{
+                display: "block",
+                width: "100%",
+                borderRadius: 2,
+                "& .row-paper": { transition: "background-color 0.15s ease" },
+                "&:hover .row-paper": { bgcolor: "action.hover" },
+                "&:active .row-paper": { bgcolor: "action.selected" },
+            }}
+        >
+            <Paper
+                className="row-paper"
+                elevation={1}
+                sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    borderRadius: 2,
+                    px: 2,
+                    py: 1.5,
+                    gap: 2,
+                    ...slideInKeyframes,
+                    ...(isNew && { animation: "historyRowSlideIn 0.3s ease-out" }),
+                }}
+            >
+                <Iconify icon={icon} sx={{ color: iconBg, flexShrink: 0, fontSize: 30 }} />
+
+                <Box sx={{ flex: 1, minWidth: 0, textAlign: "left" }}>
+                    <Typography noWrap>{label}</Typography>
+                    <Typography noWrap variant="body2" color="text.secondary">{dateStr}</Typography>
+                </Box>
+
+                <Typography
+                    variant="body1"
+                    fontFamily="monospace"
+                    sx={{ flexShrink: 0, color: changeColor }}
+                >
+                    {changeStr}
+                </Typography>
+
+                <Iconify icon="mdi:chevron-right" sx={{ color: "text.disabled", flexShrink: 0 }} />
+            </Paper>
+        </ButtonBase>
+    );
+}
+
+function HistoryRowPlaceholder() {
+    return (
+        <Paper
+            aria-hidden="true"
+            elevation={0}
+            sx={{
+                display: "flex",
+                alignItems: "center",
+                borderRadius: 2,
+                px: 2,
+                py: 1.5,
+                gap: 2,
+                visibility: "hidden",
+                pointerEvents: "none",
+            }}
+        >
+            <Iconify icon="mdi:chevron-right" sx={{ fontSize: 30, flexShrink: 0 }} />
+            <Box sx={{ flex: 1, minWidth: 0 }}>
+                <Typography noWrap>&nbsp;</Typography>
+                <Typography noWrap variant="body2">&nbsp;</Typography>
+            </Box>
+            <Typography variant="body1" fontFamily="monospace" sx={{ flexShrink: 0 }}>
+                &nbsp;
+            </Typography>
+            <Iconify icon="mdi:chevron-right" sx={{ flexShrink: 0 }} />
+        </Paper>
+    );
+}
+
+function HistoryRowSkeleton() {
+    return (
+        <Paper
+            elevation={1}
+            sx={{
+                display: "flex",
+                alignItems: "center",
+                borderRadius: 2,
+                px: 2,
+                py: 1.5,
+                gap: 2,
+            }}
+        >
+            <Skeleton variant="circular" width={28} height={28} sx={{ flexShrink: 0 }} />
+            <Box sx={{ flex: 1, minWidth: 0 }}>
+                <Skeleton variant="text" width="40%" />
+                <Skeleton variant="text" width="25%" />
+            </Box>
+            <Skeleton variant="text" width={60} />
+            <Skeleton variant="circular" width={20} height={20} sx={{ flexShrink: 0 }} />
+        </Paper>
+    );
+}
+
+interface PaginatorProps {
+    page: number;
+    pageCount: number;
+    onChange: (value: number) => void;
+}
+
+function Paginator({ page, pageCount, onChange }: PaginatorProps) {
+    return (
+        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 2, pt: 1 }}>
+            <IconButton onClick={() => onChange(page - 1)} disabled={page <= 1} size="large">
+                <Iconify icon="mdi:chevron-left" />
+            </IconButton>
+            <Typography color="text.secondary">
+                <Box component="span" fontWeight="bold" color="text.primary">{page}</Box>
+                {" / "}
+                {pageCount}
+            </Typography>
+            <IconButton onClick={() => onChange(page + 1)} disabled={page >= pageCount} size="large">
+                <Iconify icon="mdi:chevron-right" />
+            </IconButton>
+        </Box>
+    );
+}
+
+export default function HistoryList({ rows, type, limit = 10, maxRowsPerPage = 10, isLoading }: HistoryListProps) {
+    const router = useRouter();
+    const [page, setPage] = useState(1);
+    const seenIdsRef = useRef<Set<string>>(new Set());
+    const hasMountedRef = useRef(false);
+
+    const filtered = useMemo(() => {
+        const result = filterHistory(rows, type);
+        return limit ? result.slice(0, limit) : result;
+    }, [rows, type, limit]);
+
+    const pageCount = Math.ceil(filtered.length / maxRowsPerPage);
+    const paginated = filtered.slice((page - 1) * maxRowsPerPage, page * maxRowsPerPage);
+    const placeholderCount = paginated.length > 0 ? maxRowsPerPage - paginated.length : 0;
+    const isEmpty = !isLoading && filtered.length === 0;
+
+    const newIds = useMemo(() => {
+        const result = new Set<string>();
+
+        if (hasMountedRef.current) {
+            for (const row of paginated) {
+                if (row.id && !seenIdsRef.current.has(row.id)) {
+                    result.add(row.id);
+                }
+            }
+        }
+
+        return result;
+    }, [paginated]);
+
+    useEffect(() => {
+        for (const row of paginated) {
+            if (row.id) {
+                seenIdsRef.current.add(row.id);
+            }
+        }
+
+        hasMountedRef.current = true;
+    }, [paginated]);
+
+    function handleRowClick(id?: string) {
+        if (!id) return;
+        router.push(`/history/${id}`);
+    }
+
+    return (
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+            {isLoading && (
+                Array.from({ length: 5 }).map((_, i) => <HistoryRowSkeleton key={i} />)
+            )}
+            {isEmpty && (
+                <Box sx={{ flex: 1, minHeight: 140, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <Typography color="text.secondary">No history yet.</Typography>
+                </Box>
+            )}
+            {!isLoading && !isEmpty && (
+                <>
+                    {paginated.map((row, i) => (
+                        <HistoryRowItem
+                            key={row.id ?? i}
+                            row={row}
+                            onClick={() => handleRowClick(row.id)}
+                            isNew={row.id ? newIds.has(row.id) : false}
+                        />
+                    ))}
+                    {Array.from({ length: placeholderCount }).map((_, i) => (
+                        <HistoryRowPlaceholder key={`placeholder-${i}`} />
+                    ))}
+                    {pageCount > 1 && (
+                        <Paginator page={page} pageCount={pageCount} onChange={setPage} />
+                    )}
+                </>
+            )}
+        </Box>
+    );
+}

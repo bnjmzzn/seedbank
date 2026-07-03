@@ -1,5 +1,5 @@
 import { supabase } from "./client";
-import type { UserRow } from "@/types/database";
+import type { UserRow } from "@/types/db";
 import { AppError, Errors } from "@/lib/server/error";
 
 export async function dbGetUser(by: "id" | "username", value: string): Promise<UserRow> {

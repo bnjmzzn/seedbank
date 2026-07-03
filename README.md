@@ -1,193 +1,90 @@
-# 🌱 Seedbank
+<h1 align="center">🌱 Seedbank</h1>
 
-![vercel](https://img.shields.io/badge/vercel-000?logo=vercel&style=for-the-badge)
-![nextjs](https://img.shields.io/badge/next.js-000?logo=nextdotjs&style=for-the-badge)
-![typescript](https://img.shields.io/badge/typescript-3178c6?logo=typescript&logoColor=white&style=for-the-badge)
-![supabase](https://img.shields.io/badge/supabase-3ecf8e?logo=supabase&logoColor=white&style=for-the-badge)
-<br>
-![reactjs](https://img.shields.io/badge/react-61dafb?logo=react&logoColor=000&style=for-the-badge)
-![shadcn](https://img.shields.io/badge/shadcn/ui-000?logo=shadcnui&logoColor=white&style=for-the-badge)
-![tailwind](https://img.shields.io/badge/tailwindcss-38bdf8?logo=tailwindcss&logoColor=white&style=for-the-badge)
+<p align="center">
+A fullstack web app where players earn, play minigames, and steal from each other over a virtual currency.
+</p>
 
-> [!CAUTION]
-> 1. Frontend is still being built. Some pages may be missing or broken.
-> 2. A database migration is planned, so any data you create will likely be wiped.
+<p align="center">
+  <img src="https://img.shields.io/badge/Vercel-23272f?logo=vercel&logoColor=fff&style=for-the-badge" alt="Vercel">
+  <img src="https://img.shields.io/badge/Next.js-23272f?logo=nextdotjs&logoColor=fff&style=for-the-badge" alt="Next.js">
+  <img src="https://img.shields.io/badge/React-23272f?logo=react&logoColor=61dafb&style=for-the-badge" alt="React">
+  <img src="https://img.shields.io/badge/TypeScript-23272f?logo=typescript&logoColor=3178c6&style=for-the-badge" alt="TypeScript">
+  <img src="https://img.shields.io/badge/Supabase-23272f?logo=supabase&logoColor=3ecf8e&style=for-the-badge" alt="Supabase">
+  <img src="https://img.shields.io/badge/MUI-23272f?logo=mui&logoColor=007fff&style=for-the-badge" alt="MUI">
+</p>
 
-A fullstack web app where players earn, play minigames, and steal from each other over a highly valuable virtual currency. All just to look good on the leaderboard.
+<p align="center">
+  <a href="https://seedbank-play.vercel.app"><b>Live App</b></a> |
+  <a href="https://seedbank-play.vercel.app/api/docs"><b>API Docs</b></a> |
+  <a href="./docs/index.md"><b>Full Documentation</b></a>
+</p>
 
-* Live App: https://seedbank-xi.vercel.app
-* API Docs: https://seedbank-xi.vercel.app/api/docs
+<p align="center">
+  <img src="./public/assets/images/banner.png" alt="Seedbank preview" width="700">
+</p>
+
+> [!WARNING]
+> The database may be paused, see [Supabase free tier limits](https://supabase.com/docs/guides/deployment/going-into-prod#availability)) 
 
 ## ✨ Features
 
-* Play different games (coinflip, dice, color, bomb, race)
-* Steal other player's seeds
-* Or be kind enough to give others your seeds
-* Claim free rewards daily
-* Stalk other player activity via `/users/username` route
-* Compare yourselves through the leaderboard (by balance)
-* A lot of bugs that im not even gonna fix
+- Play different games (card, coinflip, color cube, mines, roulette, slots)
+- Win and lose SEEDs
+- Steal from other players, or send them SEEDs instead
+- Claim free daily reward
+- Check other player activity through their profile page
+- Compare standings on a public leaderboard
 
-## 🧱 Tech Stack
+## ⚓ Tech Stack
 
 | Technology | Purpose |
 | --- | --- |
-| Next.js | framework, routing, API routes |
-| React | UI components |
-| TypeScript | type safety |
-| Tailwind CSS | styling |
-| shadcn/ui | component library |
-| Supabase (PostgreSQL) | database |
-| jose | JWT auth |
-| Zod + React Hook Form | validation |
-| Axios | HTTP client |
-| Scalar (OpenAPI) | API docs |
 | Vercel | hosting, rate limiting |
+| Next.js | framework, routing, API routes |
+| Supabase | database |
+| React | UI components |
+| MUI | component library, theming |
+| TypeScript | type safety |
+| SWR | data fetching, caching |
+| Axios | HTTP client |
+| obscenity | profanity filtering |
+| hCaptcha | bot protection on login and register |
+| jose | JWT auth |
+| bcryptjs | password hashing |
+| Zod | schema validation |
+| Scalar (OpenAPI) | API reference |
+| Vitest | testing |
+| Anime.js | animations |
+| Howler | sound effects |
+| canvas-confetti | win celebration effects |
 
-## 🧠 Applied Concepts
 
-* Applied SQL - remote database setup, modelling, queries
-* REST API design - request/response contracts, status codes
-* System Design Architecture - Seperation of concerns
-* User auth - password hashing, JWT, protected routes
-* Rate limiting - Vercel WAF
-* React + Next.js - hooks, routing, server vs client components
-* TailwindCSS + Shadcn - CSS, custom components
+## ⚡ Applied Concepts
 
----
+- SQL: remote database setup, schema design, queries
+- REST API design: request and response contracts, status codes
+- Layered architecture: separation between API, service, and database concerns
+- User auth: password hashing, JWT, protected routes
+- Rate limiting at the edge
+- React and Next.js: hooks, routing, server vs client components
+- Input validation and sanitization on both client and server
+- Error normalization: a shared error map and response shape across all routes
+- Automated testing with Vitest across services and API routes
+- API documentation via OpenAPI, generated from Zod schemas
 
-<details>
-<summary>
-    <h2>
-    🛠️ Setup (for developers)
-    </h2>
-</summary>
+## 👨‍🍳 Development
 
-#### 1. clone the repository
+Clone the repo and install dependencies with [pnpm](https://pnpm.io):
 
 ```bash
 git clone <this repo>
 cd seedbank
+pnpm install
+pnpm run dev
 ```
 
-#### 2. set up supabase
+Full setup, including Supabase and environment variables, is covered in [docs/dev-setup.md](./docs/dev-setup.md).
 
-* create an account at https://supabase.com
-* create a project
-* go to **sql editor**
-* paste contents of `/database/schema.sql`
-* run the query
-
-#### 3. environment variables
-
-create `.env.local`:
-
-```
-SUPABASE_URL=
-SUPABASE_SERVICE_ROLE_KEY=
-PASSWORD_HASH_ROUNDS=
-JWT_SECRET=
-```
-
-#### 4. run locally
-
-```bash
-npm install
-npm run dev
-```
-
-</details>
-
-<details>
-<summary>
-    <h2>
-    🪑 Project Design
-    </h2>
-</summary>
-
-
-### Database
-
-- every balance change updates `users.balance` and inserts a `history` row in the same service call
-- `meta` is a nullable `jsonb` field for extra context like transfer recipient, steal target, etc.
-- actions with no extra context (games, daily claim) leave `meta` as `null`
-
-```mermaid
 ---
-config:
-    look: handDrawn
-    theme: dark
----
-erDiagram
-    direction LR
-    users {
-        uuid id PK
-        text username
-        text password
-        int balance
-        timestamptz created_at
-    }
-    history {
-        uuid id PK
-        uuid user_id FK
-        int change
-        text reason
-        jsonb meta
-        timestamptz created_at
-    }
 
-    users ||--o{ history : "logs"
-```
-
-### System Architecture
-
-- frontend sends validated values to the API initially
-- API performs a final check upon receive
-  - all server related errors are caught here and passed through a shared error response function
-- service layer handles the actual logic (ex: handling transfers logic)
-- database layer only performs queries
-
-```mermaid
----
-config:
-    look: handDrawn
-    theme: dark
----
-flowchart LR
-    Frontend <--> API
-
-    subgraph server["Server"]
-        API <--> Services["Services (Logic)"]
-        Services <--> Database
-    end
-```
-
-### Frontend Flow
-
-- everything redirects to `/dashboard`
-- no valid token redirects to `/login`
-- dashboard is a shell navbar and a grid of action cards
-- all games share a single `/api/play` endpoint, frontend only renders the result (boolean)
-    - game logic, outcome, and balance update all happen server-side
-    - the games are rigged and the users wont probably read this part lol (stated in tos.md as well)
-
-```mermaid
----
-config:
-    look: handDrawn
-    theme: dark
----
-flowchart LR
-    start([user visits]) --> auth{valid token?}
-    auth -->|no| login --> dashboard
-    auth -->|yes| dashboard
-
-    dashboard --> claim[claim daily]
-    dashboard --> games
-    dashboard --> transfer
-    dashboard --> leaderboard
-    dashboard --> profile[view profile]
-
-    games --> play[place bet] --> result[win or lose]
-    transfer --> send[send seeds]
-```
+For architecture, design decisions, FAQs, and everything else, see [docs/index.md](./docs/index.md).

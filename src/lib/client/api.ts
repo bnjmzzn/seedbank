@@ -1,38 +1,35 @@
-import api from "@/lib/client/axios";
+import axios from "./axios";
+import type { LoginInput, RegisterInput } from "@/lib/client/validation";
 
-export async function login(username: string, password: string) {
-    const res = await api.post("/api/auth/login", { username, password });
-    return res.data;
-}
-
-export async function register(username: string, password: string) {
-    const res = await api.post("/api/auth/register", { username, password });
-    return res.data;
-}
-
-export async function transfer(toUsername: string, amount: number) {
-    const res = await api.post("/api/transfer", { toUsername, amount });
-    return res.data;
-}
-
-export async function fetchHistory(username: string, limit = 20, offset = 0) {
-    const res = await api.get(`/api/users/${username}/history`, {
-        params: { limit, offset },
-    });
-    return res.data;
-}
-
-export async function steal(fromUsername: string, amount: number) {
-    const res = await api.post("/api/steal", { fromUsername, amount });
-    return res.data;
-}
-
-export async function fetchProfile(username: string) {
-    const res = await api.get(`/api/users/${username}/profile`);
-    return res.data;
-}
-
-export async function playGame(game: string, bet: number) {
-    const res = await api.post("/api/play", { game, bet });
-    return res.data;
-}
+export const api = {
+    auth: {
+        login: (data: LoginInput & { captchaToken: string }) =>
+            axios.post("/auth/login", data),
+        register: (data: RegisterInput & { captchaToken: string }) =>
+            axios.post("/auth/register", data),
+    },
+    user: {
+        me: () =>
+            axios.get("/users/me"),
+        profile: (username: string) =>
+            axios.get(`/users/${username}/profile`),
+        history: (username: string, params?: { type?: string; limit?: number }) =>
+            axios.get(`/users/${username}/history`, { params }),
+        daily: {
+            status: () => axios.get("/daily"),
+            claim: () => axios.post("/daily"),
+        },
+        play: (game: string, bet: number) =>
+            axios.post("/play", { game, bet }),
+        transfer: (toUsername: string, amount: number) =>
+            axios.post("/transfer", { toUsername, amount }),
+        steal: (fromUsername: string, amount: number) =>
+            axios.post("/steal", { fromUsername, amount }),
+    },
+    public: {
+        leaderboard: () =>
+            axios.get("/leaderboard"),
+        history: (id: string) =>
+            axios.get(`/history/${id}`),
+    }
+};

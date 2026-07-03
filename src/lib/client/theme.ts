@@ -1,0 +1,45 @@
+import { createTheme } from "@mui/material/styles";
+
+// https://www.color-hex.com/color-palette/1072357
+const theme = createTheme({
+    colorSchemes: {
+        dark: true,
+    },
+    palette: {
+        mode: "dark",
+        primary: {
+            main: "#2ecc71",
+        },
+        error: {
+            main: "#d32f2f",
+        },
+        tertiary: {
+            main: "#303030",
+            contrastText: "#fff",
+        },
+    } as any,
+    components: {
+        MuiCssBaseline: {
+            styleOverrides: {
+                "*": {
+                    scrollbarWidth: "none",
+                    msOverflowStyle: "none",
+                },
+                "*::-webkit-scrollbar": {
+                    display: "none",
+                },
+                body: {
+                    userSelect: "none",
+                },
+                "input, textarea, [contenteditable=\"true\"]": {
+                    userSelect: "text",
+                },
+            },
+        },
+    },
+    typography: {
+        fontFamily: "inherit",
+    },
+});
+
+export default theme;

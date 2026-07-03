@@ -4,21 +4,22 @@ import { dbGetUser, dbInsertUser, dbGetUserRank } from "@/lib/server/db/users";
 import { AppError, Errors } from "@/lib/server/error";
 import { HASH_ROUNDS, JWT_SECRET, JWT_EXPIRES } from "@/lib/server/config";
 import { USERNAME_MAX, PASSWORD_MAX } from "@/lib/config";
-import type { UserRow, UserProfile } from "@/types/database";
+import type { UserRow } from "@/types/db";
+import type { UserProfile, UserMe } from "@/types/models";
+import { getDailyStatus } from "@/lib/server/services/daily";
+import { LoginResult } from "@/types/api";
+import { containsProfanity } from "@/lib/server/filter";
 
 export async function registerUser(username: string, password: string): Promise<void> {
     if (username.length > USERNAME_MAX) throw new AppError(Errors.INVALID_BODY);
     if (password.length > PASSWORD_MAX) throw new AppError(Errors.INVALID_BODY);
+    if (containsProfanity(username)) throw new AppError(Errors.INVALID_USERNAME);
 
     const hashedPassword = await bcrypt.hash(password, HASH_ROUNDS);
     await dbInsertUser(username, hashedPassword);
 }
 
-export async function loginUser(
-    username: string,
-    password: string
-): Promise<{ token: string; user: Omit<UserRow, "password"> }> {
-    
+export async function loginUser(username: string, password: string): Promise<LoginResult> {
     let user: UserRow;
 
     try {
@@ -50,5 +51,30 @@ export async function getUserProfile(username: string): Promise<UserProfile> {
         balance: user.balance ?? 0,
         rank,
         created_at: user.created_at!,
+    };
+}
+
+export async function getMe(userId: string): Promise<UserMe> {
+    let user: UserRow;
+
+    try {
+        user = await dbGetUser("id", userId);
+    } catch (error) {
+        if (error instanceof AppError && error.code === Errors.USER_NOT_FOUND.code) {
+            throw new AppError(Errors.UNAUTHORIZED);
+        }
+        throw error;
+    }
+
+    const [daily, rank] = await Promise.all([
+        getDailyStatus(userId),
+        dbGetUserRank(user.balance ?? 0),
+    ]);
+
+    return {
+        username: user.username,
+        balance: user.balance ?? 0,
+        rank,
+        daily,
     };
 }

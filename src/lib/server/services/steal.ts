@@ -2,13 +2,14 @@ import { dbGetUser, dbUpdateUserBalance } from "@/lib/server/db/users";
 import { dbInsertHistory } from "@/lib/server/db/history";
 import { AppError, Errors } from "@/lib/server/error";
 import { STEAL_SUCCESS_PERCENT, STEAL_MIN, STEAL_MAX } from "@/lib/config";
-import { HistoryReason } from "@/types/database";
+import { HistoryReason } from "@/types/models";
+import { StealResult } from "@/types/api";
 
 export async function stealBalance(
     stealerId: string,
     fromUsername: string,
     amount: number
-): Promise<{ success: boolean; delta: number; balance: number }> {
+): Promise<StealResult> {
 
     if (amount < STEAL_MIN || amount > STEAL_MAX)
         throw new AppError(Errors.STEAL_LIMIT);
@@ -24,20 +25,12 @@ export async function stealBalance(
     const stealerDelta = success ? amount : -amount;
     const targetDelta = success ? -amount : amount;
 
-    await dbUpdateUserBalance(stealerId, stealer.balance! + stealerDelta);
-    await dbUpdateUserBalance(target.id, target.balance! + targetDelta);
-    await dbInsertHistory(
-        stealerId,
-        stealerDelta,
-        HistoryReason.Steal.ROBBER,
-        { player: target.username }
-    );
-    await dbInsertHistory(
-        target.id,
-        targetDelta,
-        HistoryReason.Steal.VICTIM,
-        { player: stealer.username }
-    );
+    await Promise.all([
+        dbUpdateUserBalance(stealerId, stealer.balance! + stealerDelta),
+        dbUpdateUserBalance(target.id, target.balance! + targetDelta),
+        dbInsertHistory(stealerId, stealerDelta, HistoryReason.Steal.ROBBER, { player: target.username }),
+        dbInsertHistory(target.id, targetDelta, HistoryReason.Steal.VICTIM, { player: stealer.username }),
+    ]);
 
     return { success, delta: stealerDelta, balance: stealer.balance! + stealerDelta };
 }

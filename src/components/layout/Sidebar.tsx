@@ -1,0 +1,115 @@
+"use client";
+
+import {
+    Box,
+    ButtonBase,
+    Drawer,
+    List,
+    ListItemButton,
+    ListItemIcon,
+    ListItemText,
+    Avatar,
+    Typography,
+    Divider,
+} from "@mui/material";
+import { usePathname, useRouter } from "next/navigation";
+import { NAV_ITEMS } from "@/lib/client/registry/nav";
+import Iconify from "@/components/shared/generic/Iconify";
+import { useMe } from "@/lib/client/hooks/data";
+import { getAvatarUrl } from "@/lib/client/utils";
+import ProfileMenu, { useProfileMenu } from "./ProfileMenu";
+import Brand from "@/components/shared/generic/Brand";
+import { CURRENCY_TICKER } from "@/lib/config";
+
+export default function Sidebar() {
+    const pathname = usePathname();
+    const router = useRouter();
+    const { me } = useMe();
+    const { anchorEl, open, close, isOpen } = useProfileMenu();
+
+    return (
+        <Drawer
+            variant="permanent"
+            sx={{
+                width: 280,
+                flexShrink: 0,
+                display: { xs: "none", md: "flex" },
+                "& .MuiDrawer-paper": {
+                    width: 280,
+                    boxSizing: "border-box",
+                    border: "none",
+                    display: "flex",
+                    flexDirection: "column",
+                    px: 2,
+                    py: 3,
+                },
+            }}
+        >
+            <Brand sx={{ px: 1, mb: 3 }} />
+
+            <List disablePadding sx={{ display: "flex", flexDirection: "column", gap: 0.5 }}>
+                {NAV_ITEMS.map((item) => {
+                    const isActive = pathname === item.href;
+                    return (
+                        <ListItemButton
+                            key={item.href}
+                            selected={isActive}
+                            onClick={() => router.push(item.href)}
+                            sx={{
+                                py: 1.5,
+                                borderRadius: 2,
+                                "&.Mui-selected": {
+                                    color: "primary.main",
+                                    "& .MuiListItemIcon-root": { color: "primary.main" },
+                                },
+                            }}
+                        >
+                            <ListItemIcon sx={{ minWidth: 40 }}>
+                                <Iconify icon={item.icon} />
+                            </ListItemIcon>
+                            <ListItemText primary={item.label} />
+                        </ListItemButton>
+                    );
+                })}
+            </List>
+
+            <Box sx={{ flexGrow: 1 }} />
+
+            <Divider sx={{ mb: 2 }} />
+
+            <ButtonBase
+                onClick={open}
+                sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1.5,
+                    px: 1,
+                    py: 1.5,
+                    borderRadius: 1,
+                    textAlign: "left",
+                    "&:hover": { bgcolor: "action.hover" },
+                }}
+            >
+                <Avatar
+                    src={me ? getAvatarUrl(me.username) : undefined}
+                    sx={{ width: 32, height: 32 }}
+                />
+                <Box sx={{ flexGrow: 1 }}>
+                    <Typography>{me?.username ?? "—"}</Typography>
+                    <Typography color="text.secondary">
+                        {me ? `${me.balance.toLocaleString()} ${CURRENCY_TICKER}` : "—"}
+                    </Typography>
+                </Box>
+            </ButtonBase>
+
+            <ProfileMenu
+                anchorEl={anchorEl}
+                open={isOpen}
+                onClose={close}
+                username={me?.username ?? ""}
+                anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+                transformOrigin={{ horizontal: "left", vertical: "bottom" }}
+            />
+        </Drawer>
+    );
+}

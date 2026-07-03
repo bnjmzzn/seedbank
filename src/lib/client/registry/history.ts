@@ -1,0 +1,46 @@
+import { HistoryReason } from "@/types/models";
+import { GAMES } from "./games";
+
+export interface HistoryEntry {
+    label: string;
+    icon: string;
+    color: string;
+}
+
+const gameEntries = Object.fromEntries(
+    GAMES.map(({ id, label, icon, color }) => [id, { label, icon, color }])
+);
+
+export const HISTORY_META: Record<string, HistoryEntry> = {
+    ...gameEntries, // add games reason here
+    [HistoryReason.ADMIN]: {
+        label: "Admin",
+        icon: "eos-icons:admin",
+        color: "primary",
+    },
+    [HistoryReason.DAILY]: {
+        label: "Daily Reward",
+        icon: "mdi:calendar-star",
+        color: "primary",
+    },
+    [HistoryReason.Transfer.SENT]: {
+        label: "Transfer Sent",
+        icon: "mdi:arrow-top-right",
+        color: "error",
+    },
+    [HistoryReason.Transfer.RECEIVED]: {
+        label: "Transfer Received",
+        icon: "mdi:arrow-bottom-left",
+        color: "success",
+    },
+    [HistoryReason.Steal.ROBBER]: {
+        label: "Steal (Attacker)",
+        icon: "ri:spy-line",
+        color: "success",
+    },
+    [HistoryReason.Steal.VICTIM]: {
+        label: "Steal (Victim)",
+        icon: "emojione-monotone:police-car-light",
+        color: "error",
+    },
+};

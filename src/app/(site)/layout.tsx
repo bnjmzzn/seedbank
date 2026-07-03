@@ -2,29 +2,44 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { isTokenValid } from "@/lib/client/auth";
-import { UserProvider } from "@/context/UserContext";
-import Navbar from "@/components/shared/Navbar";
+import { storage } from "@/lib/client/storage";
+import Box from "@mui/material/Box";
+import Sidebar from "@/components/layout/Sidebar";
+import BottomNav from "@/components/layout/BottomNav";
 
 export default function SiteLayout({ children }: { children: React.ReactNode }) {
     const router = useRouter();
-    const [mounted, setMounted] = useState(false);
+    const [isAuthorized, setIsAuthorized] = useState(false);
 
     useEffect(() => {
-        setMounted(true);
-        if (!isTokenValid()) {
+        const token = storage.getToken();
+
+        if (!token) {
             router.replace("/login");
+            return;
         }
+
+        setIsAuthorized(true);
     }, [router]);
 
-    if (!mounted) return null;
+    if (!isAuthorized) return null;
 
     return (
-        <UserProvider>
-            <Navbar />
-            <main className="md:pb-0 pb-14">
+        <Box sx={{ display: "flex" }}>
+            <Sidebar />
+            <Box
+                component="main"
+                sx={{
+                    flexGrow: 1,
+                    overflowX: "hidden",
+                    overflowY: "scroll",
+                    p: 3,
+                    pb: { xs: 10, md: 3 },
+                }}
+            >
                 {children}
-            </main>
-        </UserProvider>
+            </Box>
+            <BottomNav />
+        </Box>
     );
 }

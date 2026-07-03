@@ -1,112 +1,62 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
-import { Trophy, Bean } from "lucide-react";
-import Link from "next/link";
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
-import api from "@/lib/client/axios";
-import { fetchProfile } from "@/lib/client/api";
-import { useUser } from "@/context/UserContext";
-import type { LeaderboardEntry } from "@/types/database";
-import type { UserProfile } from "@/types/database";
+import { Box, Stack } from "@mui/material";
+import { useLeaderboard, useMe } from "@/lib/client/hooks/data";
+import SectionHeader from "@/components/shared/generic/SectionHeader";
+import RankCard from "./_components/RankCard";
+import GapDisplay from "./_components/GapDisplay";
+import TopPodium from "./_components/TopPodium";
+import RestList from "./_components/RestList";
+import BalanceBarChart from "./_components/BalanceBarChart";
 
-function dicebearUrl(username: string) {
-    return `https://api.dicebear.com/9.x/bottts/svg?seed=${username}`;
-}
-
-const RANK_COLORS: Record<number, string> = {
-    1: "text-yellow-400",
-    2: "text-slate-400",
-    3: "text-amber-600",
-};
-
-function LeaderboardRow({ entry, highlight = false }: { entry: LeaderboardEntry; highlight?: boolean }) {
-    return (
-        <Link
-            href={`/profile/${entry.username}`}
-            className={`flex items-center justify-between py-3 border-b border-border last:border-0 hover:opacity-80 transition-opacity ${
-                highlight ? "opacity-100" : ""
-            }`}
-        >
-            <div className="flex items-center gap-3">
-                <span className={`w-6 text-center text-sm font-bold font-mono ${RANK_COLORS[entry.rank] ?? "text-muted-foreground"}`}>
-                    {entry.rank <= 3 ? <Trophy size={16} className="mx-auto" /> : `#${entry.rank}`}
-                </span>
-                <Avatar className="size-8 ring-2 ring-primary/30 ring-offset-1 ring-offset-background">
-                    <AvatarImage src={dicebearUrl(entry.username)} alt={entry.username} />
-                </Avatar>
-                <p className="text-sm font-medium text-foreground">{entry.username}</p>
-            </div>
-            <div className="flex items-center gap-1.5 font-mono font-semibold text-sm text-foreground">
-                <Bean size={13} className="text-primary" />
-                {entry.balance.toLocaleString()}
-            </div>
-        </Link>
-    );
-}
+const PODIUM_SIZE = 3;
 
 export default function LeaderboardPage() {
-    const { username } = useUser();
-    const [entries, setEntries] = useState<LeaderboardEntry[]>([]);
-    const [ownEntry, setOwnEntry] = useState<LeaderboardEntry | null>(null);
-    const [loading, setLoading] = useState(true);
+    const { me, isLoading: meLoading } = useMe();
+    const { entries, isLoading: leaderboardLoading } = useLeaderboard();
+    const loading = meLoading || leaderboardLoading || me === null;
 
-    useEffect(() => {
-        async function load() {
-            try {
-                const [lbRes, profileRes] = await Promise.all([
-                    api.get("/api/leaderboard"),
-                    fetchProfile(username),
-                ]);
-                const top10: LeaderboardEntry[] = lbRes.data.data.slice(0, 10);
-                setEntries(top10);
-
-                const profile: UserProfile = profileRes.data;
-                setOwnEntry({
-                    rank: profile.rank,
-                    username: profile.username,
-                    balance: profile.balance ?? 0,
-                });
-            } catch {
-                toast.error("Failed to load leaderboard.");
-            } finally {
-                setLoading(false);
-            }
-        }
-        load();
-    }, [username]);
+    const podiumEntries = entries.slice(0, PODIUM_SIZE);
+    const restEntries = entries.slice(PODIUM_SIZE);
 
     return (
-        <div className="mx-auto w-full max-w-lg px-6 py-8 space-y-4">
-            {!loading && ownEntry && (
-                <div className="space-y-1">
-                    <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">
-                        Your Rank
-                    </h2>
-                    <div className="rounded-xl border-4 border-primary/30 bg-card px-4">
-                        <LeaderboardRow entry={ownEntry} highlight />
-                    </div>
-                </div>
-            )}
-            <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground px-1">
-                Leaderboard
-            </h2>
-            <div className="rounded-xl border-4 border-border bg-card px-4">
-                {loading ? (
-                    <p className="py-8 text-center text-sm text-muted-foreground">Loading...</p>
-                ) : entries.length === 0 ? (
-                    <p className="py-8 text-center text-sm text-muted-foreground">No entries yet.</p>
-                ) : (
-                    entries.map((entry) => (
-                        <LeaderboardRow
-                            key={entry.rank}
-                            entry={entry}
-                            highlight={entry.username === username}
-                        />
-                    ))
-                )}
-            </div>
-        </div>
+        <Stack gap={4} sx={{ minWidth: 0, overflow: "hidden", p: { sm: 1, md: 2 } }}>
+            <Stack direction="row" flexWrap="wrap" gap={4}>
+                <Stack flex={1} minWidth={240}>
+                    <RankCard
+                        username={me?.username}
+                        rank={me?.rank}
+                        balance={me?.balance}
+                        isLoading={loading}
+                    />
+                </Stack>
+                <Stack flex={1} minWidth={240}>
+                    <GapDisplay
+                        userRank={me?.rank}
+                        userBalance={me?.balance}
+                        topEntries={entries}
+                        isLoading={loading}
+                    />
+                </Stack>
+            </Stack>
+
+            <Stack direction="row" flexWrap="wrap" gap={4}>
+                <Stack flex={1} minWidth={240} gap={1}>
+                    <SectionHeader icon="mdi:podium-gold" label="Top 3" />
+                    <TopPodium entries={podiumEntries} isLoading={loading} />
+                </Stack>
+                <Stack flex={1} minWidth={280} gap={1}>
+                    <SectionHeader icon="mdi:format-list-numbered" label="Rankings" />
+                    <RestList entries={restEntries} isLoading={loading} />
+                </Stack>
+            </Stack>
+
+            <Stack gap={1}>
+                <SectionHeader icon="mdi:chart-bar" label="Top 10 Balances" />
+                <Box sx={{ height: 320 }}>
+                    <BalanceBarChart entries={entries} isLoading={loading} />
+                </Box>
+            </Stack>
+        </Stack>
     );
 }

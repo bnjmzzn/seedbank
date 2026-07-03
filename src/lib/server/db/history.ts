@@ -1,5 +1,6 @@
+import { AppError, Errors } from "../error";
 import { supabase } from "./client";
-import type { HistoryRow } from "@/types/database";
+import type { HistoryRow } from "@/types/db";
 
 export async function dbInsertHistory(
     userId: string,
@@ -17,7 +18,7 @@ export async function dbInsertHistory(
 export async function dbGetHistory(filters: {
     userId?: string;
     reason?: string;
-    meta?: Record<string, unknown>;
+    reasonLike?: string;
     limit?: number;
 }): Promise<HistoryRow[]> {
     
@@ -27,16 +28,26 @@ export async function dbGetHistory(filters: {
         .order("created_at", { ascending: false });
 
     if (filters.userId) query = query.eq("user_id", filters.userId);
-    if (filters.reason) {
-        if (filters.reason.includes("%"))
-            query = query.like("reason", filters.reason);
-        else
-            query = query.eq("reason", filters.reason);
-    }
-    if (filters.meta) query = query.contains("meta", filters.meta);
+    if (filters.reason) query = query.eq("reason", filters.reason);
+    if (filters.reasonLike) query = query.like("reason", `${filters.reasonLike}%`);
     if (filters.limit) query = query.limit(filters.limit);
 
     const { data, error } = await query;
     if (error) throw error;
     return data ?? [];
+}
+
+export async function dbGetHistoryById(id: string): Promise<HistoryRow> {
+    const { data, error } = await supabase
+        .from("history")
+        .select("*")
+        .eq("id", id)
+        .single();
+
+    if (error) {
+        if (error.code === "PGRST116" || error.code === "22P02")
+            throw new AppError(Errors.HISTORY_NOT_FOUND);
+        throw error;
+    }
+    return data;
 }

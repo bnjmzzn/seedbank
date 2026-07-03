@@ -1,22 +1,24 @@
 import type { Metadata } from "next";
-import "./globals.css";
 import { Geist } from "next/font/google";
-import { cn } from "@/lib/utils";
-import { Toaster } from "@/components/ui/sonner";
+import ThemeProvider from "@/components/providers/ThemeProvider";
+import SnackBar from "@/components/shared/generic/SnackBar";
 
-const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
+const geist = Geist({ subsets: ["latin"] });
 
 const siteConfig = {
     title: "SeedBank",
-    description: "Gambling Simulator 🤑",
-    banner: "/images/banner.png",
+    description: "plz try this app i made",
+    banner: "/assets/images/banner.png",
 };
 
 export const metadata: Metadata = {
     title: siteConfig.title,
     description: siteConfig.description,
     icons: {
-        icon: "/icon.svg",
+        icon: [
+            { url: "/icon.svg", type: "image/svg+xml" },
+            { url: "/favicon.ico", sizes: "any" },
+        ],
     },
     openGraph: {
         title: siteConfig.title,
@@ -31,16 +33,14 @@ export const metadata: Metadata = {
     },
 };
 
-export default function RootLayout({
-    children,
-}: Readonly<{
-    children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
-        <html lang="en" className={cn("font-sans", geist.variable, "dark")}>
+        <html lang="en" className={geist.className}>
             <body>
-                <Toaster />
-                {children}
+                <ThemeProvider>
+                    {children}
+                    <SnackBar />
+                </ThemeProvider>
             </body>
         </html>
     );

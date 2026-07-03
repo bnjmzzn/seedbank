@@ -1,159 +1,63 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
-import { useRouter } from "next/navigation";
-import { ArrowLeftRight, Shuffle, Dice5, Palette, Bomb, Flag, Swords, Bean } from "lucide-react";
-import { toast } from "sonner";
-import ActionCard from "@/app/(site)/dashboard/_components/ActionCard";
-import { useUser } from "@/context/UserContext";
-import api from "@/lib/client/axios";
-import TosModal from "./_components/TosModal";
-
-const DAILY_COOLDOWN_MS = 24 * 60 * 60 * 1000;
-
-const GAMES = [
-    { key: "coinflip", label: "Coinflip", icon: <Shuffle size={28} /> },
-    { key: "dice", label: "Dice", icon: <Dice5 size={28} /> },
-    { key: "color", label: "Color Pick", icon: <Palette size={28} /> },
-    { key: "bomb", label: "Bomb", icon: <Bomb size={28} /> },
-    { key: "race", label: "Race", icon: <Flag size={28} /> },
-    { key: "steal", label: "Steal", icon: <Swords size={28} /> },
-];
-
-function getDailyState(key: string): { available: boolean; remaining: number } {
-    if (typeof window === "undefined") return { available: false, remaining: 0 };
-    const raw = localStorage.getItem(key);
-    if (!raw) return { available: true, remaining: 0 };
-    const lastClaim = parseInt(raw, 10);
-    if (isNaN(lastClaim)) return { available: true, remaining: 0 };
-    const remaining = DAILY_COOLDOWN_MS - (Date.now() - lastClaim);
-    return remaining > 0
-        ? { available: false, remaining }
-        : { available: true, remaining: 0 };
-}
-
-function formatRemaining(ms: number): string {
-    const totalSeconds = Math.floor(ms / 1000);
-    const h = Math.floor(totalSeconds / 3600);
-    const m = Math.floor((totalSeconds % 3600) / 60);
-    const s = totalSeconds % 60;
-    return `${h}h ${m}m ${s}s`;
-}
+import { Box, Stack } from "@mui/material";
+import BalanceCard from "./_components/BalanceCard";
+import DailyCard from "./_components/DailyCard";
+import GameList from "./_components/GameList";
+import TransactionFeed from "./_components/HistoryFeed";
+import { useHistory, useMe } from "@/lib/client/hooks/data";
+import TrendChart from "@/components/shared/data/TrendChart";
+import SectionHeader from "@/components/shared/generic/SectionHeader";
+import { buildBalanceHistoryData } from "@/lib/client/charts/trend";
 
 export default function DashboardPage() {
-    const [showTos, setShowTos] = useState(false);
-    const [tosText, setTosText] = useState("");
+    const { me, isLoading, mutate: mutateMe } = useMe();
+    const { rows, isLoading: historyLoading, mutate: mutateHistory } = useHistory(me?.username ?? null);
+    const loading = isLoading || historyLoading || me === null;
 
-    useEffect(() => {
-        if (localStorage.getItem("tos_pending")) {
-            fetch("/tos.txt").then(r => r.text()).then(setTosText);
-            setShowTos(true);
-        }
-    }, []);
-
-    const router = useRouter();
-    const { username, setBalance } = useUser();
-
-    const dailyKey = `daily_last_claim_${username}`;
-
-    const [dailyAvailable, setDailyAvailable] = useState(false);
-    const [dailyRemaining, setDailyRemaining] = useState(0);
-    const [claiming, setClaiming] = useState(false);
-
-    useEffect(() => {
-        function tick() {
-            const { available, remaining } = getDailyState(dailyKey);
-            setDailyAvailable(available);
-            setDailyRemaining(remaining);
-        }
-        tick();
-        const interval = setInterval(tick, 1000);
-        return () => clearInterval(interval);
-    }, [dailyKey]);
-
-    const handleClaimDaily = useCallback(async () => {
-        const { available, remaining } = getDailyState(dailyKey);
-        if (!available) {
-            toast.info(`Come back in ${formatRemaining(remaining)}`);
-            return;
-        }
-
-        setClaiming(true);
-        try {
-            const res = await api.post("/api/daily");
-            const { claimed, balance } = res.data.data;
-            localStorage.setItem(dailyKey, Date.now().toString());
-            setBalance(balance);
-            toast.success(`Claimed ${claimed.toLocaleString()} seeds!`);
-        } catch (err: any) {
-            const code = err.response?.data?.code;
-            if (code === "COOLDOWN_ACTIVE") {
-                const remaining = err.response?.data?.data?.remaining;
-                if (remaining) {
-                    localStorage.setItem(
-                        dailyKey,
-                        (Date.now() - (DAILY_COOLDOWN_MS - remaining)).toString()
-                    );
-                }
-                toast.info("Already claimed. Try again later.");
-            } else {
-                toast.error("Something went wrong.");
-            }
-        } finally {
-            setClaiming(false);
-        }
-    }, [dailyKey, setBalance]);
+    function handleClaimed() {
+        mutateMe();
+        mutateHistory();
+    }
 
     return (
-        <div className="mx-auto w-full max-w-4xl px-6 py-8 space-y-10">
-                {showTos && (
-                    <TosModal
-                        text={tosText}
-                        onAccept={() => {
-                            localStorage.removeItem("tos_pending");
-                            setShowTos(false);
-                        }}
+        <Stack gap={4} sx={{ minWidth: 0, overflow: "hidden", p: { sm: 1, md: 2 } }}>
+            <Stack direction="row" flexWrap="wrap" gap={4}>
+                <Stack flex={1} minHeight={150} gap={1}>
+                    <SectionHeader icon="mdi:wallet-outline" label="Balance" />
+                    <BalanceCard
+                        balance={me?.balance ?? 0}
+                        rows={rows}
+                        isLoading={loading}
                     />
-                )}
-            <section className="space-y-4">
-                <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-                    Actions
-                </h2>
-                <div className="grid grid-cols-2 gap-3 sm:grid-cols-2">
-                    <ActionCard
-                        icon={<Bean size={28} />}
-                        title={
-                            claiming
-                                ? "Claiming..."
-                                : dailyAvailable
-                                ? "Daily Claim"
-                                : `${formatRemaining(dailyRemaining)}`
-                        }
-                        onClick={handleClaimDaily}
-                        className={!dailyAvailable ? "opacity-60" : undefined}
+                </Stack>
+                <Stack flex={1} minHeight={150} gap={1}>
+                    <SectionHeader icon="mdi:calendar-outline" label="Daily Reward" />
+                    <DailyCard
+                        daily={me?.daily ?? null}
+                        isLoading={loading}
+                        onClaimed={handleClaimed}
                     />
-                    <ActionCard
-                        icon={<ArrowLeftRight size={28} />}
-                        title="Transfer"
-                        onClick={() => router.push("/transfer")}
-                    />
-                </div>
-            </section>
-            <section className="space-y-4">
-                <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-                    Games
-                </h2>
-                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-                    {GAMES.map((game) => (
-                        <ActionCard
-                            key={game.key}
-                            icon={game.icon}
-                            title={game.label}
-                            onClick={() => router.push(`/games/${game.key}`)}
-                        />
-                    ))}
-                </div>
-            </section>
-        </div>
+                </Stack>
+            </Stack>
+
+            <Stack gap={1}>
+                <SectionHeader icon="mdi:controller" label="Games" />
+                <GameList isLoading={loading} />
+            </Stack>
+
+            <Stack direction="row" flexWrap="wrap" gap={4}>
+                <Stack flex={1} gap={1}>
+                    <SectionHeader icon="mdi:history" label="Recent Activity" />
+                    <TransactionFeed rows={rows} isLoading={loading} />
+                </Stack>
+                <Stack flex={1} gap={1}>
+                    <SectionHeader icon="mdi:chart-line" label="Balance History" />
+                    <Box sx={{ height: 200 }}>
+                        <TrendChart data={buildBalanceHistoryData(rows)} isLoading={loading} />
+                    </Box>
+                </Stack>
+            </Stack>
+        </Stack>
     );
 }
