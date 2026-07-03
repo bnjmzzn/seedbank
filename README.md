@@ -1,19 +1,30 @@
-# 🌱 Seedbank
+<h1 align="center">🌱 Seedbank</h1>
 
-![Next.js](https://img.shields.io/badge/Next.js-23272f?logo=nextdotjs&logoColor=fff&style=for-the-badge)
-![TypeScript](https://img.shields.io/badge/TypeScript-23272f?logo=typescript&logoColor=3178c6&style=for-the-badge)
-![React](https://img.shields.io/badge/React-23272f?logo=react&logoColor=61dafb&style=for-the-badge)
-![Supabase](https://img.shields.io/badge/Supabase-23272f?logo=supabase&logoColor=3ecf8e&style=for-the-badge)
-![MUI](https://img.shields.io/badge/MUI-23272f?logo=mui&logoColor=007fff&style=for-the-badge)
-![Vercel](https://img.shields.io/badge/Vercel-23272f?logo=vercel&logoColor=fff&style=for-the-badge)
-
+<p align="center">
 A fullstack web app where players earn, play minigames, and steal from each other over a virtual currency.
+</p>
 
-🔗 Live App: https://seedbank-play.vercel.app  
-📄 API Docs: https://seedbank-play.vercel.app/api/docs  
-📚 Full Documentation: [Documentation Index](./docs/index.md)  
+<p align="center">
+  <img src="https://img.shields.io/badge/Vercel-23272f?logo=vercel&logoColor=fff&style=for-the-badge" alt="Vercel">
+  <img src="https://img.shields.io/badge/Next.js-23272f?logo=nextdotjs&logoColor=fff&style=for-the-badge" alt="Next.js">
+  <img src="https://img.shields.io/badge/React-23272f?logo=react&logoColor=61dafb&style=for-the-badge" alt="React">
+  <img src="https://img.shields.io/badge/TypeScript-23272f?logo=typescript&logoColor=3178c6&style=for-the-badge" alt="TypeScript">
+  <img src="https://img.shields.io/badge/Supabase-23272f?logo=supabase&logoColor=3ecf8e&style=for-the-badge" alt="Supabase">
+  <img src="https://img.shields.io/badge/MUI-23272f?logo=mui&logoColor=007fff&style=for-the-badge" alt="MUI">
+</p>
 
-![Seedbank preview](./public/assets/images/banner.png)
+<p align="center">
+  <a href="https://seedbank-play.vercel.app"><b>Live App</b></a> |
+  <a href="https://seedbank-play.vercel.app/api/docs"><b>API Docs</b></a> |
+  <a href="./docs/index.md"><b>Full Documentation</b></a>
+</p>
+
+<p align="center">
+  <img src="./public/assets/images/banner.png" alt="Seedbank preview" width="700">
+</p>
+
+> [!WARNING]
+> The database may be paused, see [Supabase free tier limits](https://supabase.com/docs/guides/deployment/going-into-prod#availability)) 
 
 ## ✨ Features
 
