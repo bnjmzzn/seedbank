@@ -14,7 +14,7 @@ export function useHistory(username: string | null, params: UseHistoryParams = {
     const { data, error, isLoading, mutate } = useSWR<HistoryRow[]>(
         username ? ["history", username, type, limit] : null,
         () => api.user.history(username!, { type, limit }),
-        { revalidateOnFocus: false }
+        { revalidateOnFocus: false, dedupingInterval: 30000 }
     );
 
     return {
@@ -44,7 +44,7 @@ export function useMe() {
     const { data, error, isLoading, mutate } = useSWR<UserMe>(
         "me",
         () => api.user.me(),
-        { revalidateOnFocus: true }
+        { revalidateOnFocus: true, dedupingInterval: 30000 }
     );
 
     return {
