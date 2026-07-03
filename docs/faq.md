@@ -1,8 +1,14 @@
 # FAQ
 
-## Why migrate to pnpm from npm?
+## Is this a gambling app?
 
-Faster installs and a stricter dependency structure. fnm was picked up around the same time for managing Node versions. Part of the motivation was also reducing exposure to [supply chain attacks](https://www.cloudflare.com/learning/security/what-is-a-supply-chain-attack/), which pnpm handles better than npm's flatter resolution.
+No. SEED has no real world value, can't be bought with real money, and can't be cashed out. There's no way to convert it into anything outside the app. This project exists to practice fullstack development, the game and currency concept just gives that practice something to be built around. See [concept.md](./concept.md) for more on that.
+
+## What information do you collect from me?
+
+Just your username, password, balance, and your history of in-app actions (games played, transfers, steals). No email, no personal info, no tracking beyond what's needed for the app to function.
+
+Your password is [hashed](https://supertokens.com/blog/password-hashing-salting#what-is-password-hashing) with `bcryptjs` before it ever touches the database, only the hash is stored; that means even a hacker or me can't see your actual password.
 
 ## How long did this take?
 
@@ -34,6 +40,10 @@ The goal was to learn backend architecture: service layers, direct database quer
 ## What is your development environment?
 
 Built on VS Code, on Windows, using Debian through WSL, with fish as the shell.
+
+## Why migrate to pnpm from npm?
+
+Faster installs and a stricter dependency structure. fnm was picked up around the same time for managing Node versions. Part of the motivation was also reducing exposure to [supply chain attacks](https://www.cloudflare.com/learning/security/what-is-a-supply-chain-attack/), which pnpm handles better than npm's flatter resolution.
 
 ## How much did this project costs you in dollars?
 
